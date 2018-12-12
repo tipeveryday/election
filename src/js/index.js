@@ -3,8 +3,12 @@ import ReactDOM from 'react-dom'
 // import Web3 from 'web3'
 import Web3 from 'aion-web3'
 import './../css/index.css'
-let web3;
+import casinoJSON from './../../build/contracts/Casino.json'
 
+// console.log(casinoJSON);
+let web3;
+let myContract;
+let account="hello";
 function injectWeb3() {
  // Is there an injected web3 instance?
  if (window.aionweb3) { // AIWA Chrome extension will inject automatically
@@ -17,7 +21,9 @@ function injectWeb3() {
 
    // console.log("wtf", new Web3(window.aionweb3.currentProvider));
    // console.log(web3);
-
+   myContract = new web3.eth.Contract(casinoJSON.info.abiDefinition, "0xa01ebcef760Bc93c9EF066632e2083548357F936B6E42879380a4433F1e45d2c");
+   console.log(myContract);
+   account = window.aionweb3.eth.accounts;
  }
  // else {
  //   // If no injected web3 instance is detected, fall back to Nodesmith Mastery Testnet
@@ -38,11 +44,12 @@ class App extends React.Component {
          minimumBet: 0,
          totalBet: 0,
          maxAmountOfBets: 0,
+         accounts: account
       }
 
 
       // const MyContract = web3.eth.contract([{"constant":false,"inputs":[],"name":"generateNumberWinner","outputs":[],"payable":true,"type":"function"},{"constant":false,"inputs":[{"name":"myid","type":"bytes32"},{"name":"result","type":"string"}],"name":"__callback","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"numberOfBets","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_queryId","type":"bytes32"},{"name":"_result","type":"string"},{"name":"_proof","type":"bytes"}],"name":"__callback","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"player","type":"address"}],"name":"checkPlayerExists","outputs":[{"name":"","type":"bool"}],"payable":false,"type":"function"},{"constant":false,"inputs":[],"name":"kill","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[],"name":"resetData","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"bets","type":"uint256"}],"name":"updateMaxBets","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"number","type":"uint256"}],"name":"bet","outputs":[],"payable":true,"type":"function"},{"constant":false,"inputs":[{"name":"amountWei","type":"uint256"}],"name":"updateMinimumBet","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[],"name":"distributePrizes","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"numberWinner","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"minimumBet","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"maxAmountOfBets","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"players","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"totalBet","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"inputs":[{"name":"_maxAmountOfBets","type":"uint256"}],"payable":false,"type":"constructor"},{"payable":true,"type":"fallback"}])
-      // this.state.ContractInstance = MyContract.at("0x430d959fa54714aca8eecd61fae2661fca900e04")
+      // myContract = MyContract.at("0x430d959fa54714aca8eecd61fae2661fca900e04")
 
       window.a = this.state
    }
@@ -52,36 +59,36 @@ class App extends React.Component {
        // alert("Hello");
        console.log(window.aionweb3);
        injectWeb3();
+       this.updateState()
      }, 2000);
-      this.updateState()
-      this.setupListeners()
 
+     this.setupListeners()
       setInterval(this.updateState.bind(this), 7e3)
    }
 
    updateState(){
-      this.state.ContractInstance.minimumBet((err, result) => {
+      myContract.minimumBet((err, result) => {
          if(result != null){
             this.setState({
                minimumBet: parseFloat(web3.fromWei(result, 'ether'))
             })
          }
       })
-      this.state.ContractInstance.totalBet((err, result) => {
+      myContract.totalBet((err, result) => {
          if(result != null){
             this.setState({
                totalBet: parseFloat(web3.fromWei(result, 'ether'))
             })
          }
       })
-      this.state.ContractInstance.numberOfBets((err, result) => {
+      myContract.numberOfBets((err, result) => {
          if(result != null){
             this.setState({
                numberOfBets: parseInt(result)
             })
          }
       })
-      this.state.ContractInstance.maxAmountOfBets((err, result) => {
+      myContract.maxAmountOfBets((err, result) => {
          if(result != null){
             this.setState({
                maxAmountOfBets: parseInt(result)
@@ -116,7 +123,7 @@ class App extends React.Component {
          alert('You must bet more than the minimum')
          cb()
       } else {
-         this.state.ContractInstance.bet(number, {
+         myContract.bet(number, {
             gas: 300000,
             from: web3.eth.accounts[0],
             value: web3.toWei(bet, 'ether')
@@ -182,7 +189,9 @@ class App extends React.Component {
 
             <div><i>Only working with the Mastery Test Network 📡</i></div>
             <div><i>You can only vote once per account</i></div>
-
+            <div><i>Your account is <strong>
+            {account}
+            </strong></i></div>
             <div><i>Your vote will be reflected when the next block is mined.</i></div>
          </div>
       )

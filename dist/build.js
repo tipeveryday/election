@@ -32170,6 +32170,10 @@ var _aionWeb2 = _interopRequireDefault(_aionWeb);
 
 __webpack_require__(438);
 
+var _Casino = __webpack_require__(443);
+
+var _Casino2 = _interopRequireDefault(_Casino);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -32180,8 +32184,10 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 // import Web3 from 'web3'
 
 
+// console.log(casinoJSON);
 var web3 = void 0;
-
+var myContract = void 0;
+var account = "hello";
 function injectWeb3() {
    // Is there an injected web3 instance?
    if (window.aionweb3) {
@@ -32194,15 +32200,19 @@ function injectWeb3() {
       // web3 = new Web3(new Web3.providers.HttpProvider("https://api.nodesmith.io/v1/aion/testnet/jsonrpc?apiKey=b07fca69798743afbfc1e88e56e9af9d"));
 
       // console.log("wtf", new Web3(window.aionweb3.currentProvider));
-      console.log(web3);
-   } else {
-      // If no injected web3 instance is detected, fall back to Nodesmith Mastery Testnet
-      // fallback is fine for development environments, but insecure ant not suitable for production
-      // INJECT NODESMITH
-      console.log("No web3 detected. Falling back to Nodesmith Mastery Testnet. Consider switching to AIWA for development.");
-      web3 = new _aionWeb2.default(new _aionWeb2.default.providers.HttpProvider("https://api.nodesmith.io/v1/aion/testnet/jsonrpc?apiKey=b07fca69798743afbfc1e88e56e9af9d"));
-      console.log(window.aionweb3);
+      // console.log(web3);
+      myContract = new web3.eth.Contract(_Casino2.default.info.abiDefinition, "0xa01ebcef760Bc93c9EF066632e2083548357F936B6E42879380a4433F1e45d2c");
+      console.log(myContract);
+      account = window.aionweb3.eth.accounts;
    }
+   // else {
+   //   // If no injected web3 instance is detected, fall back to Nodesmith Mastery Testnet
+   //   // fallback is fine for development environments, but insecure ant not suitable for production
+   //   // INJECT NODESMITH
+   //   console.log("No web3 detected. Falling back to Nodesmith Mastery Testnet. Consider switching to AIWA for development.");
+   //   web3 = new Web3(new Web3.providers.HttpProvider("https://api.nodesmith.io/v1/aion/testnet/jsonrpc?apiKey=b07fca69798743afbfc1e88e56e9af9d"));
+   //   console.log(window.aionweb3);
+   // }
 }
 
 var App = function (_React$Component) {
@@ -32218,10 +32228,11 @@ var App = function (_React$Component) {
          numberOfBets: 0,
          minimumBet: 0,
          totalBet: 0,
-         maxAmountOfBets: 0
+         maxAmountOfBets: 0,
+         accounts: account
 
          // const MyContract = web3.eth.contract([{"constant":false,"inputs":[],"name":"generateNumberWinner","outputs":[],"payable":true,"type":"function"},{"constant":false,"inputs":[{"name":"myid","type":"bytes32"},{"name":"result","type":"string"}],"name":"__callback","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"numberOfBets","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_queryId","type":"bytes32"},{"name":"_result","type":"string"},{"name":"_proof","type":"bytes"}],"name":"__callback","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"player","type":"address"}],"name":"checkPlayerExists","outputs":[{"name":"","type":"bool"}],"payable":false,"type":"function"},{"constant":false,"inputs":[],"name":"kill","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[],"name":"resetData","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"bets","type":"uint256"}],"name":"updateMaxBets","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"number","type":"uint256"}],"name":"bet","outputs":[],"payable":true,"type":"function"},{"constant":false,"inputs":[{"name":"amountWei","type":"uint256"}],"name":"updateMinimumBet","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[],"name":"distributePrizes","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"numberWinner","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"minimumBet","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"maxAmountOfBets","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"players","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"totalBet","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"inputs":[{"name":"_maxAmountOfBets","type":"uint256"}],"payable":false,"type":"constructor"},{"payable":true,"type":"fallback"}])
-         // this.state.ContractInstance = MyContract.at("0x430d959fa54714aca8eecd61fae2661fca900e04")
+         // myContract = MyContract.at("0x430d959fa54714aca8eecd61fae2661fca900e04")
 
       };window.a = _this.state;
       return _this;
@@ -32234,10 +32245,10 @@ var App = function (_React$Component) {
             // alert("Hello");
             console.log(window.aionweb3);
             injectWeb3();
+            this.updateState();
          }, 2000);
-         this.updateState();
-         this.setupListeners();
 
+         this.setupListeners();
          setInterval(this.updateState.bind(this), 7e3);
       }
    }, {
@@ -32245,28 +32256,28 @@ var App = function (_React$Component) {
       value: function updateState() {
          var _this2 = this;
 
-         this.state.ContractInstance.minimumBet(function (err, result) {
+         myContract.minimumBet(function (err, result) {
             if (result != null) {
                _this2.setState({
                   minimumBet: parseFloat(web3.fromWei(result, 'ether'))
                });
             }
          });
-         this.state.ContractInstance.totalBet(function (err, result) {
+         myContract.totalBet(function (err, result) {
             if (result != null) {
                _this2.setState({
                   totalBet: parseFloat(web3.fromWei(result, 'ether'))
                });
             }
          });
-         this.state.ContractInstance.numberOfBets(function (err, result) {
+         myContract.numberOfBets(function (err, result) {
             if (result != null) {
                _this2.setState({
                   numberOfBets: parseInt(result)
                });
             }
          });
-         this.state.ContractInstance.maxAmountOfBets(function (err, result) {
+         myContract.maxAmountOfBets(function (err, result) {
             if (result != null) {
                _this2.setState({
                   maxAmountOfBets: parseInt(result)
@@ -32307,7 +32318,7 @@ var App = function (_React$Component) {
             alert('You must bet more than the minimum');
             cb();
          } else {
-            this.state.ContractInstance.bet(number, {
+            myContract.bet(number, {
                gas: 300000,
                from: web3.eth.accounts[0],
                value: web3.toWei(bet, 'ether')
@@ -32493,6 +32504,20 @@ var App = function (_React$Component) {
                   'i',
                   null,
                   'You can only vote once per account'
+               )
+            ),
+            _react2.default.createElement(
+               'div',
+               null,
+               _react2.default.createElement(
+                  'i',
+                  null,
+                  'Your account is ',
+                  _react2.default.createElement(
+                     'strong',
+                     null,
+                     account
+                  )
                )
             ),
             _react2.default.createElement(
@@ -76749,6 +76774,12 @@ module.exports = function (css) {
 	return fixedCss;
 };
 
+
+/***/ }),
+/* 443 */
+/***/ (function(module, exports) {
+
+module.exports = {"code":"0x605060405260646005600050909055341561001a5760006000fd5b604051601080610872833981016040528080519060100190919050505b336000600050828290918060010183905555505050600081141515610063578060026000508190909055505b5b5061006a565b6107f9806100796000396000f300605060405236156100ac576000356c01000000000000000000000000900463ffffffff1680630a50e361146100b05780632ca8c6d3146100c65780634081d916146100f057806341c0e1b5146101345780634b1146911461014a5780638da5cb5b14610191578063953818c0146101c2578063b3c1c5b0146101e6578063c38a8afd14610225578063d16170dd1461024f578063e08a96cd14610267578063fe5e185314610291576100ac565b5b5b005b34156100bc5760006000fd5b6100c46102bb565b005b34156100d25760006000fd5b6100da6102e2565b6040518082815260100191505060405180910390f35b34156100fc5760006000fd5b61011a600480808060100135903590916020019091929050506102eb565b604051808215151515815260100191505060405180910390f35b34156101405760006000fd5b610148610366565b005b34156101565760006000fd5b61017460048080806010013590359091602001909192905050610390565b604051808381526010018281526010019250505060405180910390f35b341561019d5760006000fd5b6101a56103c4565b604051808383825281601001526020019250505060405180910390f35b34156101ce5760006000fd5b6101e460048080359060100190919050506103d3565b005b34156101f25760006000fd5b610208600480803590601001909190505061059b565b604051808383825281601001526020019250505060405180910390f35b34156102315760006000fd5b6102396105ce565b6040518082815260100191505060405180910390f35b61026560048080359060100190919050506105d7565b005b34156102735760006000fd5b61027b6106f0565b6040518082815260100191505060405180910390f35b341561029d5760006000fd5b6102a56106f9565b6040518082815260100191505060405180910390f35b60006001600a438115156102cb57fe5b060190506102de816103d363ffffffff16565b5b50565b60046000505481565b60006000600090505b60066000508054905081101561035657838360066000508381548110151561031857fe5b9060005260106000209050906002020160005b50806001015490549091149190141615610348576001915061035f565b5b80806001019150506102f4565b6000915061035f565b5092915050565b60006000508060010154905433909114919014161561038d57600060005080600101549054ff5b5b565b6007600050602052818160005260105260306000209050600091509150508060000160005054908060010160005054905082565b60006000508060010154905482565b6103db610702565b60006000600060006000600060009550600094505b6006600050805490508510156104d85760066000508581548110151561041257fe5b9060005260106000209050906002020160005b50806001015490549350935087600760005060008686825281601001526020019081526010016000209050600050600101600050541415610492578383888860648110151561047057fe5b9090602002019190909182828252816010015260200150505085806001019650505b60076000506000858582528160100152602001908152601001600020905060006000820160005060009055600182016000506000905550505b84806001019550506103f0565b60006006600050816104ea9190610732565b50865060646003600050548115156104fe57fe5b049150600090505b858110156105905760006000888360648110151561052057fe5b9090602002018060100151905190911491901416151561058257868160648110151561054857fe5b909060200201806010015190516108fc84908115029060405160006040518083038185898989f194505050505015156105815760006000fd5b5b5b8080600101915050610506565b5b5050505050505050565b6006600050818154811015156105ad57fe5b9060005260106000209050906002020160005b915090508060010154905482565b60026000505481565b6105e6336102eb63ffffffff16565b1515156105f35760006000fd5b600181101580156106055750600a8111155b15156106115760006000fd5b60026000505434101515156106265760006000fd5b34600760005060003382528160100152602001908152601001600020905060005060000160005081909090555080600760005060003382528160100152602001908152601001600020905060005060010160005081909090555060046000818150548092919060010191905090905550600660005080548060010182816106ad9190610766565b91909060005260106000209050906002020160005b3390919290919250919090918060010183905555505034600360008282825054019250508190909055505b50565b60056000505481565b60036000505481565b610c80604051908101604052806064905b6000600082528160100152602001906001900390816107135790505090565b815481835581811511610761576002028160020283600052601060002090509182019101610760919061079a565b5b505050565b815481835581811511610795576002028160020283600052601060002090509182019101610794919061079a565b5b505050565b6107ca91906107a4565b808211156107c6576000818150806000905560010160009055506002016107a4565b5090565b905600a165627a7a72305820c9a86af5337a9176c59fc00145d4f79e8056727b2a81ba283b908fa2016d0bb70029","info":{"abiDefinition":[{"outputs":[],"constant":false,"payable":false,"inputs":[],"name":"generateNumberWinner","type":"function"},{"outputs":[{"name":"","type":"uint128"}],"constant":true,"payable":false,"inputs":[],"name":"numberOfBets","type":"function"},{"outputs":[{"name":"","type":"bool"}],"constant":true,"payable":false,"inputs":[{"name":"player","type":"address"}],"name":"checkPlayerExists","type":"function"},{"outputs":[],"constant":false,"payable":false,"inputs":[],"name":"kill","type":"function"},{"outputs":[{"name":"amountBet","type":"uint128"},{"name":"numberSelected","type":"uint128"}],"constant":true,"payable":false,"inputs":[{"name":"","type":"address"}],"name":"playerInfo","type":"function"},{"outputs":[{"name":"","type":"address"}],"constant":true,"payable":false,"inputs":[],"name":"owner","type":"function"},{"outputs":[],"constant":false,"payable":false,"inputs":[{"name":"numberWinner","type":"uint128"}],"name":"distributePrizes","type":"function"},{"outputs":[{"name":"","type":"address"}],"constant":true,"payable":false,"inputs":[{"name":"","type":"uint128"}],"name":"players","type":"function"},{"outputs":[{"name":"","type":"uint128"}],"constant":true,"payable":false,"inputs":[],"name":"minimumBet","type":"function"},{"outputs":[],"constant":false,"payable":true,"inputs":[{"name":"numberSelected","type":"uint128"}],"name":"bet","type":"function"},{"outputs":[{"name":"","type":"uint128"}],"constant":true,"payable":false,"inputs":[],"name":"maxAmountOfBets","type":"function"},{"outputs":[{"name":"","type":"uint128"}],"constant":true,"payable":false,"inputs":[],"name":"totalBet","type":"function"},{"outputs":[],"payable":false,"inputs":[{"name":"_minimumBet","type":"uint128"}],"name":"","type":"constructor"},{"outputs":[],"payable":true,"inputs":[],"name":"","type":"fallback"}],"languageVersion":"0","language":"Solidity","compilerVersion":"0.4.15+commit.ecf81ee5.Linux.g++","source":"pragma solidity 0.4.15;\ncontract Casino {\n   address public owner;\n   uint public minimumBet;\n   uint public totalBet;\n   uint public numberOfBets;\n   uint public maxAmountOfBets = 100;\n   address[] public players;\n   struct Player {\n      uint amountBet;\n      uint numberSelected;\n   }\n   // The address of the player and => the user info\n   mapping(address => Player) public playerInfo;\n   function() public payable {}\n   function Casino(uint _minimumBet) public {\n      owner = msg.sender;\n      if(_minimumBet != 0 ) minimumBet = _minimumBet;\n   }\n   function kill() public {\n      if(msg.sender == owner) selfdestruct(owner);\n   }\n   function checkPlayerExists(address player) public constant returns(bool){\n      for(uint i = 0; i < players.length; i++){\n         if(players[i] == player) return true;\n      }\n      return false;\n   }\n   // To bet for a number between 1 and 10 both inclusive\n   function bet(uint numberSelected) public payable {\n      require(!checkPlayerExists(msg.sender));\n      require(numberSelected >= 1 && numberSelected <= 10);\n      require(msg.value >= minimumBet);\n      playerInfo[msg.sender].amountBet = msg.value;\n      playerInfo[msg.sender].numberSelected = numberSelected;\n      numberOfBets++;\n      players.push(msg.sender);\n      totalBet += msg.value;\n   }\n   // Generates a number between 1 and 10 that will be the winner\n   function generateNumberWinner() public {\n      uint numberGenerated = block.number % 10 + 1; // This isn't secure\n      distributePrizes(numberGenerated);\n   }\n   // Sends the corresponding ether to each winner depending on the total bets\n   function distributePrizes(uint numberWinner) public {\n      address[100] memory winners; // We have to create a temporary in memory array with fixed size\n      uint count = 0; // This is the count for the array of winners\n      for(uint i = 0; i < players.length; i++){\n         address playerAddress = players[i];\n         if(playerInfo[playerAddress].numberSelected == numberWinner){\n            winners[count] = playerAddress;\n            count++;\n         }\n         delete playerInfo[playerAddress]; // Delete all the players\n      }\n      players.length = 0; // Delete all the players array\n      uint winnerEtherAmount = totalBet / winners.length; // How much each winner gets\n      for(uint j = 0; j < count; j++){\n         if(winners[j] != address(0)) // Check that the address in this fixed array is not empty\n         winners[j].transfer(winnerEtherAmount);\n      }\n   }\n}"}}
 
 /***/ })
 /******/ ]);
