@@ -18,14 +18,15 @@ function injectWeb3() {
    // console.log("wtf", new Web3(window.aionweb3.currentProvider));
    // console.log(web3);
 
- } else {
-   // If no injected web3 instance is detected, fall back to Nodesmith Mastery Testnet
-   // fallback is fine for development environments, but insecure ant not suitable for production
-   // INJECT NODESMITH
-   console.log("No web3 detected. Falling back to Nodesmith Mastery Testnet. Consider switching to AIWA for development.");
-   web3 = new Web3(new Web3.providers.HttpProvider("https://api.nodesmith.io/v1/aion/testnet/jsonrpc?apiKey=b07fca69798743afbfc1e88e56e9af9d"));
-   console.log(window.aionweb3);
  }
+ // else {
+ //   // If no injected web3 instance is detected, fall back to Nodesmith Mastery Testnet
+ //   // fallback is fine for development environments, but insecure ant not suitable for production
+ //   // INJECT NODESMITH
+ //   console.log("No web3 detected. Falling back to Nodesmith Mastery Testnet. Consider switching to AIWA for development.");
+ //   web3 = new Web3(new Web3.providers.HttpProvider("https://api.nodesmith.io/v1/aion/testnet/jsonrpc?apiKey=b07fca69798743afbfc1e88e56e9af9d"));
+ //   console.log(window.aionweb3);
+ // }
 }
 
 class App extends React.Component {
