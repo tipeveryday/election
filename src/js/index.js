@@ -105,26 +105,26 @@ class App extends React.Component {
    render(){
       return (
          <div className="main-container">
-            <h1>Bet for your best number and win huge amounts of Ether</h1>
+            <h1>Pick the winning number and win AION coins 🚀</h1>
 
             <div className="block">
-               <b>Number of bets:</b> &nbsp;
+               <b>Number of bets so far:</b> &nbsp;
                <span>{this.state.numberOfBets}</span>
             </div>
 
             <div className="block">
-               <b>Last number winner:</b> &nbsp;
+               <b>Last winning number:</b> &nbsp;
                <span>{this.state.lastWinner}</span>
             </div>
 
             <div className="block">
-               <b>Total ether bet:</b> &nbsp;
-               <span>{this.state.totalBet} ether</span>
+               <b>Total AION bet:</b> &nbsp;
+               <span>{this.state.totalBet} AION</span>
             </div>
 
             <div className="block">
                <b>Minimum bet:</b> &nbsp;
-               <span>{this.state.minimumBet} ether</span>
+               <span>{this.state.minimumBet} AION</span>
             </div>
 
             <div className="block">
@@ -134,10 +134,10 @@ class App extends React.Component {
 
             <hr/>
 
-            <h2>Vote for the next number</h2>
+            <h2>Vote for the next number, at 10 bets a payout event will occur</h2>
 
             <label>
-               <b>How much Ether do you want to bet? <input className="bet-input" ref="ether-bet" type="number" placeholder={this.state.minimumBet}/></b> ether
+               <b>How much AION do you want to bet? <input className="bet-input" ref="ether-bet" type="number" placeholder={this.state.minimumBet}/></b> ether
                <br/>
             </label>
 
