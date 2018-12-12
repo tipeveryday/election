@@ -4,7 +4,7 @@ contract Casino {
    uint public minimumBet;
    uint public totalBet;
    uint public numberOfBets;
-   uint public maxAmountOfBets = 100;
+   uint public maxAmountOfBets = 10;
    address[] public players;
    struct Player {
       uint amountBet;
