@@ -112,7 +112,7 @@ class App extends React.Component {
    render(){
       return (
          <div className="main-container">
-            <h1>Pick the winning number and win AION coins 🚀</h1>
+            <h1>Pick the luckiest member of Aion Foundation and win AION coins 🚀</h1>
 
             <div className="block">
                <b>Number of bets so far:</b> &nbsp;
@@ -141,7 +141,7 @@ class App extends React.Component {
 
             <hr/>
 
-            <h2>Vote for the next number, at 10 bets a payout event will occur</h2>
+            <h2>Vote for the next randomly selected teammate, at 10 bets a payout event will occur. If you selected right you will receive the pot.</h2>
 
             <label>
                <b>How much AION do you want to bet? <input className="bet-input" ref="ether-bet" type="number" placeholder={this.state.minimumBet}/></b> AION
@@ -149,24 +149,24 @@ class App extends React.Component {
             </label>
 
             <ul ref="numbers">
-               <li>1</li>
-               <li>2</li>
-               <li>3</li>
-               <li>4</li>
-               <li>5</li>
-               <li>6</li>
-               <li>7</li>
-               <li>8</li>
-               <li>9</li>
-               <li>10</li>
+               <li><img width="130px" height="130px" src="https://aion.network/media/Jeff-e1526052554495-300x288.jpg"/></li>
+               <li><img width="130px" height="130px" src="https://aion.network/media/Edit-9900-e1538349709269-275x300.jpg"/></li>
+               <li><img width="130px" height="130px" src="https://aion.network/media/Matt-e1525972764837-286x300.jpg"/></li>
+               <li><img width="130px" height="130px" src="https://aion.network/media/Yulong-e1525972245734-300x300.jpg"/></li>
+               <li><img width="130px" height="130px" src="https://aion.network/media/aion-team-rohan.jpg"/></li>
+               <li><img width="130px" height="130px" src="https://aion.network/media/Kelvin-Lam-300x253.jpg"/></li>
+               <li><img width="130px" height="130px" src="https://aion.network/media/Kim-hires-2_edit-e1526002633127-289x300.jpg"/></li>
+               <li><img width="130px" height="130px" src="https://aion.network/media/Nick-e1528488297820-293x300.jpg"/></li>
+               <li><img width="130px" height="130px" src="https://aion.network/media/JenniZhang_Edit-9865-e1538349973408-265x300.jpg"/></li>
+               <li><img width="130px" height="130px" src="https://aion.network/media/Mike-Mason-e1530296023825-292x300.jpg"/></li>
             </ul>
 
             <hr/>
 
             <div><i>Only working with the Mastery Test Network 📡</i></div>
             <div><i>You can only vote once per account</i></div>
-            <div><i>Your account is {web3.eth.defaultAccount}</i></div>
-            <div><i>Your vote will be reflected when the next block is mined</i></div>
+            <div><i>Your account is <strong>{web3.eth.defaultAccount}</strong></i></div>
+            <div><i>Your vote will be reflected when the next block is mined.</i></div>
          </div>
       )
    }

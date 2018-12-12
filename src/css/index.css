@@ -4,18 +4,19 @@ body{
 }
 ul{
     list-style-type: none;
-    padding-left: 0;
+    padding-left: 40;
     display: flex;
     justify-content: space-around;
     max-width: 1300px;
 }
 li{
-    padding: 40px;
     border: 2px solid rgb(66,33,204);
     margin-right: 5px;
     border-radius: 10px;
     cursor: pointer;
+
 }
+
 li:hover{
     background-color: rgb(66,33,204);
     color: white;
@@ -43,6 +44,10 @@ li:active{
    border: 1px solid lightgrey;
    font-size: 15pt;
    margin: 0 10px;
+}
+img{
+    border-radius: 8px;
+
 }
 
 @media (max-width: 1100px){
