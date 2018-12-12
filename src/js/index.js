@@ -15,10 +15,10 @@ class App extends React.Component {
       }
 
       if(typeof web3 != 'undefined'){
-         console.log("Using web3 detected from external source like Metamask")
+         console.log("Using web3 detected from external source like AIWA")
          this.web3 = new Web3(web3.currentProvider)
       }else{
-         console.log("No web3 detected. Falling back to http://localhost:8545. You should remove this fallback when you deploy live, as it's inherently insecure. Consider switching to Metamask for development. More info here: http://truffleframework.com/tutorials/truffle-and-metamask");
+         console.log("No web3 detected. Falling back to http://localhost:8545. You should remove this fallback when you deploy live, as it's inherently insecure. Consider switching to AIWA for development. ");
          this.web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"))
       }
 
@@ -137,7 +137,7 @@ class App extends React.Component {
             <h2>Vote for the next number, at 10 bets a payout event will occur</h2>
 
             <label>
-               <b>How much AION do you want to bet? <input className="bet-input" ref="ether-bet" type="number" placeholder={this.state.minimumBet}/></b> ether
+               <b>How much AION do you want to bet? <input className="bet-input" ref="ether-bet" type="number" placeholder={this.state.minimumBet}/></b> AION
                <br/>
             </label>
 
@@ -156,8 +156,9 @@ class App extends React.Component {
 
             <hr/>
 
-            <div><i>Only working with the Ropsten Test Network</i></div>
+            <div><i>Only working with the Mastery Test Network 📡</i></div>
             <div><i>You can only vote once per account</i></div>
+            <div><i>Your account is {web3.eth.defaultAccount}</i></div>
             <div><i>Your vote will be reflected when the next block is mined</i></div>
          </div>
       )

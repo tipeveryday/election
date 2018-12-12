@@ -25490,7 +25490,7 @@ var App = function (_React$Component) {
             _react2.default.createElement(
                'h1',
                null,
-               'Pick the winning number and win AION coins \uD83D\uDE80'
+               'Pick the winning number and win Kimberly coins \uD83D\uDE80'
             ),
             _react2.default.createElement(
                'div',
@@ -47744,7 +47744,7 @@ exports = module.exports = __webpack_require__(320)(false);
 
 
 // module
-exports.push([module.i, "body{\r\n    font-family: 'open sans';\r\n    margin: 0;\r\n}\r\nul{\r\n    list-style-type: none;\r\n    padding-left: 0;\r\n    display: flex;\r\n    justify-content: space-around;\r\n    max-width: 1300px;\r\n}\r\nli{\r\n    padding: 40px;\r\n    border: 2px solid rgb(66,33,204);\r\n    margin-right: 5px;\r\n    border-radius: 10px;\r\n    cursor: pointer;\r\n}\r\nli:hover{\r\n    background-color: rgb(66,33,204);\r\n    color: white;\r\n}\r\nli:active{\r\n    opacity: 0.7;\r\n}\r\n*{\r\n   color: #444444;\r\n}\r\n.main-container{\r\n   padding: 20px;\r\n}\r\n.block{\r\n   display: flex;\r\n   align-items: center;\r\n}\r\n.number-selected{\r\n   background-color: rgb(66,33,204);\r\n   color: white;\r\n}\r\n.bet-input{\r\n   padding: 15px;\r\n   border-radius: 10px;\r\n   border: 1px solid lightgrey;\r\n   font-size: 15pt;\r\n   margin: 0 10px;\r\n}\r\n\r\n@media (max-width: 1100px){\r\n   ul{\r\n      flex-direction: column;\r\n   }\r\n   li{\r\n      margin: 5px 0;\r\n   }\r\n}\r\n", ""]);
+exports.push([module.i, "body{\n    font-family: 'open sans';\n    margin: 0;\n}\nul{\n    list-style-type: none;\n    padding-left: 0;\n    display: flex;\n    justify-content: space-around;\n    max-width: 1300px;\n}\nli{\n    padding: 40px;\n    border: 2px solid rgb(66,33,204);\n    margin-right: 5px;\n    border-radius: 10px;\n    cursor: pointer;\n}\nli:hover{\n    background-color: rgb(66,33,204);\n    color: white;\n}\nli:active{\n    opacity: 0.7;\n}\n*{\n   color: #444444;\n}\n.main-container{\n   padding: 20px;\n}\n.block{\n   display: flex;\n   align-items: center;\n}\n.number-selected{\n   background-color: rgb(66,33,204);\n   color: white;\n}\n.bet-input{\n   padding: 15px;\n   border-radius: 10px;\n   border: 1px solid lightgrey;\n   font-size: 15pt;\n   margin: 0 10px;\n}\n\n@media (max-width: 1100px){\n   ul{\n      flex-direction: column;\n   }\n   li{\n      margin: 5px 0;\n   }\n}\n", ""]);
 
 // exports
 
