@@ -32189,351 +32189,356 @@ var web3 = void 0;
 var myContract = void 0;
 var account = "hello";
 function injectWeb3() {
-   // Is there an injected web3 instance?
-   if (window.aionweb3) {
-      // AIWA Chrome extension will inject automatically
-      console.log("Using web3 detected from external source like AIWA");
-      console.log("✓ AIWA injected successfully");
-      console.log("update plkk");
-      // this.web3 = new Web3(web3.currentProvider);
-      web3 = new _aionWeb2.default(window.aionweb3.currentProvider);
-      // web3 = new Web3(new Web3.providers.HttpProvider("https://api.nodesmith.io/v1/aion/testnet/jsonrpc?apiKey=b07fca69798743afbfc1e88e56e9af9d"));
+    // Is there an injected web3 instance?
+    if (window.aionweb3) {
+        // AIWA Chrome extension will inject automatically
+        console.log("Using web3 detected from external source like AIWA");
+        console.log("✓ AIWA injected successfully");
+        console.log("update plkk");
+        // this.web3 = new Web3(web3.currentProvider);
+        web3 = new _aionWeb2.default(window.aionweb3.currentProvider);
+        // web3 = new Web3(new Web3.providers.HttpProvider("https://api.nodesmith.io/v1/aion/testnet/jsonrpc?apiKey=b07fca69798743afbfc1e88e56e9af9d"));
 
-      // console.log("wtf", new Web3(window.aionweb3.currentProvider));
-      // console.log(web3);
-      myContract = new web3.eth.Contract(_Casino2.default.info.abiDefinition, "0xa01ebcef760Bc93c9EF066632e2083548357F936B6E42879380a4433F1e45d2c");
-      console.log(myContract);
-      account = window.aionweb3.eth.accounts;
-   }
-   // else {
-   //   // If no injected web3 instance is detected, fall back to Nodesmith Mastery Testnet
-   //   // fallback is fine for development environments, but insecure ant not suitable for production
-   //   // INJECT NODESMITH
-   //   console.log("No web3 detected. Falling back to Nodesmith Mastery Testnet. Consider switching to AIWA for development.");
-   //   web3 = new Web3(new Web3.providers.HttpProvider("https://api.nodesmith.io/v1/aion/testnet/jsonrpc?apiKey=b07fca69798743afbfc1e88e56e9af9d"));
-   //   console.log(window.aionweb3);
-   // }
+        // console.log("wtf", new Web3(window.aionweb3.currentProvider));
+        // console.log(web3);
+        myContract = new web3.eth.Contract(_Casino2.default.info.abiDefinition, "0xa01ebcef760Bc93c9EF066632e2083548357F936B6E42879380a4433F1e45d2c");
+        console.log(myContract);
+        account = window.aionweb3.eth.accounts;
+    }
+    // else {
+    //   // If no injected web3 instance is detected, fall back to Nodesmith Mastery Testnet
+    //   // fallback is fine for development environments, but insecure ant not suitable for production
+    //   // INJECT NODESMITH
+    //   console.log("No web3 detected. Falling back to Nodesmith Mastery Testnet. Consider switching to AIWA for development.");
+    //   web3 = new Web3(new Web3.providers.HttpProvider("https://api.nodesmith.io/v1/aion/testnet/jsonrpc?apiKey=b07fca69798743afbfc1e88e56e9af9d"));
+    //   console.log(window.aionweb3);
+    // }
 }
 
 var App = function (_React$Component) {
-   _inherits(App, _React$Component);
+    _inherits(App, _React$Component);
 
-   function App(props) {
-      _classCallCheck(this, App);
+    function App(props) {
+        _classCallCheck(this, App);
 
-      var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
+        var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
 
-      _this.state = {
-         lastWinner: 0,
-         numberOfBets: 0,
-         minimumBet: 0,
-         totalBet: 0,
-         maxAmountOfBets: 0,
-         accounts: account
+        _this.state = {
+            lastWinner: 0,
+            numberOfBets: 0,
+            minimumBet: 0,
+            totalBet: 0,
+            maxAmountOfBets: 0,
+            accounts: account
+        };
+        window.a = _this.state;
+        _this.updateState = _this.updateState.bind(_this);
+        return _this;
+    }
 
-         // const MyContract = web3.eth.contract([{"constant":false,"inputs":[],"name":"generateNumberWinner","outputs":[],"payable":true,"type":"function"},{"constant":false,"inputs":[{"name":"myid","type":"bytes32"},{"name":"result","type":"string"}],"name":"__callback","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"numberOfBets","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_queryId","type":"bytes32"},{"name":"_result","type":"string"},{"name":"_proof","type":"bytes"}],"name":"__callback","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"player","type":"address"}],"name":"checkPlayerExists","outputs":[{"name":"","type":"bool"}],"payable":false,"type":"function"},{"constant":false,"inputs":[],"name":"kill","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[],"name":"resetData","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"bets","type":"uint256"}],"name":"updateMaxBets","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"number","type":"uint256"}],"name":"bet","outputs":[],"payable":true,"type":"function"},{"constant":false,"inputs":[{"name":"amountWei","type":"uint256"}],"name":"updateMinimumBet","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[],"name":"distributePrizes","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"numberWinner","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"minimumBet","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"maxAmountOfBets","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"players","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"totalBet","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"inputs":[{"name":"_maxAmountOfBets","type":"uint256"}],"payable":false,"type":"constructor"},{"payable":true,"type":"fallback"}])
-         // myContract = MyContract.at("0x430d959fa54714aca8eecd61fae2661fca900e04")
+    _createClass(App, [{
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            setTimeout(function () {
+                // alert("Hello");
+                console.log(window.aionweb3);
+                injectWeb3();
+                this.updateState();
+            }.bind(this), 2000);
 
-      };window.a = _this.state;
-      return _this;
-   }
+            // this.setupListeners()
+            // setInterval(this.updateState.bind(this), 7e3)
+        }
+    }, {
+        key: 'updateState',
+        value: function updateState() {
+            console.log('updateState hit');
 
-   _createClass(App, [{
-      key: 'componentDidMount',
-      value: function componentDidMount() {
-         setTimeout(function () {
-            // alert("Hello");
-            console.log(window.aionweb3);
-            injectWeb3();
-            this.updateState();
-         }, 2000);
+            // update mininum bet value
+            // using the promise
+            myContract.methods.minimumBet().call({}).then(function (result) {
+                console.log('min bet', result);
+                this.setState({
+                    minimumBet: result
+                });
+            }.bind(this));
 
-         this.setupListeners();
-         setInterval(this.updateState.bind(this), 7e3);
-      }
-   }, {
-      key: 'updateState',
-      value: function updateState() {
-         var _this2 = this;
+            // update total amount in bets
+            // using the promise
+            myContract.methods.totalBet().call({}).then(function (result) {
+                console.log('total bet', result);
+                this.setState({
+                    totalBet: result
+                });
+            }.bind(this));
 
-         myContract.minimumBet(function (err, result) {
-            if (result != null) {
-               _this2.setState({
-                  minimumBet: parseFloat(web3.fromWei(result, 'ether'))
-               });
-            }
-         });
-         myContract.totalBet(function (err, result) {
-            if (result != null) {
-               _this2.setState({
-                  totalBet: parseFloat(web3.fromWei(result, 'ether'))
-               });
-            }
-         });
-         myContract.numberOfBets(function (err, result) {
-            if (result != null) {
-               _this2.setState({
-                  numberOfBets: parseInt(result)
-               });
-            }
-         });
-         myContract.maxAmountOfBets(function (err, result) {
-            if (result != null) {
-               _this2.setState({
-                  maxAmountOfBets: parseInt(result)
-               });
-            }
-         });
-      }
+            // update numberOfBets
+            // using the promise
+            myContract.methods.numberOfBets().call({}).then(function (result) {
+                console.log('number of bets', result);
+                this.setState({
+                    numberOfBets: result
+                });
+            }.bind(this));
 
-      // Listen for events and executes the voteNumber method
+            // update maximum amount of bets
+            // using the promise
+            myContract.methods.maxAmountOfBets().call({}).then(function (result) {
+                console.log('maxAmountOfBets', result);
+                this.setState({
+                    maxAmountOfBets: result
+                });
+            }.bind(this));
+        }
 
-   }, {
-      key: 'setupListeners',
-      value: function setupListeners() {
-         var _this3 = this;
+        // Listen for events and executes the voteNumber method
 
-         var liNodes = this.refs.numbers.querySelectorAll('li');
-         liNodes.forEach(function (number) {
-            number.addEventListener('click', function (event) {
-               event.target.className = 'number-selected';
-               _this3.voteNumber(parseInt(event.target.innerHTML), function (done) {
+    }, {
+        key: 'setupListeners',
+        value: function setupListeners() {
+            var _this2 = this;
 
-                  // Remove the other number selected
-                  for (var i = 0; i < liNodes.length; i++) {
-                     liNodes[i].className = '';
-                  }
-               });
+            var liNodes = this.refs.numbers.querySelectorAll('li');
+            liNodes.forEach(function (number) {
+                number.addEventListener('click', function (event) {
+                    event.target.className = 'number-selected';
+                    _this2.voteNumber(parseInt(event.target.innerHTML), function (done) {
+
+                        // Remove the other number selected
+                        for (var i = 0; i < liNodes.length; i++) {
+                            liNodes[i].className = '';
+                        }
+                    });
+                });
             });
-         });
-      }
-   }, {
-      key: 'voteNumber',
-      value: function voteNumber(number, cb) {
-         var bet = this.refs['ether-bet'].value;
+        }
+    }, {
+        key: 'voteNumber',
+        value: function voteNumber(number, cb) {
+            var bet = this.refs['ether-bet'].value;
 
-         if (!bet) bet = 0.1;
+            if (!bet) bet = 0.1;
 
-         if (parseFloat(bet) < this.state.minimumBet) {
-            alert('You must bet more than the minimum');
-            cb();
-         } else {
-            myContract.bet(number, {
-               gas: 300000,
-               from: web3.eth.accounts[0],
-               value: web3.toWei(bet, 'ether')
-            }, function (err, result) {
-               cb();
-            });
-         }
-      }
-   }, {
-      key: 'render',
-      value: function render() {
-         return _react2.default.createElement(
-            'div',
-            { className: 'main-container' },
-            _react2.default.createElement(
-               'h1',
-               null,
-               'Pick the luckiest member of Aion Foundation and win AION coins \uD83D\uDE80'
-            ),
-            _react2.default.createElement(
-               'div',
-               { className: 'block' },
-               _react2.default.createElement(
-                  'b',
-                  null,
-                  'Number of bets so far:'
-               ),
-               ' \xA0',
-               _react2.default.createElement(
-                  'span',
-                  null,
-                  this.state.numberOfBets
-               )
-            ),
-            _react2.default.createElement(
-               'div',
-               { className: 'block' },
-               _react2.default.createElement(
-                  'b',
-                  null,
-                  'Last winning number:'
-               ),
-               ' \xA0',
-               _react2.default.createElement(
-                  'span',
-                  null,
-                  this.state.lastWinner
-               )
-            ),
-            _react2.default.createElement(
-               'div',
-               { className: 'block' },
-               _react2.default.createElement(
-                  'b',
-                  null,
-                  'Total AION bet:'
-               ),
-               ' \xA0',
-               _react2.default.createElement(
-                  'span',
-                  null,
-                  this.state.totalBet,
-                  ' AION'
-               )
-            ),
-            _react2.default.createElement(
-               'div',
-               { className: 'block' },
-               _react2.default.createElement(
-                  'b',
-                  null,
-                  'Minimum bet:'
-               ),
-               ' \xA0',
-               _react2.default.createElement(
-                  'span',
-                  null,
-                  this.state.minimumBet,
-                  ' AION'
-               )
-            ),
-            _react2.default.createElement(
-               'div',
-               { className: 'block' },
-               _react2.default.createElement(
-                  'b',
-                  null,
-                  'Max amount of bets:'
-               ),
-               ' \xA0',
-               _react2.default.createElement(
-                  'span',
-                  null,
-                  this.state.maxAmountOfBets
-               )
-            ),
-            _react2.default.createElement('hr', null),
-            _react2.default.createElement(
-               'h2',
-               null,
-               'Vote for the next randomly selected teammate, at 10 bets a payout event will occur. If you selected right you will receive the pot.'
-            ),
-            _react2.default.createElement(
-               'label',
-               null,
-               _react2.default.createElement(
-                  'b',
-                  null,
-                  'How much AION do you want to bet? ',
-                  _react2.default.createElement('input', { className: 'bet-input', ref: 'ether-bet', type: 'number', placeholder: this.state.minimumBet })
-               ),
-               ' AION',
-               _react2.default.createElement('br', null)
-            ),
-            _react2.default.createElement(
-               'ul',
-               { ref: 'numbers' },
-               _react2.default.createElement(
-                  'li',
-                  null,
-                  _react2.default.createElement('img', { width: '130px', height: '130px', src: 'https://aion.network/media/Jeff-e1526052554495-300x288.jpg' })
-               ),
-               _react2.default.createElement(
-                  'li',
-                  null,
-                  _react2.default.createElement('img', { width: '130px', height: '130px', src: 'https://aion.network/media/Edit-9900-e1538349709269-275x300.jpg' })
-               ),
-               _react2.default.createElement(
-                  'li',
-                  null,
-                  _react2.default.createElement('img', { width: '130px', height: '130px', src: 'https://aion.network/media/Matt-e1525972764837-286x300.jpg' })
-               ),
-               _react2.default.createElement(
-                  'li',
-                  null,
-                  _react2.default.createElement('img', { width: '130px', height: '130px', src: 'https://aion.network/media/Yulong-e1525972245734-300x300.jpg' })
-               ),
-               _react2.default.createElement(
-                  'li',
-                  null,
-                  _react2.default.createElement('img', { width: '130px', height: '130px', src: 'https://aion.network/media/aion-team-rohan.jpg' })
-               ),
-               _react2.default.createElement(
-                  'li',
-                  null,
-                  _react2.default.createElement('img', { width: '130px', height: '130px', src: 'https://aion.network/media/Kelvin-Lam-300x253.jpg' })
-               ),
-               _react2.default.createElement(
-                  'li',
-                  null,
-                  _react2.default.createElement('img', { width: '130px', height: '130px', src: 'https://aion.network/media/Kim-hires-2_edit-e1526002633127-289x300.jpg' })
-               ),
-               _react2.default.createElement(
-                  'li',
-                  null,
-                  _react2.default.createElement('img', { width: '130px', height: '130px', src: 'https://aion.network/media/Nick-e1528488297820-293x300.jpg' })
-               ),
-               _react2.default.createElement(
-                  'li',
-                  null,
-                  _react2.default.createElement('img', { width: '130px', height: '130px', src: 'https://aion.network/media/JenniZhang_Edit-9865-e1538349973408-265x300.jpg' })
-               ),
-               _react2.default.createElement(
-                  'li',
-                  null,
-                  _react2.default.createElement('img', { width: '130px', height: '130px', src: 'https://aion.network/media/Mike-Mason-e1530296023825-292x300.jpg' })
-               )
-            ),
-            _react2.default.createElement('hr', null),
-            _react2.default.createElement(
-               'div',
-               null,
-               _react2.default.createElement(
-                  'i',
-                  null,
-                  'Only working with the Mastery Test Network \uD83D\uDCE1'
-               )
-            ),
-            _react2.default.createElement(
-               'div',
-               null,
-               _react2.default.createElement(
-                  'i',
-                  null,
-                  'You can only vote once per account'
-               )
-            ),
-            _react2.default.createElement(
-               'div',
-               null,
-               _react2.default.createElement(
-                  'i',
-                  null,
-                  'Your account is ',
-                  _react2.default.createElement(
-                     'strong',
-                     null,
-                     account
-                  )
-               )
-            ),
-            _react2.default.createElement(
-               'div',
-               null,
-               _react2.default.createElement(
-                  'i',
-                  null,
-                  'Your vote will be reflected when the next block is mined.'
-               )
-            )
-         );
-      }
-   }]);
+            if (parseFloat(bet) < this.state.minimumBet) {
+                alert('You must bet more than the minimum');
+                cb();
+            } else {
+                myContract.bet(number, {
+                    gas: 300000,
+                    from: web3.eth.accounts[0],
+                    value: web3.toWei(bet, 'ether')
+                }, function (err, result) {
+                    cb();
+                });
+            }
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            return _react2.default.createElement(
+                'div',
+                { className: 'main-container' },
+                _react2.default.createElement(
+                    'h1',
+                    null,
+                    'Pick the luckiest member of Aion Foundation and win AION coins \uD83D\uDE80'
+                ),
+                _react2.default.createElement(
+                    'div',
+                    { className: 'block' },
+                    _react2.default.createElement(
+                        'b',
+                        null,
+                        'Number of bets so far:'
+                    ),
+                    ' \xA0',
+                    _react2.default.createElement(
+                        'span',
+                        null,
+                        this.state.numberOfBets
+                    )
+                ),
+                _react2.default.createElement(
+                    'div',
+                    { className: 'block' },
+                    _react2.default.createElement(
+                        'b',
+                        null,
+                        'Last winning number:'
+                    ),
+                    ' \xA0',
+                    _react2.default.createElement(
+                        'span',
+                        null,
+                        this.state.lastWinner
+                    )
+                ),
+                _react2.default.createElement(
+                    'div',
+                    { className: 'block' },
+                    _react2.default.createElement(
+                        'b',
+                        null,
+                        'Total AION pool:'
+                    ),
+                    ' \xA0',
+                    _react2.default.createElement(
+                        'span',
+                        null,
+                        this.state.totalBet,
+                        ' AION'
+                    )
+                ),
+                _react2.default.createElement(
+                    'div',
+                    { className: 'block' },
+                    _react2.default.createElement(
+                        'b',
+                        null,
+                        'Minimum bet:'
+                    ),
+                    ' \xA0',
+                    _react2.default.createElement(
+                        'span',
+                        null,
+                        this.state.minimumBet,
+                        ' AION'
+                    )
+                ),
+                _react2.default.createElement(
+                    'div',
+                    { className: 'block' },
+                    _react2.default.createElement(
+                        'b',
+                        null,
+                        'Max amount of bets:'
+                    ),
+                    ' \xA0',
+                    _react2.default.createElement(
+                        'span',
+                        null,
+                        this.state.maxAmountOfBets
+                    )
+                ),
+                _react2.default.createElement('hr', null),
+                _react2.default.createElement(
+                    'h2',
+                    null,
+                    'Vote for the next randomly selected teammate, at 10 bets a payout event will occur. If you selected right you will receive the pot.'
+                ),
+                _react2.default.createElement(
+                    'label',
+                    null,
+                    _react2.default.createElement(
+                        'b',
+                        null,
+                        'How much AION do you want to bet? ',
+                        _react2.default.createElement('input', { className: 'bet-input', ref: 'ether-bet', type: 'number', placeholder: this.state.minimumBet })
+                    ),
+                    ' AION',
+                    _react2.default.createElement('br', null)
+                ),
+                _react2.default.createElement(
+                    'ul',
+                    { ref: 'numbers' },
+                    _react2.default.createElement(
+                        'li',
+                        null,
+                        _react2.default.createElement('img', { width: '130px', height: '130px', src: 'https://aion.network/media/Jeff-e1526052554495-300x288.jpg' })
+                    ),
+                    _react2.default.createElement(
+                        'li',
+                        null,
+                        _react2.default.createElement('img', { width: '130px', height: '130px', src: 'https://aion.network/media/Edit-9900-e1538349709269-275x300.jpg' })
+                    ),
+                    _react2.default.createElement(
+                        'li',
+                        null,
+                        _react2.default.createElement('img', { width: '130px', height: '130px', src: 'https://aion.network/media/Matt-e1525972764837-286x300.jpg' })
+                    ),
+                    _react2.default.createElement(
+                        'li',
+                        null,
+                        _react2.default.createElement('img', { width: '130px', height: '130px', src: 'https://aion.network/media/Yulong-e1525972245734-300x300.jpg' })
+                    ),
+                    _react2.default.createElement(
+                        'li',
+                        null,
+                        _react2.default.createElement('img', { width: '130px', height: '130px', src: 'https://aion.network/media/aion-team-rohan.jpg' })
+                    ),
+                    _react2.default.createElement(
+                        'li',
+                        null,
+                        _react2.default.createElement('img', { width: '130px', height: '130px', src: 'https://aion.network/media/Kelvin-Lam-300x253.jpg' })
+                    ),
+                    _react2.default.createElement(
+                        'li',
+                        null,
+                        _react2.default.createElement('img', { width: '130px', height: '130px', src: 'https://aion.network/media/Kim-hires-2_edit-e1526002633127-289x300.jpg' })
+                    ),
+                    _react2.default.createElement(
+                        'li',
+                        null,
+                        _react2.default.createElement('img', { width: '130px', height: '130px', src: 'https://aion.network/media/Nick-e1528488297820-293x300.jpg' })
+                    ),
+                    _react2.default.createElement(
+                        'li',
+                        null,
+                        _react2.default.createElement('img', { width: '130px', height: '130px', src: 'https://aion.network/media/JenniZhang_Edit-9865-e1538349973408-265x300.jpg' })
+                    ),
+                    _react2.default.createElement(
+                        'li',
+                        null,
+                        _react2.default.createElement('img', { width: '130px', height: '130px', src: 'https://aion.network/media/Mike-Mason-e1530296023825-292x300.jpg' })
+                    )
+                ),
+                _react2.default.createElement('hr', null),
+                _react2.default.createElement(
+                    'div',
+                    null,
+                    _react2.default.createElement(
+                        'i',
+                        null,
+                        'Only working with the Mastery Test Network \uD83D\uDCE1'
+                    )
+                ),
+                _react2.default.createElement(
+                    'div',
+                    null,
+                    _react2.default.createElement(
+                        'i',
+                        null,
+                        'You can only vote once per account'
+                    )
+                ),
+                _react2.default.createElement(
+                    'div',
+                    null,
+                    _react2.default.createElement(
+                        'i',
+                        null,
+                        'Your account is ',
+                        _react2.default.createElement(
+                            'strong',
+                            null,
+                            account
+                        )
+                    )
+                ),
+                _react2.default.createElement(
+                    'div',
+                    null,
+                    _react2.default.createElement(
+                        'i',
+                        null,
+                        'Your vote will be reflected when the next block is mined.'
+                    )
+                )
+            );
+        }
+    }]);
 
-   return App;
+    return App;
 }(_react2.default.Component);
 
 _reactDom2.default.render(_react2.default.createElement(App, null), document.querySelector('#root'));
@@ -45195,7 +45200,7 @@ module.exports = Web3;
 /* 289 */
 /***/ (function(module, exports) {
 
-module.exports = {"_args":[["aion-web3@1.1.4","/Users/john/Code/election-aion"]],"_from":"aion-web3@1.1.4","_id":"aion-web3@1.1.4","_inBundle":false,"_integrity":"sha512-BDpSmHay5QP+eZNf5U5RCfbIYkSrwi83VtBTiMmbqTfOdgCBnXgrQq5WOCpTE0LNaXaHT/mV2mw+o/dwBMV+Ew==","_location":"/aion-web3","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"aion-web3@1.1.4","name":"aion-web3","escapedName":"aion-web3","rawSpec":"1.1.4","saveSpec":null,"fetchSpec":"1.1.4"},"_requiredBy":["/"],"_resolved":"https://registry.npmjs.org/aion-web3/-/aion-web3-1.1.4.tgz","_spec":"1.1.4","_where":"/Users/john/Code/election-aion","author":{"url":"https://aion.network/"},"bugs":{"url":"https://github.com/aionnetwork/aion_web3/issues"},"contributors":[{"name":"Kelvin Lam","email":"kelvin@aion.network"},{"name":"Tony Crowe","email":"github@tonycrowe.com"},{"name":"Fabian Vogelsteller","email":"fabian@ethereum.org"},{"name":"Marek Kotewicz","email":"marek@parity.io","url":"https://github.com/debris"},{"name":"Marian Oancea","url":"https://github.com/cubedro"},{"name":"Gav Wood","email":"g@parity.io"},{"name":"Jeffery Wilcke","email":"jeffrey.wilcke@ethereum.org","url":"https://github.com/obscuren"}],"dependencies":{"aion-web3-core":"1.1.4","aion-web3-eth":"1.1.4","aion-web3-eth-personal":"1.1.4","aion-web3-net":"1.1.4","aion-web3-utils":"1.1.4"},"description":"Aion JavaScript API","gitHead":"7f88331374eee0d55ea455ac063ebb8272be965b","keywords":["Aion","JavaScript","API"],"license":"LGPL-3.0","main":"src/index.js","name":"aion-web3","namespace":"aion","repository":{"type":"git","url":"https://github.com/aionnetwork/aion_web3/tree/master/packages/web3"},"version":"1.1.4"}
+module.exports = {"_from":"aion-web3","_id":"aion-web3@1.1.4","_inBundle":false,"_integrity":"sha512-BDpSmHay5QP+eZNf5U5RCfbIYkSrwi83VtBTiMmbqTfOdgCBnXgrQq5WOCpTE0LNaXaHT/mV2mw+o/dwBMV+Ew==","_location":"/aion-web3","_phantomChildren":{},"_requested":{"type":"tag","registry":true,"raw":"aion-web3","name":"aion-web3","escapedName":"aion-web3","rawSpec":"","saveSpec":null,"fetchSpec":"latest"},"_requiredBy":["#USER","/"],"_resolved":"https://registry.npmjs.org/aion-web3/-/aion-web3-1.1.4.tgz","_shasum":"3772ef2ba4d309fb842b485bffb7a7776e649286","_spec":"aion-web3","_where":"C:\\Users\\AionUser\\Documents\\Aion\\dAppOff\\election","author":{"url":"https://aion.network/"},"bugs":{"url":"https://github.com/aionnetwork/aion_web3/issues"},"bundleDependencies":false,"contributors":[{"name":"Kelvin Lam","email":"kelvin@aion.network"},{"name":"Tony Crowe","email":"github@tonycrowe.com"},{"name":"Fabian Vogelsteller","email":"fabian@ethereum.org"},{"name":"Marek Kotewicz","email":"marek@parity.io","url":"https://github.com/debris"},{"name":"Marian Oancea","url":"https://github.com/cubedro"},{"name":"Gav Wood","email":"g@parity.io"},{"name":"Jeffery Wilcke","email":"jeffrey.wilcke@ethereum.org","url":"https://github.com/obscuren"}],"dependencies":{"aion-web3-core":"1.1.4","aion-web3-eth":"1.1.4","aion-web3-eth-personal":"1.1.4","aion-web3-net":"1.1.4","aion-web3-utils":"1.1.4"},"deprecated":false,"description":"Aion JavaScript API","gitHead":"7f88331374eee0d55ea455ac063ebb8272be965b","keywords":["Aion","JavaScript","API"],"license":"LGPL-3.0","main":"src/index.js","name":"aion-web3","namespace":"aion","repository":{"type":"git","url":"https://github.com/aionnetwork/aion_web3/tree/master/packages/web3"},"version":"1.1.4"}
 
 /***/ }),
 /* 290 */
@@ -57480,7 +57485,7 @@ module.exports.makeKey = makeKey
 /* 352 */
 /***/ (function(module, exports) {
 
-module.exports = {"_args":[["elliptic@6.4.1","/Users/john/Code/election-aion"]],"_from":"elliptic@6.4.1","_id":"elliptic@6.4.1","_inBundle":false,"_integrity":"sha512-BsXLz5sqX8OHcsh7CqBMztyXARmGQ3LWPtGjJi6DiJHq5C/qvi9P3OqgswKSDftbu8+IoI/QDTAm2fFnQ9SZSQ==","_location":"/elliptic","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"elliptic@6.4.1","name":"elliptic","escapedName":"elliptic","rawSpec":"6.4.1","saveSpec":null,"fetchSpec":"6.4.1"},"_requiredBy":["/browserify-sign","/create-ecdh"],"_resolved":"https://registry.npmjs.org/elliptic/-/elliptic-6.4.1.tgz","_spec":"6.4.1","_where":"/Users/john/Code/election-aion","author":{"name":"Fedor Indutny","email":"fedor@indutny.com"},"bugs":{"url":"https://github.com/indutny/elliptic/issues"},"dependencies":{"bn.js":"^4.4.0","brorand":"^1.0.1","hash.js":"^1.0.0","hmac-drbg":"^1.0.0","inherits":"^2.0.1","minimalistic-assert":"^1.0.0","minimalistic-crypto-utils":"^1.0.0"},"description":"EC cryptography","devDependencies":{"brfs":"^1.4.3","coveralls":"^2.11.3","grunt":"^0.4.5","grunt-browserify":"^5.0.0","grunt-cli":"^1.2.0","grunt-contrib-connect":"^1.0.0","grunt-contrib-copy":"^1.0.0","grunt-contrib-uglify":"^1.0.1","grunt-mocha-istanbul":"^3.0.1","grunt-saucelabs":"^8.6.2","istanbul":"^0.4.2","jscs":"^2.9.0","jshint":"^2.6.0","mocha":"^2.1.0"},"files":["lib"],"homepage":"https://github.com/indutny/elliptic","keywords":["EC","Elliptic","curve","Cryptography"],"license":"MIT","main":"lib/elliptic.js","name":"elliptic","repository":{"type":"git","url":"git+ssh://git@github.com/indutny/elliptic.git"},"scripts":{"jscs":"jscs benchmarks/*.js lib/*.js lib/**/*.js lib/**/**/*.js test/index.js","jshint":"jscs benchmarks/*.js lib/*.js lib/**/*.js lib/**/**/*.js test/index.js","lint":"npm run jscs && npm run jshint","test":"npm run lint && npm run unit","unit":"istanbul test _mocha --reporter=spec test/index.js","version":"grunt dist && git add dist/"},"version":"6.4.1"}
+module.exports = {"_from":"elliptic@^6.0.0","_id":"elliptic@6.4.1","_inBundle":false,"_integrity":"sha512-BsXLz5sqX8OHcsh7CqBMztyXARmGQ3LWPtGjJi6DiJHq5C/qvi9P3OqgswKSDftbu8+IoI/QDTAm2fFnQ9SZSQ==","_location":"/elliptic","_phantomChildren":{},"_requested":{"type":"range","registry":true,"raw":"elliptic@^6.0.0","name":"elliptic","escapedName":"elliptic","rawSpec":"^6.0.0","saveSpec":null,"fetchSpec":"^6.0.0"},"_requiredBy":["/browserify-sign","/create-ecdh"],"_resolved":"https://registry.npmjs.org/elliptic/-/elliptic-6.4.1.tgz","_shasum":"c2d0b7776911b86722c632c3c06c60f2f819939a","_spec":"elliptic@^6.0.0","_where":"C:\\Users\\AionUser\\Documents\\Aion\\dAppOff\\election\\node_modules\\browserify-sign","author":{"name":"Fedor Indutny","email":"fedor@indutny.com"},"bugs":{"url":"https://github.com/indutny/elliptic/issues"},"bundleDependencies":false,"dependencies":{"bn.js":"^4.4.0","brorand":"^1.0.1","hash.js":"^1.0.0","hmac-drbg":"^1.0.0","inherits":"^2.0.1","minimalistic-assert":"^1.0.0","minimalistic-crypto-utils":"^1.0.0"},"deprecated":false,"description":"EC cryptography","devDependencies":{"brfs":"^1.4.3","coveralls":"^2.11.3","grunt":"^0.4.5","grunt-browserify":"^5.0.0","grunt-cli":"^1.2.0","grunt-contrib-connect":"^1.0.0","grunt-contrib-copy":"^1.0.0","grunt-contrib-uglify":"^1.0.1","grunt-mocha-istanbul":"^3.0.1","grunt-saucelabs":"^8.6.2","istanbul":"^0.4.2","jscs":"^2.9.0","jshint":"^2.6.0","mocha":"^2.1.0"},"files":["lib"],"homepage":"https://github.com/indutny/elliptic","keywords":["EC","Elliptic","curve","Cryptography"],"license":"MIT","main":"lib/elliptic.js","name":"elliptic","repository":{"type":"git","url":"git+ssh://git@github.com/indutny/elliptic.git"},"scripts":{"jscs":"jscs benchmarks/*.js lib/*.js lib/**/*.js lib/**/**/*.js test/index.js","jshint":"jscs benchmarks/*.js lib/*.js lib/**/*.js lib/**/**/*.js test/index.js","lint":"npm run jscs && npm run jshint","test":"npm run lint && npm run unit","unit":"istanbul test _mocha --reporter=spec test/index.js","version":"grunt dist && git add dist/"},"version":"6.4.1"}
 
 /***/ }),
 /* 353 */
@@ -65605,7 +65610,7 @@ module.exports = __webpack_require__(402).version;
 /* 402 */
 /***/ (function(module, exports) {
 
-module.exports = {"_args":[["websocket@git://github.com/frozeman/WebSocket-Node.git#6c72925e3f8aaaea8dc8450f97627e85263999f2","/Users/john/Code/election-aion"]],"_from":"websocket@git://github.com/frozeman/WebSocket-Node.git#6c72925e3f8aaaea8dc8450f97627e85263999f2","_id":"websocket@git://github.com/frozeman/WebSocket-Node.git#6c72925e3f8aaaea8dc8450f97627e85263999f2","_inBundle":false,"_integrity":"","_location":"/websocket","_phantomChildren":{},"_requested":{"type":"git","raw":"websocket@git://github.com/frozeman/WebSocket-Node.git#6c72925e3f8aaaea8dc8450f97627e85263999f2","name":"websocket","escapedName":"websocket","rawSpec":"git://github.com/frozeman/WebSocket-Node.git#6c72925e3f8aaaea8dc8450f97627e85263999f2","saveSpec":"git://github.com/frozeman/WebSocket-Node.git#6c72925e3f8aaaea8dc8450f97627e85263999f2","fetchSpec":"git://github.com/frozeman/WebSocket-Node.git","gitCommittish":"6c72925e3f8aaaea8dc8450f97627e85263999f2"},"_requiredBy":["/aion-web3-providers-ws"],"_resolved":"git://github.com/frozeman/WebSocket-Node.git#6c72925e3f8aaaea8dc8450f97627e85263999f2","_spec":"git://github.com/frozeman/WebSocket-Node.git#6c72925e3f8aaaea8dc8450f97627e85263999f2","_where":"/Users/john/Code/election-aion","author":{"name":"Brian McKelvey","email":"brian@worlize.com","url":"https://www.worlize.com/"},"browser":"lib/browser.js","bugs":{"url":"https://github.com/theturtle32/WebSocket-Node/issues"},"config":{"verbose":false},"contributors":[{"name":"Iñaki Baz Castillo","email":"ibc@aliax.net","url":"http://dev.sipdoc.net"}],"dependencies":{"debug":"^2.2.0","nan":"^2.3.3","typedarray-to-buffer":"^3.1.2","yaeti":"^0.0.6"},"description":"Websocket Client & Server Library implementing the WebSocket protocol as specified in RFC 6455.","devDependencies":{"buffer-equal":"^1.0.0","faucet":"^0.0.1","gulp":"git+https://github.com/gulpjs/gulp.git#4.0","gulp-jshint":"^2.0.4","jshint":"^2.0.0","jshint-stylish":"^2.2.1","tape":"^4.0.1"},"directories":{"lib":"./lib"},"engines":{"node":">=0.10.0"},"homepage":"https://github.com/theturtle32/WebSocket-Node","keywords":["websocket","websockets","socket","networking","comet","push","RFC-6455","realtime","server","client"],"license":"Apache-2.0","main":"index","name":"websocket","repository":{"type":"git","url":"git+https://github.com/theturtle32/WebSocket-Node.git"},"scripts":{"gulp":"gulp","install":"(node-gyp rebuild 2> builderror.log) || (exit 0)","test":"faucet test/unit"},"version":"1.0.26"}
+module.exports = {"_from":"git://github.com/frozeman/WebSocket-Node.git#browserifyCompatible","_id":"websocket@1.0.26","_inBundle":false,"_location":"/websocket","_phantomChildren":{},"_requested":{"type":"git","raw":"websocket@git://github.com/frozeman/WebSocket-Node.git#browserifyCompatible","name":"websocket","escapedName":"websocket","rawSpec":"git://github.com/frozeman/WebSocket-Node.git#browserifyCompatible","saveSpec":"git://github.com/frozeman/WebSocket-Node.git#browserifyCompatible","fetchSpec":"git://github.com/frozeman/WebSocket-Node.git","gitCommittish":"browserifyCompatible"},"_requiredBy":["/aion-web3-providers-ws"],"_resolved":"git://github.com/frozeman/WebSocket-Node.git#6c72925e3f8aaaea8dc8450f97627e85263999f2","_spec":"websocket@git://github.com/frozeman/WebSocket-Node.git#browserifyCompatible","_where":"C:\\Users\\AionUser\\Documents\\Aion\\dAppOff\\election\\node_modules\\aion-web3-providers-ws","author":{"name":"Brian McKelvey","email":"brian@worlize.com","url":"https://www.worlize.com/"},"browser":"lib/browser.js","bugs":{"url":"https://github.com/theturtle32/WebSocket-Node/issues"},"bundleDependencies":false,"config":{"verbose":false},"contributors":[{"name":"Iñaki Baz Castillo","email":"ibc@aliax.net","url":"http://dev.sipdoc.net"}],"dependencies":{"debug":"^2.2.0","nan":"^2.3.3","typedarray-to-buffer":"^3.1.2","yaeti":"^0.0.6"},"deprecated":false,"description":"Websocket Client & Server Library implementing the WebSocket protocol as specified in RFC 6455.","devDependencies":{"buffer-equal":"^1.0.0","faucet":"^0.0.1","gulp":"git+https://github.com/gulpjs/gulp.git#4.0","gulp-jshint":"^2.0.4","jshint":"^2.0.0","jshint-stylish":"^2.2.1","tape":"^4.0.1"},"directories":{"lib":"./lib"},"engines":{"node":">=0.10.0"},"homepage":"https://github.com/theturtle32/WebSocket-Node","keywords":["websocket","websockets","socket","networking","comet","push","RFC-6455","realtime","server","client"],"license":"Apache-2.0","main":"index","name":"websocket","repository":{"type":"git","url":"git+https://github.com/theturtle32/WebSocket-Node.git"},"scripts":{"gulp":"gulp","install":"(node-gyp rebuild 2> builderror.log) || (exit 0)","test":"faucet test/unit"},"version":"1.0.26"}
 
 /***/ }),
 /* 403 */
@@ -76234,7 +76239,7 @@ exports = module.exports = __webpack_require__(440)(false);
 
 
 // module
-exports.push([module.i, "body{\n    font-family: 'open sans';\n    margin: 0;\n}\nul{\n    list-style-type: none;\n    padding-left: 40;\n    display: flex;\n    justify-content: space-around;\n    max-width: 1300px;\n}\nli{\n    border: 2px solid rgb(66,33,204);\n    margin-right: 5px;\n    border-radius: 10px;\n    cursor: pointer;\n\n}\n\nli:hover{\n    background-color: rgb(66,33,204);\n    color: white;\n}\nli:active{\n    opacity: 0.7;\n}\n*{\n   color: #444444;\n}\n.main-container{\n   padding: 20px;\n}\n.block{\n   display: flex;\n   align-items: center;\n}\n.number-selected{\n   background-color: rgb(66,33,204);\n   color: white;\n}\n.bet-input{\n   padding: 15px;\n   border-radius: 10px;\n   border: 1px solid lightgrey;\n   font-size: 15pt;\n   margin: 0 10px;\n}\nimg{\n    border-radius: 8px;\n\n}\n\n@media (max-width: 1100px){\n   ul{\n      flex-direction: column;\n   }\n   li{\n      margin: 5px 0;\n   }\n}\n", ""]);
+exports.push([module.i, "body{\r\n    font-family: 'open sans';\r\n    margin: 0;\r\n}\r\n\r\nul {\r\n    list-style-type: none;\r\n    padding-left: 40;\r\n    display: flex;\r\n    justify-content: space-around;\r\n    max-width: 1300px;\r\n}\r\n\r\nli {\r\n    border: 2px solid rgb(66,33,204);\r\n    margin-right: 5px;\r\n    border-radius: 10px;\r\n    cursor: pointer;\r\n\r\n}\r\n\r\nli:hover {\r\n    background-color: rgb(66,33,204);\r\n    color: white;\r\n}\r\n\r\nli:active {\r\n    opacity: 0.7;\r\n}\r\n\r\n* {\r\n   color: #444444;\r\n}\r\n\r\n.main-container{\r\n   padding: 20px;\r\n}\r\n\r\n.block {\r\n   display: flex;\r\n   align-items: center;\r\n}\r\n\r\n.number-selected {\r\n   background-color: rgb(66,33,204);\r\n   color: white;\r\n}\r\n\r\n.bet-input {\r\n   padding: 15px;\r\n   border-radius: 10px;\r\n   border: 1px solid lightgrey;\r\n   font-size: 15pt;\r\n   margin: 0 10px;\r\n}\r\n\r\nimg {\r\n    border-radius: 8px;\r\n}\r\n\r\n@media (max-width: 1100px){\r\n   ul{\r\n      flex-direction: column;\r\n   }\r\n   li{\r\n      margin: 5px 0;\r\n   }\r\n}\r\n", ""]);
 
 // exports
 

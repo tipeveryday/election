@@ -46,12 +46,8 @@ class App extends React.Component {
             maxAmountOfBets: 0,
             accounts: account
         }
-
-
-        // const MyContract = web3.eth.contract([{"constant":false,"inputs":[],"name":"generateNumberWinner","outputs":[],"payable":true,"type":"function"},{"constant":false,"inputs":[{"name":"myid","type":"bytes32"},{"name":"result","type":"string"}],"name":"__callback","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"numberOfBets","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_queryId","type":"bytes32"},{"name":"_result","type":"string"},{"name":"_proof","type":"bytes"}],"name":"__callback","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"player","type":"address"}],"name":"checkPlayerExists","outputs":[{"name":"","type":"bool"}],"payable":false,"type":"function"},{"constant":false,"inputs":[],"name":"kill","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[],"name":"resetData","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"bets","type":"uint256"}],"name":"updateMaxBets","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"number","type":"uint256"}],"name":"bet","outputs":[],"payable":true,"type":"function"},{"constant":false,"inputs":[{"name":"amountWei","type":"uint256"}],"name":"updateMinimumBet","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[],"name":"distributePrizes","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"numberWinner","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"minimumBet","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"maxAmountOfBets","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"players","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"totalBet","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"inputs":[{"name":"_maxAmountOfBets","type":"uint256"}],"payable":false,"type":"constructor"},{"payable":true,"type":"fallback"}])
-        // myContract = MyContract.at("0x430d959fa54714aca8eecd61fae2661fca900e04")
-
         window.a = this.state
+        this.updateState = this.updateState.bind(this)
     }
 
     componentDidMount() {
@@ -60,41 +56,54 @@ class App extends React.Component {
             console.log(window.aionweb3);
             injectWeb3();
             this.updateState()
-        }, 2000);
+        }.bind(this), 2000);
 
-        this.setupListeners()
-        setInterval(this.updateState.bind(this), 7e3)
+        // this.setupListeners()
+        // setInterval(this.updateState.bind(this), 7e3)
     }
 
     updateState() {
-        myContract.minimumBet((err, result) => {
-            if (result != null) {
-                this.setState({
-                    minimumBet: parseFloat(web3.fromWei(result, 'ether'))
-                })
-            }
-        })
-        myContract.totalBet((err, result) => {
-            if (result != null) {
-                this.setState({
-                    totalBet: parseFloat(web3.fromWei(result, 'ether'))
-                })
-            }
-        })
-        myContract.numberOfBets((err, result) => {
-            if (result != null) {
-                this.setState({
-                    numberOfBets: parseInt(result)
-                })
-            }
-        })
-        myContract.maxAmountOfBets((err, result) => {
-            if (result != null) {
-                this.setState({
-                    maxAmountOfBets: parseInt(result)
-                })
-            }
-        })
+      console.log('updateState hit');
+
+      // update mininum bet value
+      // using the promise
+      myContract.methods.minimumBet().call({})
+      .then(function(result){
+          console.log('min bet', result);
+          this.setState({
+            minimumBet: result
+          })
+      }.bind(this));
+
+      // update total amount in bets
+      // using the promise
+      myContract.methods.totalBet().call({})
+      .then(function(result){
+          console.log('total bet', result);
+          this.setState({
+            totalBet: result
+          })
+      }.bind(this));
+
+      // update numberOfBets
+      // using the promise
+      myContract.methods.numberOfBets().call({})
+      .then(function(result){
+          console.log('number of bets', result);
+          this.setState({
+            numberOfBets: result
+          })
+      }.bind(this));
+
+      // update maximum amount of bets
+      // using the promise
+      myContract.methods.maxAmountOfBets().call({})
+      .then(function(result){
+          console.log('maxAmountOfBets', result);
+          this.setState({
+            maxAmountOfBets: result
+          })
+      }.bind(this));
     }
 
     // Listen for events and executes the voteNumber method
@@ -149,7 +158,7 @@ class App extends React.Component {
                 </div>
 
                 <div className="block">
-                    <b>Total AION bet:</b> &nbsp;
+                    <b>Total AION pool:</b> &nbsp;
                <span>{this.state.totalBet} AION</span>
                 </div>
 
@@ -189,9 +198,7 @@ class App extends React.Component {
 
                 <div><i>Only working with the Mastery Test Network 📡</i></div>
                 <div><i>You can only vote once per account</i></div>
-                <div><i>Your account is <strong>
-                    {account}
-                </strong></i></div>
+                <div><i>Your account is <strong>{account}</strong></i></div>
                 <div><i>Your vote will be reflected when the next block is mined.</i></div>
             </div>
         )
