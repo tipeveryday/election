@@ -32170,6 +32170,10 @@ var _aionWeb2 = _interopRequireDefault(_aionWeb);
 
 __webpack_require__(438);
 
+var _Casino = __webpack_require__(443);
+
+var _Casino2 = _interopRequireDefault(_Casino);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -32179,6 +32183,37 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 // import Web3 from 'web3'
 
+
+// console.log(casinoJSON);
+var web3 = void 0;
+var myContract = void 0;
+var account = "hello";
+function injectWeb3() {
+   // Is there an injected web3 instance?
+   if (window.aionweb3) {
+      // AIWA Chrome extension will inject automatically
+      console.log("Using web3 detected from external source like AIWA");
+      console.log("✓ AIWA injected successfully");
+      console.log("update plkk");
+      // this.web3 = new Web3(web3.currentProvider);
+      web3 = new _aionWeb2.default(window.aionweb3.currentProvider);
+      // web3 = new Web3(new Web3.providers.HttpProvider("https://api.nodesmith.io/v1/aion/testnet/jsonrpc?apiKey=b07fca69798743afbfc1e88e56e9af9d"));
+
+      // console.log("wtf", new Web3(window.aionweb3.currentProvider));
+      // console.log(web3);
+      myContract = new web3.eth.Contract(_Casino2.default.info.abiDefinition, "0xa01ebcef760Bc93c9EF066632e2083548357F936B6E42879380a4433F1e45d2c");
+      console.log(myContract);
+      account = window.aionweb3.eth.accounts;
+   }
+   // else {
+   //   // If no injected web3 instance is detected, fall back to Nodesmith Mastery Testnet
+   //   // fallback is fine for development environments, but insecure ant not suitable for production
+   //   // INJECT NODESMITH
+   //   console.log("No web3 detected. Falling back to Nodesmith Mastery Testnet. Consider switching to AIWA for development.");
+   //   web3 = new Web3(new Web3.providers.HttpProvider("https://api.nodesmith.io/v1/aion/testnet/jsonrpc?apiKey=b07fca69798743afbfc1e88e56e9af9d"));
+   //   console.log(window.aionweb3);
+   // }
+}
 
 var App = function (_React$Component) {
    _inherits(App, _React$Component);
@@ -32193,35 +32228,27 @@ var App = function (_React$Component) {
          numberOfBets: 0,
          minimumBet: 0,
          totalBet: 0,
-         maxAmountOfBets: 0
+         maxAmountOfBets: 0,
+         accounts: account
 
-         // Is there an injected web3 instance?
-      };if (typeof web3 !== 'undefined') {
-         // AIWA Chrome extension will inject automatically
-         console.log("Using web3 detected from external source like AIWA");
-         console.log("✓ AIWA injected successfully");
-         _this.web3 = new _aionWeb2.default(web3.currentProvider);
-      } else {
-         // If no injected web3 instance is detected, fall back to Nodesmith Mastery Testnet
-         // fallback is fine for development environments, but insecure ant not suitable for production
-         // INJECT NODESMITH
-         console.log("No web3 detected. Falling back to Nodesmith Mastery Testnet. Consider switching to AIWA for development.");
-         _this.web3 = new _aionWeb2.default(new _aionWeb2.default.providers.HttpProvider("https://api.nodesmith.io/v1/aion/testnet/jsonrpc?apiKey=b07fca69798743afbfc1e88e56e9af9d"));
-      }
+         // const MyContract = web3.eth.contract([{"constant":false,"inputs":[],"name":"generateNumberWinner","outputs":[],"payable":true,"type":"function"},{"constant":false,"inputs":[{"name":"myid","type":"bytes32"},{"name":"result","type":"string"}],"name":"__callback","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"numberOfBets","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_queryId","type":"bytes32"},{"name":"_result","type":"string"},{"name":"_proof","type":"bytes"}],"name":"__callback","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"player","type":"address"}],"name":"checkPlayerExists","outputs":[{"name":"","type":"bool"}],"payable":false,"type":"function"},{"constant":false,"inputs":[],"name":"kill","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[],"name":"resetData","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"bets","type":"uint256"}],"name":"updateMaxBets","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"number","type":"uint256"}],"name":"bet","outputs":[],"payable":true,"type":"function"},{"constant":false,"inputs":[{"name":"amountWei","type":"uint256"}],"name":"updateMinimumBet","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[],"name":"distributePrizes","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"numberWinner","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"minimumBet","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"maxAmountOfBets","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"players","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"totalBet","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"inputs":[{"name":"_maxAmountOfBets","type":"uint256"}],"payable":false,"type":"constructor"},{"payable":true,"type":"fallback"}])
+         // myContract = MyContract.at("0x430d959fa54714aca8eecd61fae2661fca900e04")
 
-      var MyContract = web3.eth.contract([{ "constant": false, "inputs": [], "name": "generateNumberWinner", "outputs": [], "payable": true, "type": "function" }, { "constant": false, "inputs": [{ "name": "myid", "type": "bytes32" }, { "name": "result", "type": "string" }], "name": "__callback", "outputs": [], "payable": false, "type": "function" }, { "constant": true, "inputs": [], "name": "numberOfBets", "outputs": [{ "name": "", "type": "uint256" }], "payable": false, "type": "function" }, { "constant": false, "inputs": [{ "name": "_queryId", "type": "bytes32" }, { "name": "_result", "type": "string" }, { "name": "_proof", "type": "bytes" }], "name": "__callback", "outputs": [], "payable": false, "type": "function" }, { "constant": false, "inputs": [{ "name": "player", "type": "address" }], "name": "checkPlayerExists", "outputs": [{ "name": "", "type": "bool" }], "payable": false, "type": "function" }, { "constant": false, "inputs": [], "name": "kill", "outputs": [], "payable": false, "type": "function" }, { "constant": false, "inputs": [], "name": "resetData", "outputs": [], "payable": false, "type": "function" }, { "constant": false, "inputs": [{ "name": "bets", "type": "uint256" }], "name": "updateMaxBets", "outputs": [], "payable": false, "type": "function" }, { "constant": false, "inputs": [{ "name": "number", "type": "uint256" }], "name": "bet", "outputs": [], "payable": true, "type": "function" }, { "constant": false, "inputs": [{ "name": "amountWei", "type": "uint256" }], "name": "updateMinimumBet", "outputs": [], "payable": false, "type": "function" }, { "constant": false, "inputs": [], "name": "distributePrizes", "outputs": [], "payable": false, "type": "function" }, { "constant": true, "inputs": [], "name": "numberWinner", "outputs": [{ "name": "", "type": "uint256" }], "payable": false, "type": "function" }, { "constant": true, "inputs": [], "name": "minimumBet", "outputs": [{ "name": "", "type": "uint256" }], "payable": false, "type": "function" }, { "constant": true, "inputs": [], "name": "maxAmountOfBets", "outputs": [{ "name": "", "type": "uint256" }], "payable": false, "type": "function" }, { "constant": true, "inputs": [{ "name": "", "type": "uint256" }], "name": "players", "outputs": [{ "name": "", "type": "address" }], "payable": false, "type": "function" }, { "constant": true, "inputs": [], "name": "totalBet", "outputs": [{ "name": "", "type": "uint256" }], "payable": false, "type": "function" }, { "inputs": [{ "name": "_maxAmountOfBets", "type": "uint256" }], "payable": false, "type": "constructor" }, { "payable": true, "type": "fallback" }]);
-      _this.state.ContractInstance = MyContract.at("0x430d959fa54714aca8eecd61fae2661fca900e04");
-
-      window.a = _this.state;
+      };window.a = _this.state;
       return _this;
    }
 
    _createClass(App, [{
       key: 'componentDidMount',
       value: function componentDidMount() {
-         this.updateState();
-         this.setupListeners();
+         setTimeout(function () {
+            // alert("Hello");
+            console.log(window.aionweb3);
+            injectWeb3();
+            this.updateState();
+         }, 2000);
 
+         this.setupListeners();
          setInterval(this.updateState.bind(this), 7e3);
       }
    }, {
@@ -32229,28 +32256,28 @@ var App = function (_React$Component) {
       value: function updateState() {
          var _this2 = this;
 
-         this.state.ContractInstance.minimumBet(function (err, result) {
+         myContract.minimumBet(function (err, result) {
             if (result != null) {
                _this2.setState({
                   minimumBet: parseFloat(web3.fromWei(result, 'ether'))
                });
             }
          });
-         this.state.ContractInstance.totalBet(function (err, result) {
+         myContract.totalBet(function (err, result) {
             if (result != null) {
                _this2.setState({
                   totalBet: parseFloat(web3.fromWei(result, 'ether'))
                });
             }
          });
-         this.state.ContractInstance.numberOfBets(function (err, result) {
+         myContract.numberOfBets(function (err, result) {
             if (result != null) {
                _this2.setState({
                   numberOfBets: parseInt(result)
                });
             }
          });
-         this.state.ContractInstance.maxAmountOfBets(function (err, result) {
+         myContract.maxAmountOfBets(function (err, result) {
             if (result != null) {
                _this2.setState({
                   maxAmountOfBets: parseInt(result)
@@ -32291,7 +32318,7 @@ var App = function (_React$Component) {
             alert('You must bet more than the minimum');
             cb();
          } else {
-            this.state.ContractInstance.bet(number, {
+            myContract.bet(number, {
                gas: 300000,
                from: web3.eth.accounts[0],
                value: web3.toWei(bet, 'ether')
@@ -32309,7 +32336,7 @@ var App = function (_React$Component) {
             _react2.default.createElement(
                'h1',
                null,
-               'Pick the winning number and win AION coins \uD83D\uDE80'
+               'Pick the luckiest member of Aion Foundation and win AION coins \uD83D\uDE80'
             ),
             _react2.default.createElement(
                'div',
@@ -32392,7 +32419,7 @@ var App = function (_React$Component) {
             _react2.default.createElement(
                'h2',
                null,
-               'Vote for the next number, at 10 bets a payout event will occur'
+               'Vote for the next randomly selected teammate, at 10 bets a payout event will occur. If you selected right you will receive the pot.'
             ),
             _react2.default.createElement(
                'label',
@@ -32412,52 +32439,52 @@ var App = function (_React$Component) {
                _react2.default.createElement(
                   'li',
                   null,
-                  '1'
+                  _react2.default.createElement('img', { width: '130px', height: '130px', src: 'https://aion.network/media/Jeff-e1526052554495-300x288.jpg' })
                ),
                _react2.default.createElement(
                   'li',
                   null,
-                  '2'
+                  _react2.default.createElement('img', { width: '130px', height: '130px', src: 'https://aion.network/media/Edit-9900-e1538349709269-275x300.jpg' })
                ),
                _react2.default.createElement(
                   'li',
                   null,
-                  '3'
+                  _react2.default.createElement('img', { width: '130px', height: '130px', src: 'https://aion.network/media/Matt-e1525972764837-286x300.jpg' })
                ),
                _react2.default.createElement(
                   'li',
                   null,
-                  '4'
+                  _react2.default.createElement('img', { width: '130px', height: '130px', src: 'https://aion.network/media/Yulong-e1525972245734-300x300.jpg' })
                ),
                _react2.default.createElement(
                   'li',
                   null,
-                  '5'
+                  _react2.default.createElement('img', { width: '130px', height: '130px', src: 'https://aion.network/media/aion-team-rohan.jpg' })
                ),
                _react2.default.createElement(
                   'li',
                   null,
-                  '6'
+                  _react2.default.createElement('img', { width: '130px', height: '130px', src: 'https://aion.network/media/Kelvin-Lam-300x253.jpg' })
                ),
                _react2.default.createElement(
                   'li',
                   null,
-                  '7'
+                  _react2.default.createElement('img', { width: '130px', height: '130px', src: 'https://aion.network/media/Kim-hires-2_edit-e1526002633127-289x300.jpg' })
                ),
                _react2.default.createElement(
                   'li',
                   null,
-                  '8'
+                  _react2.default.createElement('img', { width: '130px', height: '130px', src: 'https://aion.network/media/Nick-e1528488297820-293x300.jpg' })
                ),
                _react2.default.createElement(
                   'li',
                   null,
-                  '9'
+                  _react2.default.createElement('img', { width: '130px', height: '130px', src: 'https://aion.network/media/JenniZhang_Edit-9865-e1538349973408-265x300.jpg' })
                ),
                _react2.default.createElement(
                   'li',
                   null,
-                  '10'
+                  _react2.default.createElement('img', { width: '130px', height: '130px', src: 'https://aion.network/media/Mike-Mason-e1530296023825-292x300.jpg' })
                )
             ),
             _react2.default.createElement('hr', null),
@@ -32486,7 +32513,11 @@ var App = function (_React$Component) {
                   'i',
                   null,
                   'Your account is ',
-                  web3.eth.defaultAccount
+                  _react2.default.createElement(
+                     'strong',
+                     null,
+                     account
+                  )
                )
             ),
             _react2.default.createElement(
@@ -32495,7 +32526,7 @@ var App = function (_React$Component) {
                _react2.default.createElement(
                   'i',
                   null,
-                  'Your vote will be reflected when the next block is mined'
+                  'Your vote will be reflected when the next block is mined.'
                )
             )
          );
@@ -45164,7 +45195,7 @@ module.exports = Web3;
 /* 289 */
 /***/ (function(module, exports) {
 
-module.exports = {"_args":[["aion-web3@1.1.4","/Users/john/Code/election"]],"_from":"aion-web3@1.1.4","_id":"aion-web3@1.1.4","_inBundle":false,"_integrity":"sha512-BDpSmHay5QP+eZNf5U5RCfbIYkSrwi83VtBTiMmbqTfOdgCBnXgrQq5WOCpTE0LNaXaHT/mV2mw+o/dwBMV+Ew==","_location":"/aion-web3","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"aion-web3@1.1.4","name":"aion-web3","escapedName":"aion-web3","rawSpec":"1.1.4","saveSpec":null,"fetchSpec":"1.1.4"},"_requiredBy":["/"],"_resolved":"https://registry.npmjs.org/aion-web3/-/aion-web3-1.1.4.tgz","_spec":"1.1.4","_where":"/Users/john/Code/election","author":{"url":"https://aion.network/"},"bugs":{"url":"https://github.com/aionnetwork/aion_web3/issues"},"contributors":[{"name":"Kelvin Lam","email":"kelvin@aion.network"},{"name":"Tony Crowe","email":"github@tonycrowe.com"},{"name":"Fabian Vogelsteller","email":"fabian@ethereum.org"},{"name":"Marek Kotewicz","email":"marek@parity.io","url":"https://github.com/debris"},{"name":"Marian Oancea","url":"https://github.com/cubedro"},{"name":"Gav Wood","email":"g@parity.io"},{"name":"Jeffery Wilcke","email":"jeffrey.wilcke@ethereum.org","url":"https://github.com/obscuren"}],"dependencies":{"aion-web3-core":"1.1.4","aion-web3-eth":"1.1.4","aion-web3-eth-personal":"1.1.4","aion-web3-net":"1.1.4","aion-web3-utils":"1.1.4"},"description":"Aion JavaScript API","gitHead":"7f88331374eee0d55ea455ac063ebb8272be965b","keywords":["Aion","JavaScript","API"],"license":"LGPL-3.0","main":"src/index.js","name":"aion-web3","namespace":"aion","repository":{"type":"git","url":"https://github.com/aionnetwork/aion_web3/tree/master/packages/web3"},"version":"1.1.4"}
+module.exports = {"_args":[["aion-web3@1.1.4","/Users/john/Code/election-aion"]],"_from":"aion-web3@1.1.4","_id":"aion-web3@1.1.4","_inBundle":false,"_integrity":"sha512-BDpSmHay5QP+eZNf5U5RCfbIYkSrwi83VtBTiMmbqTfOdgCBnXgrQq5WOCpTE0LNaXaHT/mV2mw+o/dwBMV+Ew==","_location":"/aion-web3","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"aion-web3@1.1.4","name":"aion-web3","escapedName":"aion-web3","rawSpec":"1.1.4","saveSpec":null,"fetchSpec":"1.1.4"},"_requiredBy":["/"],"_resolved":"https://registry.npmjs.org/aion-web3/-/aion-web3-1.1.4.tgz","_spec":"1.1.4","_where":"/Users/john/Code/election-aion","author":{"url":"https://aion.network/"},"bugs":{"url":"https://github.com/aionnetwork/aion_web3/issues"},"contributors":[{"name":"Kelvin Lam","email":"kelvin@aion.network"},{"name":"Tony Crowe","email":"github@tonycrowe.com"},{"name":"Fabian Vogelsteller","email":"fabian@ethereum.org"},{"name":"Marek Kotewicz","email":"marek@parity.io","url":"https://github.com/debris"},{"name":"Marian Oancea","url":"https://github.com/cubedro"},{"name":"Gav Wood","email":"g@parity.io"},{"name":"Jeffery Wilcke","email":"jeffrey.wilcke@ethereum.org","url":"https://github.com/obscuren"}],"dependencies":{"aion-web3-core":"1.1.4","aion-web3-eth":"1.1.4","aion-web3-eth-personal":"1.1.4","aion-web3-net":"1.1.4","aion-web3-utils":"1.1.4"},"description":"Aion JavaScript API","gitHead":"7f88331374eee0d55ea455ac063ebb8272be965b","keywords":["Aion","JavaScript","API"],"license":"LGPL-3.0","main":"src/index.js","name":"aion-web3","namespace":"aion","repository":{"type":"git","url":"https://github.com/aionnetwork/aion_web3/tree/master/packages/web3"},"version":"1.1.4"}
 
 /***/ }),
 /* 290 */
@@ -57449,7 +57480,7 @@ module.exports.makeKey = makeKey
 /* 352 */
 /***/ (function(module, exports) {
 
-module.exports = {"_from":"elliptic@^6.0.0","_id":"elliptic@6.4.1","_inBundle":false,"_integrity":"sha512-BsXLz5sqX8OHcsh7CqBMztyXARmGQ3LWPtGjJi6DiJHq5C/qvi9P3OqgswKSDftbu8+IoI/QDTAm2fFnQ9SZSQ==","_location":"/elliptic","_phantomChildren":{},"_requested":{"type":"range","registry":true,"raw":"elliptic@^6.0.0","name":"elliptic","escapedName":"elliptic","rawSpec":"^6.0.0","saveSpec":null,"fetchSpec":"^6.0.0"},"_requiredBy":["/browserify-sign","/create-ecdh"],"_resolved":"https://registry.npmjs.org/elliptic/-/elliptic-6.4.1.tgz","_shasum":"c2d0b7776911b86722c632c3c06c60f2f819939a","_spec":"elliptic@^6.0.0","_where":"/Users/john/Code/election/node_modules/browserify-sign","author":{"name":"Fedor Indutny","email":"fedor@indutny.com"},"bugs":{"url":"https://github.com/indutny/elliptic/issues"},"bundleDependencies":false,"dependencies":{"bn.js":"^4.4.0","brorand":"^1.0.1","hash.js":"^1.0.0","hmac-drbg":"^1.0.0","inherits":"^2.0.1","minimalistic-assert":"^1.0.0","minimalistic-crypto-utils":"^1.0.0"},"deprecated":false,"description":"EC cryptography","devDependencies":{"brfs":"^1.4.3","coveralls":"^2.11.3","grunt":"^0.4.5","grunt-browserify":"^5.0.0","grunt-cli":"^1.2.0","grunt-contrib-connect":"^1.0.0","grunt-contrib-copy":"^1.0.0","grunt-contrib-uglify":"^1.0.1","grunt-mocha-istanbul":"^3.0.1","grunt-saucelabs":"^8.6.2","istanbul":"^0.4.2","jscs":"^2.9.0","jshint":"^2.6.0","mocha":"^2.1.0"},"files":["lib"],"homepage":"https://github.com/indutny/elliptic","keywords":["EC","Elliptic","curve","Cryptography"],"license":"MIT","main":"lib/elliptic.js","name":"elliptic","repository":{"type":"git","url":"git+ssh://git@github.com/indutny/elliptic.git"},"scripts":{"jscs":"jscs benchmarks/*.js lib/*.js lib/**/*.js lib/**/**/*.js test/index.js","jshint":"jscs benchmarks/*.js lib/*.js lib/**/*.js lib/**/**/*.js test/index.js","lint":"npm run jscs && npm run jshint","test":"npm run lint && npm run unit","unit":"istanbul test _mocha --reporter=spec test/index.js","version":"grunt dist && git add dist/"},"version":"6.4.1"}
+module.exports = {"_args":[["elliptic@6.4.1","/Users/john/Code/election-aion"]],"_from":"elliptic@6.4.1","_id":"elliptic@6.4.1","_inBundle":false,"_integrity":"sha512-BsXLz5sqX8OHcsh7CqBMztyXARmGQ3LWPtGjJi6DiJHq5C/qvi9P3OqgswKSDftbu8+IoI/QDTAm2fFnQ9SZSQ==","_location":"/elliptic","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"elliptic@6.4.1","name":"elliptic","escapedName":"elliptic","rawSpec":"6.4.1","saveSpec":null,"fetchSpec":"6.4.1"},"_requiredBy":["/browserify-sign","/create-ecdh"],"_resolved":"https://registry.npmjs.org/elliptic/-/elliptic-6.4.1.tgz","_spec":"6.4.1","_where":"/Users/john/Code/election-aion","author":{"name":"Fedor Indutny","email":"fedor@indutny.com"},"bugs":{"url":"https://github.com/indutny/elliptic/issues"},"dependencies":{"bn.js":"^4.4.0","brorand":"^1.0.1","hash.js":"^1.0.0","hmac-drbg":"^1.0.0","inherits":"^2.0.1","minimalistic-assert":"^1.0.0","minimalistic-crypto-utils":"^1.0.0"},"description":"EC cryptography","devDependencies":{"brfs":"^1.4.3","coveralls":"^2.11.3","grunt":"^0.4.5","grunt-browserify":"^5.0.0","grunt-cli":"^1.2.0","grunt-contrib-connect":"^1.0.0","grunt-contrib-copy":"^1.0.0","grunt-contrib-uglify":"^1.0.1","grunt-mocha-istanbul":"^3.0.1","grunt-saucelabs":"^8.6.2","istanbul":"^0.4.2","jscs":"^2.9.0","jshint":"^2.6.0","mocha":"^2.1.0"},"files":["lib"],"homepage":"https://github.com/indutny/elliptic","keywords":["EC","Elliptic","curve","Cryptography"],"license":"MIT","main":"lib/elliptic.js","name":"elliptic","repository":{"type":"git","url":"git+ssh://git@github.com/indutny/elliptic.git"},"scripts":{"jscs":"jscs benchmarks/*.js lib/*.js lib/**/*.js lib/**/**/*.js test/index.js","jshint":"jscs benchmarks/*.js lib/*.js lib/**/*.js lib/**/**/*.js test/index.js","lint":"npm run jscs && npm run jshint","test":"npm run lint && npm run unit","unit":"istanbul test _mocha --reporter=spec test/index.js","version":"grunt dist && git add dist/"},"version":"6.4.1"}
 
 /***/ }),
 /* 353 */
@@ -65574,7 +65605,7 @@ module.exports = __webpack_require__(402).version;
 /* 402 */
 /***/ (function(module, exports) {
 
-module.exports = {"_args":[["websocket@git://github.com/frozeman/WebSocket-Node.git#6c72925e3f8aaaea8dc8450f97627e85263999f2","/Users/john/Code/election"]],"_from":"websocket@git://github.com/frozeman/WebSocket-Node.git#6c72925e3f8aaaea8dc8450f97627e85263999f2","_id":"websocket@git://github.com/frozeman/WebSocket-Node.git#6c72925e3f8aaaea8dc8450f97627e85263999f2","_inBundle":false,"_integrity":"","_location":"/websocket","_phantomChildren":{},"_requested":{"type":"git","raw":"websocket@git://github.com/frozeman/WebSocket-Node.git#6c72925e3f8aaaea8dc8450f97627e85263999f2","name":"websocket","escapedName":"websocket","rawSpec":"git://github.com/frozeman/WebSocket-Node.git#6c72925e3f8aaaea8dc8450f97627e85263999f2","saveSpec":"git://github.com/frozeman/WebSocket-Node.git#6c72925e3f8aaaea8dc8450f97627e85263999f2","fetchSpec":"git://github.com/frozeman/WebSocket-Node.git","gitCommittish":"6c72925e3f8aaaea8dc8450f97627e85263999f2"},"_requiredBy":["/aion-web3-providers-ws"],"_resolved":"git://github.com/frozeman/WebSocket-Node.git#6c72925e3f8aaaea8dc8450f97627e85263999f2","_spec":"git://github.com/frozeman/WebSocket-Node.git#6c72925e3f8aaaea8dc8450f97627e85263999f2","_where":"/Users/john/Code/election","author":{"name":"Brian McKelvey","email":"brian@worlize.com","url":"https://www.worlize.com/"},"browser":"lib/browser.js","bugs":{"url":"https://github.com/theturtle32/WebSocket-Node/issues"},"config":{"verbose":false},"contributors":[{"name":"Iñaki Baz Castillo","email":"ibc@aliax.net","url":"http://dev.sipdoc.net"}],"dependencies":{"debug":"^2.2.0","nan":"^2.3.3","typedarray-to-buffer":"^3.1.2","yaeti":"^0.0.6"},"description":"Websocket Client & Server Library implementing the WebSocket protocol as specified in RFC 6455.","devDependencies":{"buffer-equal":"^1.0.0","faucet":"^0.0.1","gulp":"git+https://github.com/gulpjs/gulp.git#4.0","gulp-jshint":"^2.0.4","jshint":"^2.0.0","jshint-stylish":"^2.2.1","tape":"^4.0.1"},"directories":{"lib":"./lib"},"engines":{"node":">=0.10.0"},"homepage":"https://github.com/theturtle32/WebSocket-Node","keywords":["websocket","websockets","socket","networking","comet","push","RFC-6455","realtime","server","client"],"license":"Apache-2.0","main":"index","name":"websocket","repository":{"type":"git","url":"git+https://github.com/theturtle32/WebSocket-Node.git"},"scripts":{"gulp":"gulp","install":"(node-gyp rebuild 2> builderror.log) || (exit 0)","test":"faucet test/unit"},"version":"1.0.26"}
+module.exports = {"_args":[["websocket@git://github.com/frozeman/WebSocket-Node.git#6c72925e3f8aaaea8dc8450f97627e85263999f2","/Users/john/Code/election-aion"]],"_from":"websocket@git://github.com/frozeman/WebSocket-Node.git#6c72925e3f8aaaea8dc8450f97627e85263999f2","_id":"websocket@git://github.com/frozeman/WebSocket-Node.git#6c72925e3f8aaaea8dc8450f97627e85263999f2","_inBundle":false,"_integrity":"","_location":"/websocket","_phantomChildren":{},"_requested":{"type":"git","raw":"websocket@git://github.com/frozeman/WebSocket-Node.git#6c72925e3f8aaaea8dc8450f97627e85263999f2","name":"websocket","escapedName":"websocket","rawSpec":"git://github.com/frozeman/WebSocket-Node.git#6c72925e3f8aaaea8dc8450f97627e85263999f2","saveSpec":"git://github.com/frozeman/WebSocket-Node.git#6c72925e3f8aaaea8dc8450f97627e85263999f2","fetchSpec":"git://github.com/frozeman/WebSocket-Node.git","gitCommittish":"6c72925e3f8aaaea8dc8450f97627e85263999f2"},"_requiredBy":["/aion-web3-providers-ws"],"_resolved":"git://github.com/frozeman/WebSocket-Node.git#6c72925e3f8aaaea8dc8450f97627e85263999f2","_spec":"git://github.com/frozeman/WebSocket-Node.git#6c72925e3f8aaaea8dc8450f97627e85263999f2","_where":"/Users/john/Code/election-aion","author":{"name":"Brian McKelvey","email":"brian@worlize.com","url":"https://www.worlize.com/"},"browser":"lib/browser.js","bugs":{"url":"https://github.com/theturtle32/WebSocket-Node/issues"},"config":{"verbose":false},"contributors":[{"name":"Iñaki Baz Castillo","email":"ibc@aliax.net","url":"http://dev.sipdoc.net"}],"dependencies":{"debug":"^2.2.0","nan":"^2.3.3","typedarray-to-buffer":"^3.1.2","yaeti":"^0.0.6"},"description":"Websocket Client & Server Library implementing the WebSocket protocol as specified in RFC 6455.","devDependencies":{"buffer-equal":"^1.0.0","faucet":"^0.0.1","gulp":"git+https://github.com/gulpjs/gulp.git#4.0","gulp-jshint":"^2.0.4","jshint":"^2.0.0","jshint-stylish":"^2.2.1","tape":"^4.0.1"},"directories":{"lib":"./lib"},"engines":{"node":">=0.10.0"},"homepage":"https://github.com/theturtle32/WebSocket-Node","keywords":["websocket","websockets","socket","networking","comet","push","RFC-6455","realtime","server","client"],"license":"Apache-2.0","main":"index","name":"websocket","repository":{"type":"git","url":"git+https://github.com/theturtle32/WebSocket-Node.git"},"scripts":{"gulp":"gulp","install":"(node-gyp rebuild 2> builderror.log) || (exit 0)","test":"faucet test/unit"},"version":"1.0.26"}
 
 /***/ }),
 /* 403 */
@@ -76203,7 +76234,7 @@ exports = module.exports = __webpack_require__(440)(false);
 
 
 // module
-exports.push([module.i, "body{\n    font-family: 'open sans';\n    margin: 0;\n}\nul{\n    list-style-type: none;\n    padding-left: 0;\n    display: flex;\n    justify-content: space-around;\n    max-width: 1300px;\n}\nli{\n    padding: 40px;\n    border: 2px solid rgb(66,33,204);\n    margin-right: 5px;\n    border-radius: 10px;\n    cursor: pointer;\n}\nli:hover{\n    background-color: rgb(66,33,204);\n    color: white;\n}\nli:active{\n    opacity: 0.7;\n}\n*{\n   color: #444444;\n}\n.main-container{\n   padding: 20px;\n}\n.block{\n   display: flex;\n   align-items: center;\n}\n.number-selected{\n   background-color: rgb(66,33,204);\n   color: white;\n}\n.bet-input{\n   padding: 15px;\n   border-radius: 10px;\n   border: 1px solid lightgrey;\n   font-size: 15pt;\n   margin: 0 10px;\n}\n\n@media (max-width: 1100px){\n   ul{\n      flex-direction: column;\n   }\n   li{\n      margin: 5px 0;\n   }\n}\n", ""]);
+exports.push([module.i, "body{\n    font-family: 'open sans';\n    margin: 0;\n}\nul{\n    list-style-type: none;\n    padding-left: 40;\n    display: flex;\n    justify-content: space-around;\n    max-width: 1300px;\n}\nli{\n    border: 2px solid rgb(66,33,204);\n    margin-right: 5px;\n    border-radius: 10px;\n    cursor: pointer;\n\n}\n\nli:hover{\n    background-color: rgb(66,33,204);\n    color: white;\n}\nli:active{\n    opacity: 0.7;\n}\n*{\n   color: #444444;\n}\n.main-container{\n   padding: 20px;\n}\n.block{\n   display: flex;\n   align-items: center;\n}\n.number-selected{\n   background-color: rgb(66,33,204);\n   color: white;\n}\n.bet-input{\n   padding: 15px;\n   border-radius: 10px;\n   border: 1px solid lightgrey;\n   font-size: 15pt;\n   margin: 0 10px;\n}\nimg{\n    border-radius: 8px;\n\n}\n\n@media (max-width: 1100px){\n   ul{\n      flex-direction: column;\n   }\n   li{\n      margin: 5px 0;\n   }\n}\n", ""]);
 
 // exports
 
@@ -76743,6 +76774,12 @@ module.exports = function (css) {
 	return fixedCss;
 };
 
+
+/***/ }),
+/* 443 */
+/***/ (function(module, exports) {
+
+module.exports = {"code":"0x605060405260646005600050909055341561001a5760006000fd5b604051601080610872833981016040528080519060100190919050505b336000600050828290918060010183905555505050600081141515610063578060026000508190909055505b5b5061006a565b6107f9806100796000396000f300605060405236156100ac576000356c01000000000000000000000000900463ffffffff1680630a50e361146100b05780632ca8c6d3146100c65780634081d916146100f057806341c0e1b5146101345780634b1146911461014a5780638da5cb5b14610191578063953818c0146101c2578063b3c1c5b0146101e6578063c38a8afd14610225578063d16170dd1461024f578063e08a96cd14610267578063fe5e185314610291576100ac565b5b5b005b34156100bc5760006000fd5b6100c46102bb565b005b34156100d25760006000fd5b6100da6102e2565b6040518082815260100191505060405180910390f35b34156100fc5760006000fd5b61011a600480808060100135903590916020019091929050506102eb565b604051808215151515815260100191505060405180910390f35b34156101405760006000fd5b610148610366565b005b34156101565760006000fd5b61017460048080806010013590359091602001909192905050610390565b604051808381526010018281526010019250505060405180910390f35b341561019d5760006000fd5b6101a56103c4565b604051808383825281601001526020019250505060405180910390f35b34156101ce5760006000fd5b6101e460048080359060100190919050506103d3565b005b34156101f25760006000fd5b610208600480803590601001909190505061059b565b604051808383825281601001526020019250505060405180910390f35b34156102315760006000fd5b6102396105ce565b6040518082815260100191505060405180910390f35b61026560048080359060100190919050506105d7565b005b34156102735760006000fd5b61027b6106f0565b6040518082815260100191505060405180910390f35b341561029d5760006000fd5b6102a56106f9565b6040518082815260100191505060405180910390f35b60006001600a438115156102cb57fe5b060190506102de816103d363ffffffff16565b5b50565b60046000505481565b60006000600090505b60066000508054905081101561035657838360066000508381548110151561031857fe5b9060005260106000209050906002020160005b50806001015490549091149190141615610348576001915061035f565b5b80806001019150506102f4565b6000915061035f565b5092915050565b60006000508060010154905433909114919014161561038d57600060005080600101549054ff5b5b565b6007600050602052818160005260105260306000209050600091509150508060000160005054908060010160005054905082565b60006000508060010154905482565b6103db610702565b60006000600060006000600060009550600094505b6006600050805490508510156104d85760066000508581548110151561041257fe5b9060005260106000209050906002020160005b50806001015490549350935087600760005060008686825281601001526020019081526010016000209050600050600101600050541415610492578383888860648110151561047057fe5b9090602002019190909182828252816010015260200150505085806001019650505b60076000506000858582528160100152602001908152601001600020905060006000820160005060009055600182016000506000905550505b84806001019550506103f0565b60006006600050816104ea9190610732565b50865060646003600050548115156104fe57fe5b049150600090505b858110156105905760006000888360648110151561052057fe5b9090602002018060100151905190911491901416151561058257868160648110151561054857fe5b909060200201806010015190516108fc84908115029060405160006040518083038185898989f194505050505015156105815760006000fd5b5b5b8080600101915050610506565b5b5050505050505050565b6006600050818154811015156105ad57fe5b9060005260106000209050906002020160005b915090508060010154905482565b60026000505481565b6105e6336102eb63ffffffff16565b1515156105f35760006000fd5b600181101580156106055750600a8111155b15156106115760006000fd5b60026000505434101515156106265760006000fd5b34600760005060003382528160100152602001908152601001600020905060005060000160005081909090555080600760005060003382528160100152602001908152601001600020905060005060010160005081909090555060046000818150548092919060010191905090905550600660005080548060010182816106ad9190610766565b91909060005260106000209050906002020160005b3390919290919250919090918060010183905555505034600360008282825054019250508190909055505b50565b60056000505481565b60036000505481565b610c80604051908101604052806064905b6000600082528160100152602001906001900390816107135790505090565b815481835581811511610761576002028160020283600052601060002090509182019101610760919061079a565b5b505050565b815481835581811511610795576002028160020283600052601060002090509182019101610794919061079a565b5b505050565b6107ca91906107a4565b808211156107c6576000818150806000905560010160009055506002016107a4565b5090565b905600a165627a7a72305820c9a86af5337a9176c59fc00145d4f79e8056727b2a81ba283b908fa2016d0bb70029","info":{"abiDefinition":[{"outputs":[],"constant":false,"payable":false,"inputs":[],"name":"generateNumberWinner","type":"function"},{"outputs":[{"name":"","type":"uint128"}],"constant":true,"payable":false,"inputs":[],"name":"numberOfBets","type":"function"},{"outputs":[{"name":"","type":"bool"}],"constant":true,"payable":false,"inputs":[{"name":"player","type":"address"}],"name":"checkPlayerExists","type":"function"},{"outputs":[],"constant":false,"payable":false,"inputs":[],"name":"kill","type":"function"},{"outputs":[{"name":"amountBet","type":"uint128"},{"name":"numberSelected","type":"uint128"}],"constant":true,"payable":false,"inputs":[{"name":"","type":"address"}],"name":"playerInfo","type":"function"},{"outputs":[{"name":"","type":"address"}],"constant":true,"payable":false,"inputs":[],"name":"owner","type":"function"},{"outputs":[],"constant":false,"payable":false,"inputs":[{"name":"numberWinner","type":"uint128"}],"name":"distributePrizes","type":"function"},{"outputs":[{"name":"","type":"address"}],"constant":true,"payable":false,"inputs":[{"name":"","type":"uint128"}],"name":"players","type":"function"},{"outputs":[{"name":"","type":"uint128"}],"constant":true,"payable":false,"inputs":[],"name":"minimumBet","type":"function"},{"outputs":[],"constant":false,"payable":true,"inputs":[{"name":"numberSelected","type":"uint128"}],"name":"bet","type":"function"},{"outputs":[{"name":"","type":"uint128"}],"constant":true,"payable":false,"inputs":[],"name":"maxAmountOfBets","type":"function"},{"outputs":[{"name":"","type":"uint128"}],"constant":true,"payable":false,"inputs":[],"name":"totalBet","type":"function"},{"outputs":[],"payable":false,"inputs":[{"name":"_minimumBet","type":"uint128"}],"name":"","type":"constructor"},{"outputs":[],"payable":true,"inputs":[],"name":"","type":"fallback"}],"languageVersion":"0","language":"Solidity","compilerVersion":"0.4.15+commit.ecf81ee5.Linux.g++","source":"pragma solidity 0.4.15;\ncontract Casino {\n   address public owner;\n   uint public minimumBet;\n   uint public totalBet;\n   uint public numberOfBets;\n   uint public maxAmountOfBets = 100;\n   address[] public players;\n   struct Player {\n      uint amountBet;\n      uint numberSelected;\n   }\n   // The address of the player and => the user info\n   mapping(address => Player) public playerInfo;\n   function() public payable {}\n   function Casino(uint _minimumBet) public {\n      owner = msg.sender;\n      if(_minimumBet != 0 ) minimumBet = _minimumBet;\n   }\n   function kill() public {\n      if(msg.sender == owner) selfdestruct(owner);\n   }\n   function checkPlayerExists(address player) public constant returns(bool){\n      for(uint i = 0; i < players.length; i++){\n         if(players[i] == player) return true;\n      }\n      return false;\n   }\n   // To bet for a number between 1 and 10 both inclusive\n   function bet(uint numberSelected) public payable {\n      require(!checkPlayerExists(msg.sender));\n      require(numberSelected >= 1 && numberSelected <= 10);\n      require(msg.value >= minimumBet);\n      playerInfo[msg.sender].amountBet = msg.value;\n      playerInfo[msg.sender].numberSelected = numberSelected;\n      numberOfBets++;\n      players.push(msg.sender);\n      totalBet += msg.value;\n   }\n   // Generates a number between 1 and 10 that will be the winner\n   function generateNumberWinner() public {\n      uint numberGenerated = block.number % 10 + 1; // This isn't secure\n      distributePrizes(numberGenerated);\n   }\n   // Sends the corresponding ether to each winner depending on the total bets\n   function distributePrizes(uint numberWinner) public {\n      address[100] memory winners; // We have to create a temporary in memory array with fixed size\n      uint count = 0; // This is the count for the array of winners\n      for(uint i = 0; i < players.length; i++){\n         address playerAddress = players[i];\n         if(playerInfo[playerAddress].numberSelected == numberWinner){\n            winners[count] = playerAddress;\n            count++;\n         }\n         delete playerInfo[playerAddress]; // Delete all the players\n      }\n      players.length = 0; // Delete all the players array\n      uint winnerEtherAmount = totalBet / winners.length; // How much each winner gets\n      for(uint j = 0; j < count; j++){\n         if(winners[j] != address(0)) // Check that the address in this fixed array is not empty\n         winners[j].transfer(winnerEtherAmount);\n      }\n   }\n}"}}
 
 /***/ })
 /******/ ]);

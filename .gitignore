@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-node_modules/
-=======
 # Logs
 logs
 *.log
@@ -60,4 +57,4 @@ typings/
 # dotenv environment variables file
 .env
 
->>>>>>> aion_roulette
+.DS_Store
