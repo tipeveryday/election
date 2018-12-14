@@ -17,7 +17,7 @@ h1 {
   font-family: 'ZCOOL XiaoWei', serif;
 }
 h2 {
-    /* color: #f05a90; */
+  /* color: #f05a90; */
   color: #5af0bd;
   font-size: 16px;
   text-align: center;
@@ -34,40 +34,30 @@ h3 {
   justify-content: space-evenly;
   flex-wrap: wrap;
 }
-
 ul {
     list-style-type: none;
-    padding-left: 40;
     display: flex;
     justify-content: space-around;
-    max-width: 1300px;
+    flex-wrap: wrap;
+    justify-content: center;
 }
-
 li {
     border: 2px solid rgb(66,33,204);
     margin-right: 5px;
     border-radius: 10px;
     cursor: pointer;
-
+    width: 130px;
 }
-
 li:hover {
     background-color: rgb(66,33,204);
     color: white;
 }
-
 li:active {
     opacity: 0.7;
 }
-
-/* * {
-   color: #444444;
-} */
-
 .main-container{
    padding: 20px;
 }
-
 .block {
    display: flex;
    align-items: center;
@@ -80,7 +70,6 @@ li:active {
    background-color: rgb(66,33,204);
    color: white;
 }
-
 .bet-input {
     padding: 7px;
    border-radius: 10px;
@@ -88,7 +77,6 @@ li:active {
    font-size: 15px;
    margin: 0 10px;
 }
-
 img {
   border-radius: 8px;
   margin-bottom: -5px;
@@ -108,26 +96,20 @@ label {
   flex-direction: column;
   text-align: center;
 }
-
 .link {
   color: #00ffd4
 }
 .link a {
   color: yellow
 }
-ul {
+.madeWithLove {
   display: flex;
-  flex-wrap: wrap;
   justify-content: center;
+  margin-top: 70px;
 }
-li {
-  width: 130px;
+
+.madeWithLove p {
+  color: black;
+  font-family: 'ZCOOL XiaoWei', serif;
+  font-size: 22px;
 }
-/* @media (max-width: 900px){
-   ul{
-      flex-direction: column;
-   }
-   li{
-      margin: 5px 0;
-   }
-} */

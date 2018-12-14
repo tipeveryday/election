@@ -53,7 +53,7 @@ class App extends React.Component {
           injectWeb3();
           this.updateState()
           this.setupListeners()
-      }.bind(this), 1000);
+      }.bind(this), 2000);
 
       // poll contract info
       setInterval(this.updateState.bind(this), 7e3)
@@ -62,8 +62,10 @@ class App extends React.Component {
     // Update DOM from Contract information
     updateState() {
       console.log('updateState hit');
+
+      // update active account
       this.setState({
-        accounts: aiwa.eth.accounts.toString()
+        accounts: aiwa.eth.accounts.toString(),
       })
       // update mininum bet value
       myContract.methods.minimumBet().call({})
@@ -241,6 +243,10 @@ class App extends React.Component {
                 <div><i>Your account is <strong>{this.state.accounts}</strong></i></div>
                 <div><i>Your vote will be reflected when the next block is mined.</i></div>
                 <div className="link"><i>Don't have AIWA? <a href="https://learn.aion.network/v1.0/docs/aiwa" target="_blank">Start here</a></i></div>
+              </div>
+
+              <div className="madeWithLove">
+                <p>Made with 🔥 by the Aion Developer Success Team 🤘</p>
               </div>
           </div>
         )
