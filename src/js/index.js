@@ -1,17 +1,17 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-// import Web3 from 'web3'
 import Web3 from 'aion-web3'
-import './../css/index.css'
-import casinoJSON from './../../build/contracts/Casino.json'
+import casinoJSON from './../../build/contracts/Casino.json' // import our contract JSON
+import './../css/index.css' // styling
 
-// console.log(casinoJSON);
+// Initializing Variables
 let web3;
 let aiwa;
 let myContract;
 let contractAddress = "0xa05469cA61CB30f792C27809aC9C893f8271faFF166bBC1e994ea4Aa980D68b1";
 let account = "Not Detected - Please download AIWA to play this game";
 let account_sub = "";
+
 // Detect AIWA injection and inject into application
 function injectWeb3() {
     // Is there an injected web3 instance?
@@ -26,8 +26,7 @@ function injectWeb3() {
         myContract = new web3.eth.Contract(casinoJSON.info.abiDefinition,contractAddress);
         console.log('Contract Instantiated:', myContract);
 
-        // update account when DOM mounts
-        account = window.aionweb3.eth.accounts.toString(2);
+
         let stringg = "test";
         account_sub =  account.substring(2);
     }
@@ -57,7 +56,7 @@ class App extends React.Component {
           injectWeb3();
           this.updateState()
           this.setupListeners()
-      }.bind(this), 2000);
+      }.bind(this), 1000);
 
       // poll contract info
       setInterval(this.updateState.bind(this), 7e3)
@@ -66,7 +65,9 @@ class App extends React.Component {
     // Update DOM from Contract information
     updateState() {
       console.log('updateState hit');
-
+      this.setState({
+        accounts: aiwa.eth.accounts.toString()
+      })
       // update mininum bet value
       myContract.methods.minimumBet().call({})
       .then(function(result){
@@ -178,94 +179,72 @@ class App extends React.Component {
           cb()
         });
       }
-
-        // .on('transactionHash', function(hash){
-        //   console.log('transactionHash', hash);
-        // }).on('receipt', function(receipt){
-        //   console.log('receipt', receipt);
-        // })
-        //
-
-        // myContract.methods.bet(number).aionweb3.personal.sendTransaction({
-        //   from: account_sub,
-        //   to: "0xa01ebcef760Bc93c9EF066632e2083548357F936B6E42879380a4433F1e45d2c",
-        //   gas: 2000000,
-        //   value: web3.utils.toNAmp(bet)
-        // })
-        //-------------------
-        // , (err, result) => {
-        //   console.log('voteNumber result', result);
-        //   cb()
-        // })
-        //------------------
-        // myContract.bet(number, {
-        //     gas: 300000,
-        //     from: web3.eth.accounts[0],
-        //     value: web3.toWei(bet, 'ether')
-        // }, (err, result) => {
-        //     cb()
-        // })
-      }
+    }
 
     render() {
         return (
             <div className="main-container">
-                <h1>Pick the luckiest member of Aion Foundation and win AION coins 🚀</h1>
-
-                <div className="block">
+              <h1>Welcome to Aion Roulette🚀</h1>
+              <div className="rules">
+                <div className="block ">
                     <b>Number of bets so far:</b> &nbsp;
-               <span>{this.state.numberOfBets}</span>
+                    <span>{this.state.numberOfBets}</span>
                 </div>
 
                 <div className="block">
                     <b>Last winning face:</b> &nbsp;
-               <span>{this.state.lastLuckyFace}</span>
+                    <span>{this.state.lastLuckyFace}</span>
                 </div>
 
                 <div className="block">
                     <b>Total AION pool:</b> &nbsp;
-               <span>{this.state.totalBet} AION</span>
+                    <span>{this.state.totalBet} AION</span>
                 </div>
 
                 <div className="block">
                     <b>Minimum bet:</b> &nbsp;
-               <span>{this.state.minimumBet} AION</span>
+                    <span>{this.state.minimumBet} AION</span>
                 </div>
 
                 <div className="block">
                     <b>Max amount of bets:</b> &nbsp;
-               <span>{this.state.maxAmountOfBets}</span>
+                    <span>{this.state.maxAmountOfBets}</span>
                 </div>
+              </div>
 
-                <hr />
 
-                <h2>Vote for the next randomly selected teammate, at {this.state.maxAmountOfBets} bets - a payout event will occur. If you selected right, you will receive the pot.</h2>
+              <hr />
 
-                <label>
-                    <b>How much AION do you want to bet? <input className="bet-input" ref="aion-bet" type="number" placeholder="0"/></b> AION
-               <br />
-                </label>
+              <h2>Vote who is going to be the face of Aion! <br/> When {this.state.maxAmountOfBets} bets have been placed - a new member of Aion will be randomly picked 👑 and a payout will occur. <br/> Winners who guessed correctly will split the amount in the AION pool!</h2>
+              <hr />
 
-                <ul ref="numbers">
-                    <li value="1"><img width="130px" height="130px" src="https://aion.network/media/Jeff-e1526052554495-300x288.jpg" /></li>
-                    <li value="2"><img width="130px" height="130px" src="https://aion.network/media/Edit-9900-e1538349709269-275x300.jpg" /></li>
-                    <li value="3"><img width="130px" height="130px" src="https://aion.network/media/Matt-e1525972764837-286x300.jpg" /></li>
-                    <li value="4"><img width="130px" height="130px" src="https://aion.network/media/Yulong-e1525972245734-300x300.jpg" /></li>
-                    <li value="5"><img width="130px" height="130px" src="https://aion.network/media/aion-team-rohan.jpg" /></li>
-                    <li value="6"><img width="130px" height="130px" src="https://aion.network/media/Kelvin-Lam-300x253.jpg" /></li>
-                    <li value="7"><img width="130px" height="130px" src="https://aion.network/media/Kim-hires-2_edit-e1526002633127-289x300.jpg" /></li>
-                    <li value="8"><img width="130px" height="130px" src="https://aion.network/media/Nick-e1528488297820-293x300.jpg" /></li>
-                    <li value="9"><img width="130px" height="130px" src="https://aion.network/media/JenniZhang_Edit-9865-e1538349973408-265x300.jpg" /></li>
-                    <li value="10"><img width="130px" height="130px" src="https://aion.network/media/Mike-Mason-e1530296023825-292x300.jpg" /></li>
-                </ul>
+              <h3>PLAY!</h3>
+              <label>
+                  <b>1. How much AION do you want to bet? <input className="bet-input" ref="aion-bet" type="number" placeholder="0"/> AION</b>
+                  <br />
+                  <b>2. Now pick a face!</b>
+              </label>
+              <ul ref="numbers">
+                  <li value="1"><img width="130px" height="130px" src="https://aion.network/media/Jeff-e1526052554495-300x288.jpg" /></li>
+                  <li value="2"><img width="130px" height="130px" src="https://aion.network/media/Edit-9900-e1538349709269-275x300.jpg" /></li>
+                  <li value="3"><img width="130px" height="130px" src="https://aion.network/media/Matt-e1525972764837-286x300.jpg" /></li>
+                  <li value="4"><img width="130px" height="130px" src="https://aion.network/media/Yulong-e1525972245734-300x300.jpg" /></li>
+                  <li value="5"><img width="130px" height="130px" src="https://aion.network/media/aion-team-rohan.jpg" /></li>
+                  <li value="6"><img width="130px" height="130px" src="https://aion.network/media/Kelvin-Lam-300x253.jpg" /></li>
+                  <li value="7"><img width="130px" height="130px" src="https://aion.network/media/Kim-hires-2_edit-e1526002633127-289x300.jpg" /></li>
+                  <li value="8"><img width="130px" height="130px" src="https://aion.network/media/Nick-e1528488297820-293x300.jpg" /></li>
+                  <li value="9"><img width="130px" height="130px" src="https://aion.network/media/JenniZhang_Edit-9865-e1538349973408-265x300.jpg" /></li>
+                  <li value="10"><img width="130px" height="130px" src="https://aion.network/media/Mike-Mason-e1530296023825-292x300.jpg" /></li>
+              </ul>
 
-                <hr />
-
+              <hr />
+              <div className="footer">
                 <div><i>Only working with the Mastery Test Network 📡</i></div>
                 <div><i>You can only vote once per account</i></div>
-                <div><i>Your account is <strong>{account}</strong></i></div>
+                <div><i>Your account is <strong>{this.state.accounts}</strong></i></div>
                 <div><i>Your vote will be reflected when the next block is mined.</i></div>
-            </div>
+              </div>
+          </div>
         )
     }
 }

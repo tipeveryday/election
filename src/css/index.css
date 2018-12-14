@@ -1,6 +1,37 @@
+
 body{
     font-family: 'open sans';
+    /* font-family: 'Fira Sans', sans-serif; */
     margin: 0;
+    background: #5f2c82;
+    background: -webkit-linear-gradient(to right, #49a09d, #5f2c82);
+    background: linear-gradient(to right, #49a09d, #5f2c82);
+    /* background: linear-gradient(to right, #060808, #5f2c82); */
+    /* background: linear-gradient(to right, #107777, #5f2c82); */
+
+}
+h1 {
+  text-align: center;
+  color: #5af0bd;
+  /* font-family: 'Lora', serif; */
+  font-family: 'ZCOOL XiaoWei', serif;
+}
+h2 {
+    /* color: #f05a90; */
+  color: #5af0bd;
+  font-size: 16px;
+  text-align: center;
+  font-weight: normal;
+}
+h3 {
+  text-align: center;
+  color: #f69a9a;
+  font-size: 30px;
+  font-family: 'Lora', serif;
+}
+.rules {
+  display: flex;
+  justify-content: space-evenly;
 }
 
 ul {
@@ -28,9 +59,9 @@ li:active {
     opacity: 0.7;
 }
 
-* {
+/* * {
    color: #444444;
-}
+} */
 
 .main-container{
    padding: 20px;
@@ -39,25 +70,50 @@ li:active {
 .block {
    display: flex;
    align-items: center;
+  color: white;
 }
-
+.block span{
+  color: #f69a9a;
+}
 .number-selected {
    background-color: rgb(66,33,204);
    color: white;
 }
 
 .bet-input {
-   padding: 15px;
+    padding: 7px;
    border-radius: 10px;
    border: 1px solid lightgrey;
-   font-size: 15pt;
+   font-size: 15px;
    margin: 0 10px;
 }
 
 img {
-    border-radius: 8px;
+  border-radius: 8px;
+  margin-bottom: -5px;
 }
-
+.footer {
+  color: white;
+  text-align: center;
+}
+.footer strong {
+  color: #f69a9a;
+  font-style: normal;
+  letter-spacing: 0.2px;
+}
+label {
+  color: white;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+li {
+  width: 130px;
+}
+/* ul {
+  display: flex;
+  flex-wrap: wrap;
+}
 @media (max-width: 1100px){
    ul{
       flex-direction: column;
@@ -65,4 +121,4 @@ img {
    li{
       margin: 5px 0;
    }
-}
+} */
