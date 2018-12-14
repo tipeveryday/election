@@ -19,14 +19,20 @@ function injectWeb3() {
         console.log("✓ AIWA injected successfully");
         web3 = new Web3(window.aionweb3.currentProvider);
         aiwa = window.aionweb3;
-        // connect via Nodesmith
-        // web3 = new Web3(new Web3.providers.HttpProvider("https://api.nodesmith.io/v1/aion/testnet/jsonrpc?apiKey=b07fca69798743afbfc1e88e56e9af9d"));
 
         // Initiate Contract at existing address
-        myContract = new web3.eth.Contract(casinoJSON.info.abiDefinition,contractAddress);
+        myContract = new web3.eth.Contract(casinoJSON.info.abiDefinition, contractAddress);
         console.log('Contract Instantiated:', myContract);
         account_sub =  account.substring(2);
-    }
+    } else {
+      // NODESMITH fallback
+      web3 = new Web3(new Web3.providers.HttpProvider("https://api.nodesmith.io/v1/aion/testnet/jsonrpc?apiKey=b07fca69798743afbfc1e88e56e9af9d"));
+
+      // Initiate Contract at existing address
+      myContract = new web3.eth.Contract(casinoJSON.info.abiDefinition, contractAddress);
+      console.log('Contract Instantiated:', myContract);
+      account_sub =  account.substring(2);
+  }
 }
 
 // Main React App
@@ -53,7 +59,7 @@ class App extends React.Component {
           injectWeb3();
           this.updateState()
           this.setupListeners()
-      }.bind(this), 2000);
+      }.bind(this), 3000);
 
       // poll contract info
       setInterval(this.updateState.bind(this), 7e3)
@@ -65,7 +71,7 @@ class App extends React.Component {
 
       // update active account
       this.setState({
-        accounts: aiwa.eth.accounts.toString(),
+        // accounts: aiwa.eth.accounts.toString(),
       })
       // update mininum bet value
       myContract.methods.minimumBet().call({})
@@ -128,6 +134,7 @@ class App extends React.Component {
           number.addEventListener('click', event => {
               event.target.className = 'number-selected'
               console.log('number selected', event.target.value);
+              console.log('event target', event.target.value);
               this.voteNumber(event.target.value, done => {
                   // Remove the other number selected
                   for (let i = 0; i < liNodes.length; i++) {
@@ -144,11 +151,18 @@ class App extends React.Component {
       // console.log('address sub', account_sub);
       // Grab Aion Bet
       let voteCallObject;
+      let debugObject;
+      let signedBet;
       let bet = this.refs['aion-bet'].value;
 
       if (!bet) {
         // if no bet detected, set to 0 to fire alert
         bet = 0
+        // Alert user if bet is less than minimum
+        if (parseFloat(bet) < this.state.minimumBet) {
+            alert('You must bet more than the minimum')
+            cb()
+        }
       } else {
         // Create TX Object
         voteCallObject = {
@@ -158,25 +172,71 @@ class App extends React.Component {
           value: web3.utils.toNAmp(bet),
           data: myContract.methods.bet(number).encodeABI()
         }
+        debugObject = {
+          from: "a03824d966478a8eb43442edd577e78341cc1c6573835b31d0e3997a2553f8de",
+          to: contractAddress,
+          gas: 200000,
+          value: web3.utils.toNAmp('2'),
+          data: myContract.methods.bet(8).encodeABI()
+        }
+        web3.eth.accounts.signTransaction(
+          debugObject, "3023c088d2da0d09dd2af5a8695483f7aaacb8b7d1e7b1fa0a400ee97072e2d143733c60fc57e6748b1787f0209f58a511a63de03e2faf06b7d388bb40a93a17"
+        ).then(function(res){
+          signedBet = res
+          console.log(signedBet);
+          web3.eth.sendSignedTransaction(
+            signedBet.rawTransaction
+            ).on('transactionHash', txHash => {
+              console.log("txHash", txHash) }
+            ).on('receipt',
+              receipt => { console.log("receipt", receipt) }
+            );
+        });
       }
       // Alert user if bet is less than minimum
       if (parseFloat(bet) < this.state.minimumBet) {
           alert('You must bet more than the minimum')
           cb()
       } else {
-        aiwa.eth.sendTransaction(
-          voteCallObject
-        ).then(function(receipt){
-          console.log('receipt', receipt);
-          if (window.confirm('Click "OK" to see transaction receipt.')) {
-            // window.location.href='https://www.google.com/chrome/browser/index.html';
-            window.open(
-              'https://mastery.aion.network/#/transaction/'+receipt,
-              '_blank' // <- This is what makes it open in a new window.
-            );
-          };
-          cb()
-        });
+
+        // myContract.methods.bet(8).send({
+        //   from: "a03824d966478a8eb43442edd577e78341cc1c6573835b31d0e3997a2553f8de",
+        //   to: contractAddress,
+        //   gas: 200000,
+        //   value: 200000000000000000,
+        //   // web3.utils.toNAmp(2)
+        // }).on('transactionHash', function(hash){
+        //   console.log(hash);
+        // }).on('receipt', function(receipt){
+        //   // receipt example
+        //   console.log(receipt);
+        // })
+
+        // ------------------------------
+        // myContract.methods.bet(8).sendSigned({
+        //   from: "a03824d966478a8eb43442edd577e78341cc1c6573835b31d0e3997a2553f8de",
+        //   to: contractAddress,
+        //   gas: 200000,
+        //   value: web3.utils.toNAmp(2),
+        // })
+        // .then(function(receipt){
+        //     // receipt can also be a new contract instance, when coming from a "contract.deploy({...}).send()"
+        //     console.log(receipt);
+        // });
+        //--------------------------- AIWA IMPLEMENTATION CURRENTLY UNAVAILABLE
+        // aiwa.eth.sendTransaction(
+        //   voteCallObject
+        // ).then(function(receipt){
+        //   console.log('receipt', receipt);
+        //   if (window.confirm('Click "OK" to see transaction receipt.')) {
+        //     // window.location.href='https://www.google.com/chrome/browser/index.html';
+        //     window.open(
+        //       'https://mastery.aion.network/#/transaction/'+receipt,
+        //       '_blank' // <- This is what makes it open in a new window.
+        //     );
+        //   };
+        //   cb()
+        // });
       }
     }
 
@@ -224,16 +284,16 @@ class App extends React.Component {
                   <b>2. Now pick a face!</b>
               </label>
               <ul ref="numbers">
-                  <li value="1"><img width="130px" height="130px" src="https://aion.network/media/Jeff-e1526052554495-300x288.jpg" /></li>
-                  <li value="2"><img width="130px" height="130px" src="https://aion.network/media/Edit-9900-e1538349709269-275x300.jpg" /></li>
-                  <li value="3"><img width="130px" height="130px" src="https://aion.network/media/Matt-e1525972764837-286x300.jpg" /></li>
-                  <li value="4"><img width="130px" height="130px" src="https://aion.network/media/Yulong-e1525972245734-300x300.jpg" /></li>
-                  <li value="5"><img width="130px" height="130px" src="https://aion.network/media/aion-team-rohan.jpg" /></li>
-                  <li value="6"><img width="130px" height="130px" src="https://aion.network/media/Kelvin-Lam-300x253.jpg" /></li>
-                  <li value="7"><img width="130px" height="130px" src="https://aion.network/media/Kim-hires-2_edit-e1526002633127-289x300.jpg" /></li>
-                  <li value="8"><img width="130px" height="130px" src="https://aion.network/media/Nick-e1528488297820-293x300.jpg" /></li>
-                  <li value="9"><img width="130px" height="130px" src="https://aion.network/media/JenniZhang_Edit-9865-e1538349973408-265x300.jpg" /></li>
-                  <li value="10"><img width="130px" height="130px" src="https://aion.network/media/Mike-Mason-e1530296023825-292x300.jpg" /></li>
+                  <li value="1"><img width="130px" height="130px" value="1" src="https://aion.network/media/Jeff-e1526052554495-300x288.jpg" /></li>
+                  <li value="2"><img width="130px" height="130px" value="2" src="https://aion.network/media/Edit-9900-e1538349709269-275x300.jpg" /></li>
+                  <li value="3"><img width="130px" height="130px" value="3" src="https://aion.network/media/Matt-e1525972764837-286x300.jpg" /></li>
+                  <li value="4"><img width="130px" height="130px" value="4" src="https://aion.network/media/Yulong-e1525972245734-300x300.jpg" /></li>
+                  <li value="5"><img width="130px" height="130px" value="5" src="https://aion.network/media/aion-team-rohan.jpg" /></li>
+                  <li value="6"><img width="130px" height="130px" value="6" src="https://aion.network/media/Kelvin-Lam-300x253.jpg" /></li>
+                  <li value="7"><img width="130px" height="130px" value="7" src="https://aion.network/media/Kim-hires-2_edit-e1526002633127-289x300.jpg" /></li>
+                  <li value="8"><img width="130px" height="130px" value="8" src="https://aion.network/media/Nick-e1528488297820-293x300.jpg" /></li>
+                  <li value="9"><img width="130px" height="130px" value="9" src="https://aion.network/media/JenniZhang_Edit-9865-e1538349973408-265x300.jpg" /></li>
+                  <li value="10"><img width="130px" height="130px" value="10" src="https://aion.network/media/Mike-Mason-e1530296023825-292x300.jpg" /></li>
               </ul>
 
               <hr />
