@@ -25,9 +25,6 @@ function injectWeb3() {
         // Initiate Contract at existing address
         myContract = new web3.eth.Contract(casinoJSON.info.abiDefinition,contractAddress);
         console.log('Contract Instantiated:', myContract);
-
-
-        let stringg = "test";
         account_sub =  account.substring(2);
     }
 }
@@ -243,6 +240,7 @@ class App extends React.Component {
                 <div><i>You can only vote once per account</i></div>
                 <div><i>Your account is <strong>{this.state.accounts}</strong></i></div>
                 <div><i>Your vote will be reflected when the next block is mined.</i></div>
+                <div className="link"><i>Don't have AIWA? <a href="https://learn.aion.network/v1.0/docs/aiwa" target="_blank">Start here</a></i></div>
               </div>
           </div>
         )

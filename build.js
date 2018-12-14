@@ -32596,6 +32596,20 @@ var App = function (_React$Component) {
                             null,
                             'Your vote will be reflected when the next block is mined.'
                         )
+                    ),
+                    _react2.default.createElement(
+                        'div',
+                        { className: 'link' },
+                        _react2.default.createElement(
+                            'i',
+                            null,
+                            'Don\'t have AIWA? ',
+                            _react2.default.createElement(
+                                'a',
+                                { href: 'https://learn.aion.network/v1.0/docs/aiwa', target: '_blank' },
+                                'Start here'
+                            )
+                        )
                     )
                 )
             );
@@ -76309,7 +76323,7 @@ exports = module.exports = __webpack_require__(441)(false);
 
 
 // module
-exports.push([module.i, "\r\nbody{\r\n    font-family: 'open sans';\r\n    /* font-family: 'Fira Sans', sans-serif; */\r\n    margin: 0;\r\n    background: #5f2c82;\r\n    background: -webkit-linear-gradient(to right, #49a09d, #5f2c82);\r\n    background: linear-gradient(to right, #49a09d, #5f2c82);\r\n    /* background: linear-gradient(to right, #060808, #5f2c82); */\r\n    /* background: linear-gradient(to right, #107777, #5f2c82); */\r\n\r\n}\r\nh1 {\r\n  text-align: center;\r\n  color: #5af0bd;\r\n  /* font-family: 'Lora', serif; */\r\n  font-family: 'ZCOOL XiaoWei', serif;\r\n}\r\nh2 {\r\n    /* color: #f05a90; */\r\n  color: #5af0bd;\r\n  font-size: 16px;\r\n  text-align: center;\r\n  font-weight: normal;\r\n}\r\nh3 {\r\n  text-align: center;\r\n  color: #f69a9a;\r\n  font-size: 30px;\r\n  font-family: 'Lora', serif;\r\n}\r\n.rules {\r\n  display: flex;\r\n  justify-content: space-evenly;\r\n}\r\n\r\nul {\r\n    list-style-type: none;\r\n    padding-left: 40;\r\n    display: flex;\r\n    justify-content: space-around;\r\n    max-width: 1300px;\r\n}\r\n\r\nli {\r\n    border: 2px solid rgb(66,33,204);\r\n    margin-right: 5px;\r\n    border-radius: 10px;\r\n    cursor: pointer;\r\n\r\n}\r\n\r\nli:hover {\r\n    background-color: rgb(66,33,204);\r\n    color: white;\r\n}\r\n\r\nli:active {\r\n    opacity: 0.7;\r\n}\r\n\r\n/* * {\r\n   color: #444444;\r\n} */\r\n\r\n.main-container{\r\n   padding: 20px;\r\n}\r\n\r\n.block {\r\n   display: flex;\r\n   align-items: center;\r\n  color: white;\r\n}\r\n.block span{\r\n  color: #f69a9a;\r\n}\r\n.number-selected {\r\n   background-color: rgb(66,33,204);\r\n   color: white;\r\n}\r\n\r\n.bet-input {\r\n    padding: 7px;\r\n   border-radius: 10px;\r\n   border: 1px solid lightgrey;\r\n   font-size: 15px;\r\n   margin: 0 10px;\r\n}\r\n\r\nimg {\r\n  border-radius: 8px;\r\n  margin-bottom: -5px;\r\n}\r\n.footer {\r\n  color: white;\r\n  text-align: center;\r\n}\r\n.footer strong {\r\n  color: #f69a9a;\r\n  font-style: normal;\r\n  letter-spacing: 0.2px;\r\n}\r\nlabel {\r\n  color: white;\r\n  display: flex;\r\n  flex-direction: column;\r\n  text-align: center;\r\n}\r\nli {\r\n  width: 130px;\r\n}\r\n/* ul {\r\n  display: flex;\r\n  flex-wrap: wrap;\r\n}\r\n@media (max-width: 1100px){\r\n   ul{\r\n      flex-direction: column;\r\n   }\r\n   li{\r\n      margin: 5px 0;\r\n   }\r\n} */\r\n", ""]);
+exports.push([module.i, "\r\nbody{\r\n    font-family: 'open sans';\r\n    /* font-family: 'Fira Sans', sans-serif; */\r\n    margin: 0;\r\n    background: #5f2c82;\r\n    background: -webkit-linear-gradient(to right, #49a09d, #5f2c82);\r\n    background: linear-gradient(to right, #49a09d, #5f2c82);\r\n    /* background: linear-gradient(to right, #060808, #5f2c82); */\r\n    /* background: linear-gradient(to right, #107777, #5f2c82); */\r\n\r\n}\r\nh1 {\r\n  text-align: center;\r\n  color: #5af0bd;\r\n  /* font-family: 'Lora', serif; */\r\n  font-family: 'ZCOOL XiaoWei', serif;\r\n}\r\nh2 {\r\n    /* color: #f05a90; */\r\n  color: #5af0bd;\r\n  font-size: 16px;\r\n  text-align: center;\r\n  font-weight: normal;\r\n}\r\nh3 {\r\n  text-align: center;\r\n  color: #f69a9a;\r\n  font-size: 30px;\r\n  font-family: 'Lora', serif;\r\n}\r\n.rules {\r\n  display: flex;\r\n  justify-content: space-evenly;\r\n}\r\n\r\nul {\r\n    list-style-type: none;\r\n    padding-left: 40;\r\n    display: flex;\r\n    justify-content: space-around;\r\n    max-width: 1300px;\r\n}\r\n\r\nli {\r\n    border: 2px solid rgb(66,33,204);\r\n    margin-right: 5px;\r\n    border-radius: 10px;\r\n    cursor: pointer;\r\n\r\n}\r\n\r\nli:hover {\r\n    background-color: rgb(66,33,204);\r\n    color: white;\r\n}\r\n\r\nli:active {\r\n    opacity: 0.7;\r\n}\r\n\r\n/* * {\r\n   color: #444444;\r\n} */\r\n\r\n.main-container{\r\n   padding: 20px;\r\n}\r\n\r\n.block {\r\n   display: flex;\r\n   align-items: center;\r\n  color: white;\r\n}\r\n.block span{\r\n  color: #f69a9a;\r\n}\r\n.number-selected {\r\n   background-color: rgb(66,33,204);\r\n   color: white;\r\n}\r\n\r\n.bet-input {\r\n    padding: 7px;\r\n   border-radius: 10px;\r\n   border: 1px solid lightgrey;\r\n   font-size: 15px;\r\n   margin: 0 10px;\r\n}\r\n\r\nimg {\r\n  border-radius: 8px;\r\n  margin-bottom: -5px;\r\n}\r\n.footer {\r\n  color: white;\r\n  text-align: center;\r\n}\r\n.footer strong {\r\n  color: #f69a9a;\r\n  font-style: normal;\r\n  letter-spacing: 0.2px;\r\n}\r\nlabel {\r\n  color: white;\r\n  display: flex;\r\n  flex-direction: column;\r\n  text-align: center;\r\n}\r\nli {\r\n  width: 130px;\r\n}\r\n.link {\r\n  color: #00ffd4\r\n}\r\n.link a {\r\n  color: yellow\r\n}\r\n/* ul {\r\n  display: flex;\r\n  flex-wrap: wrap;\r\n}\r\n@media (max-width: 1100px){\r\n   ul{\r\n      flex-direction: column;\r\n   }\r\n   li{\r\n      margin: 5px 0;\r\n   }\r\n} */\r\n", ""]);
 
 // exports
 

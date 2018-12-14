@@ -110,6 +110,12 @@ label {
 li {
   width: 130px;
 }
+.link {
+  color: #00ffd4
+}
+.link a {
+  color: yellow
+}
 /* ul {
   display: flex;
   flex-wrap: wrap;
