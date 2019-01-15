@@ -2,13 +2,15 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import Web3 from 'aion-web3'
 import casinoJSON from './../../build/contracts/Casino.json' // import our contract JSON
-import './../css/index.css' // styling
+// import './../css/index.css' // styling
 
 // Initializing Variables
 let web3;
 let aiwa;
 let myContract;
-let contractAddress = "0xa05469cA61CB30f792C27809aC9C893f8271faFF166bBC1e994ea4Aa980D68b1";
+// let contractAddress = "0xa05469cA61CB30f792C27809aC9C893f8271faFF166bBC1e994ea4Aa980D68b1"; old contract
+// let contractAddress = "0xa00028a1d35C1b52858638bA30aF74C2A0067476D1Ce963B61359b1B43202DBC"
+let contractAddress = "0xA0C3a25a1D96848a24f18A574E0583b2183Af7CE97c222d1b3b50ee00a072B7B"
 let account = "Not Detected - Please download AIWA to play this game";
 let account_sub = "";
 
@@ -40,15 +42,16 @@ class App extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            lastLuckyFace: "",
+            lastLuckyAnimal: "",
             numberOfBets: 0,
             minimumBet: 0,
             totalBet: 0,
             maxAmountOfBets: 0,
-            accounts: account
+            accounts: account,
+            doesPlayerExist: false,
         }
         window.a = this.state
-        // this.updateState = this.updateState.bind(this)
+        this.updateState = this.updateState.bind(this)
     }
 
     componentDidMount() {
@@ -71,8 +74,18 @@ class App extends React.Component {
 
       // update active account
       this.setState({
-        // accounts: aiwa.eth.accounts.toString(),
+        accounts: aiwa.eth.accounts.toString(),
       })
+
+      // check if account has already placed a bet
+        myContract.methods.checkPlayerExists(aiwa.eth.accounts.toString()).call({})
+        .then(function(result){
+          console.log(result);
+          this.setState({
+            doesPlayerExist: result
+          })
+        }.bind(this));
+
       // update mininum bet value
       myContract.methods.minimumBet().call({})
       .then(function(result){
@@ -86,8 +99,9 @@ class App extends React.Component {
       myContract.methods.totalBet().call({})
       .then(function(result){
           console.log('total bet', result);
+          // Do the Division for 18 decimal points (AION)
           this.setState({
-            totalBet: result
+            totalBet: (result / 1*Math.pow(10,-18))
           })
       }.bind(this));
 
@@ -110,37 +124,76 @@ class App extends React.Component {
       }.bind(this));
 
       // update last winner
-      myContract.methods.lastLuckyFace().call({})
+      // myContract.methods.lastLuckyFace().call({})
+      myContract.methods.lastLuckyAnimal().call({})
       .then(function(result){
-          console.log('Last Lucky Face', result);
+          console.log('Last Lucky Animal', result);
           let winner;
-          if (result === "1") {
-            winner = "Jeff Har"
-          } else {
-            winner = "Nick Nadeau"
+
+          switch(result) {
+            case 1:
+              winner = "Walrus";
+              break;
+            case 2:
+              winner = "Donkey";
+              break;
+            case 3:
+              winner = "Beaver";
+              break;
+            case 4:
+              winner = "Duck";
+              break;
+            case 5:
+              winner = "Chick";
+              break;
+            case 6:
+              winner = "Cow";
+              break;
+            case 7:
+              winner = "Dog";
+              break;
+            case 8:
+              winner = "Monkey";
+              break;
+            case 9:
+              winner = "Elephant";
+              break;
+            case 10:
+              winner = "Lion";
+              break;
+            default:
+              winner = "N/A"
           }
+
           this.setState({
-            lastLuckyFace: winner
+            lastLuckyAnimal: winner
           })
+
       }.bind(this));
 
     }
 
     // Listen for events and executes the voteNumber method
     setupListeners() {
+
       console.log('setupListeners hit');
       let liNodes = this.refs.numbers.querySelectorAll('li')
+      // let imgNodes = this.refs.numbers.querySelectorAll('img')
       liNodes.forEach(number => {
           number.addEventListener('click', event => {
-              event.target.className = 'number-selected'
-              console.log('number selected', event.target.value);
-              console.log('event target', event.target.value);
-              this.voteNumber(event.target.value, done => {
+              // If player exists, do not allow voting
+              if (this.state.doesPlayerExist) {
+                alert("This account has already placed a bet. Wait until next round!")
+              } else {
+                event.target.className = 'number-selected'
+                console.log('number selected', event.target.value);
+                this.voteNumber(event.target.value, done => {
                   // Remove the other number selected
                   for (let i = 0; i < liNodes.length; i++) {
-                      liNodes[i].className = ''
+                    liNodes[i].className = ''
                   }
-              })
+                })
+              }
           })
       })
     }
@@ -153,7 +206,8 @@ class App extends React.Component {
       let voteCallObject;
       let debugObject;
       let signedBet;
-      let bet = this.refs['aion-bet'].value;
+      let bet = (this.refs['aion-bet'].value).toString();
+      console.log('bet = ', bet);
 
       if (!bet) {
         // if no bet detected, set to 0 to fire alert
@@ -164,46 +218,64 @@ class App extends React.Component {
             cb()
         }
       } else {
-        // Create TX Object
+        console.log("hit the !bet else");
+        // Create TX Object - works w/ AIWA
         voteCallObject = {
-          from: account_sub,
+          from: this.state.accounts,
           to: contractAddress,
           gas: 2000000,
           value: web3.utils.toNAmp(bet),
           data: myContract.methods.bet(number).encodeABI()
         }
-        debugObject = {
-          from: "a03824d966478a8eb43442edd577e78341cc1c6573835b31d0e3997a2553f8de",
-          to: contractAddress,
-          gas: 200000,
-          value: web3.utils.toNAmp('2'),
-          data: myContract.methods.bet(8).encodeABI()
-        }
-        web3.eth.accounts.signTransaction(
-          debugObject, "3023c088d2da0d09dd2af5a8695483f7aaacb8b7d1e7b1fa0a400ee97072e2d143733c60fc57e6748b1787f0209f58a511a63de03e2faf06b7d388bb40a93a17"
-        ).then(function(res){
-          signedBet = res
-          console.log(signedBet);
-          web3.eth.sendSignedTransaction(
-            signedBet.rawTransaction
-            ).on('transactionHash', txHash => {
-              console.log("txHash", txHash) }
-            ).on('receipt',
-              receipt => { console.log("receipt", receipt) }
-            );
-        });
+        // DIRECT HIT
+        // debugObject = {
+        //   // from: this.state.accounts,
+        //   from: "0xa0035a4ed024e8b0d0c0af82efc3a03ef5baadbd11602461d0da39b0291235c3",
+        //   to: contractAddress,
+        //   gas: 2000000,
+        //   value: web3.utils.toNAmp(bet),
+        //   data: myContract.methods.bet(8).encodeABI()
+        // }
+        // web3.eth.accounts.signTransaction(
+        //   debugObject, "f91658b2ca2db558861121df98ea3a74b3179853b1758c37ca0bd831f0391a2beb9669e03ce3c3d3b31e5bf7d09a288f1750c5078ea0eb9893ef1ec7bc52bf7e"
+        // ).then(function(res){
+        //   signedBet = res;
+        //   console.log(signedBet);
+        //   web3.eth.sendSignedTransaction(
+        //     signedBet.rawTransaction
+        //     ).on('transactionHash', txHash => {
+        //       console.log("txHash", txHash) }
+        //     ).on('receipt',
+        //       receipt => { console.log("receipt", receipt) }
+        //     );
+        // });
       }
       // Alert user if bet is less than minimum
       if (parseFloat(bet) < this.state.minimumBet) {
           alert('You must bet more than the minimum')
           cb()
       } else {
+        console.log("hit aiwa else");
+        aiwa.eth.sendTransaction(
+          voteCallObject
+        ).then(function(receipt){
+          console.log('receipt', receipt);
+          if (window.confirm('Click "OK" to see transaction receipt.')) {
+            // window.location.href='https://www.google.com/chrome/browser/index.html';
+            window.open(
+              'https://mastery.aion.network/#/transaction/'+receipt,
+              '_blank' // <- This is what makes it open in a new window.
+            );
+          };
+          cb()
+        });
 
-        // myContract.methods.bet(8).send({
-        //   from: "a03824d966478a8eb43442edd577e78341cc1c6573835b31d0e3997a2553f8de",
+        // --------------------------
+        // myContract.methods.bet(number).send({
+        //   from: this.state.accounts,
         //   to: contractAddress,
         //   gas: 200000,
-        //   value: 200000000000000000,
+        //   value: web3.utils.toNAmp(bet),
         //   // web3.utils.toNAmp(2)
         // }).on('transactionHash', function(hash){
         //   console.log(hash);
@@ -251,8 +323,8 @@ class App extends React.Component {
                 </div>
 
                 <div className="block">
-                    <b>Last winning face:</b> &nbsp;
-                    <span>{this.state.lastLuckyFace}</span>
+                    <b>Last winning animal:</b> &nbsp;
+                    <span>{this.state.lastLuckyAnimal}</span>
                 </div>
 
                 <div className="block">
@@ -277,23 +349,23 @@ class App extends React.Component {
               <h2>Vote who is going to be the face of Aion! <br/> When {this.state.maxAmountOfBets} bets have been placed - a new member of Aion will be randomly picked 👑 and a payout will occur. <br/> Winners who guessed correctly will split the amount in the AION pool!</h2>
               <hr />
 
-              <h3>PLAY!</h3>
+              <h3>Vote</h3>
               <label>
                   <b>1. How much AION do you want to bet? <input className="bet-input" ref="aion-bet" type="number" placeholder="0"/> AION</b>
                   <br />
                   <b>2. Now pick a face!</b>
               </label>
-              <ul ref="numbers">
-                  <li value="1"><img width="130px" height="130px" value="1" src="https://aion.network/media/Jeff-e1526052554495-300x288.jpg" /></li>
-                  <li value="2"><img width="130px" height="130px" value="2" src="https://aion.network/media/Edit-9900-e1538349709269-275x300.jpg" /></li>
-                  <li value="3"><img width="130px" height="130px" value="3" src="https://aion.network/media/Matt-e1525972764837-286x300.jpg" /></li>
-                  <li value="4"><img width="130px" height="130px" value="4" src="https://aion.network/media/Yulong-e1525972245734-300x300.jpg" /></li>
-                  <li value="5"><img width="130px" height="130px" value="5" src="https://aion.network/media/aion-team-rohan.jpg" /></li>
-                  <li value="6"><img width="130px" height="130px" value="6" src="https://aion.network/media/Kelvin-Lam-300x253.jpg" /></li>
-                  <li value="7"><img width="130px" height="130px" value="7" src="https://aion.network/media/Kim-hires-2_edit-e1526002633127-289x300.jpg" /></li>
-                  <li value="8"><img width="130px" height="130px" value="8" src="https://aion.network/media/Nick-e1528488297820-293x300.jpg" /></li>
-                  <li value="9"><img width="130px" height="130px" value="9" src="https://aion.network/media/JenniZhang_Edit-9865-e1538349973408-265x300.jpg" /></li>
-                  <li value="10"><img width="130px" height="130px" value="10" src="https://aion.network/media/Mike-Mason-e1530296023825-292x300.jpg" /></li>
+              <ul ref="numbers" className="numbers">
+                  <li value="1"></li>
+                  <li value="2"></li>
+                  <li value="3"></li>
+                  <li value="4"></li>
+                  <li value="5"></li>
+                  <li value="6"></li>
+                  <li value="7"></li>
+                  <li value="8"></li>
+                  <li value="9"></li>
+                  <li value="10"></li>
               </ul>
 
               <hr />

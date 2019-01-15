@@ -4,7 +4,7 @@ contract Casino {
    uint public minimumBet;
    uint public totalBet;
    uint public numberOfBets;
-   uint public lastLuckyFace;
+   uint public lastLuckyAnimal;
    uint public maxAmountOfBets = 10;
    address[] public players;
    struct Player {
@@ -42,7 +42,7 @@ contract Casino {
    function generateNumberWinner() public {
       uint numberGenerated = block.number % 10 + 1; // This isn't secure
       distributePrizes(numberGenerated);
-      lastLuckyFace = numberGenerated;
+      lastLuckyAnimalFace = numberGenerated;
    }
    // Sends the corresponding ether to each winner depending on the total bets
    function distributePrizes(uint numberWinner) public {

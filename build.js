@@ -32172,520 +32172,547 @@ var _Casino = __webpack_require__(438);
 
 var _Casino2 = _interopRequireDefault(_Casino);
 
-__webpack_require__(439);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } // import our contract JSON
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-
-// styling
+// import our contract JSON
+// import './../css/index.css' // styling
 
 // Initializing Variables
 var web3 = void 0;
 var aiwa = void 0;
 var myContract = void 0;
-var contractAddress = "0xa05469cA61CB30f792C27809aC9C893f8271faFF166bBC1e994ea4Aa980D68b1";
+// let contractAddress = "0xa05469cA61CB30f792C27809aC9C893f8271faFF166bBC1e994ea4Aa980D68b1"; old contract
+// let contractAddress = "0xa00028a1d35C1b52858638bA30aF74C2A0067476D1Ce963B61359b1B43202DBC"
+var contractAddress = "0xA0C3a25a1D96848a24f18A574E0583b2183Af7CE97c222d1b3b50ee00a072B7B";
 var account = "Not Detected - Please download AIWA to play this game";
 var account_sub = "";
 
 // Detect AIWA injection and inject into application
 function injectWeb3() {
-    // Is there an injected web3 instance?
-    if (window.aionweb3) {
-        // AIWA Chrome extension will inject automatically
-        console.log("✓ AIWA injected successfully");
-        web3 = new _aionWeb2.default(window.aionweb3.currentProvider);
-        aiwa = window.aionweb3;
+  // Is there an injected web3 instance?
+  if (window.aionweb3) {
+    // AIWA Chrome extension will inject automatically
+    console.log("✓ AIWA injected successfully");
+    web3 = new _aionWeb2.default(window.aionweb3.currentProvider);
+    aiwa = window.aionweb3;
 
-        // Initiate Contract at existing address
-        myContract = new web3.eth.Contract(_Casino2.default.info.abiDefinition, contractAddress);
-        console.log('Contract Instantiated:', myContract);
-        account_sub = account.substring(2);
-    } else {
-        // NODESMITH fallback
-        web3 = new _aionWeb2.default(new _aionWeb2.default.providers.HttpProvider("https://api.nodesmith.io/v1/aion/testnet/jsonrpc?apiKey=b07fca69798743afbfc1e88e56e9af9d"));
+    // Initiate Contract at existing address
+    myContract = new web3.eth.Contract(_Casino2.default.info.abiDefinition, contractAddress);
+    console.log('Contract Instantiated:', myContract);
+    account_sub = account.substring(2);
+  } else {
+    // NODESMITH fallback
+    web3 = new _aionWeb2.default(new _aionWeb2.default.providers.HttpProvider("https://api.nodesmith.io/v1/aion/testnet/jsonrpc?apiKey=b07fca69798743afbfc1e88e56e9af9d"));
 
-        // Initiate Contract at existing address
-        myContract = new web3.eth.Contract(_Casino2.default.info.abiDefinition, contractAddress);
-        console.log('Contract Instantiated:', myContract);
-        account_sub = account.substring(2);
-    }
+    // Initiate Contract at existing address
+    myContract = new web3.eth.Contract(_Casino2.default.info.abiDefinition, contractAddress);
+    console.log('Contract Instantiated:', myContract);
+    account_sub = account.substring(2);
+  }
 }
 
 // Main React App
 
 var App = function (_React$Component) {
-    _inherits(App, _React$Component);
+  _inherits(App, _React$Component);
 
-    function App(props) {
-        _classCallCheck(this, App);
+  function App(props) {
+    _classCallCheck(this, App);
 
-        var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
+    var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
 
-        _this.state = {
-            lastLuckyFace: "",
-            numberOfBets: 0,
-            minimumBet: 0,
-            totalBet: 0,
-            maxAmountOfBets: 0,
-            accounts: account
-        };
-        window.a = _this.state;
-        // this.updateState = this.updateState.bind(this)
-        return _this;
+    _this.state = {
+      lastLuckyAnimal: "",
+      numberOfBets: 0,
+      minimumBet: 0,
+      totalBet: 0,
+      maxAmountOfBets: 0,
+      accounts: account,
+      doesPlayerExist: false
+    };
+    window.a = _this.state;
+    _this.updateState = _this.updateState.bind(_this);
+    return _this;
+  }
+
+  _createClass(App, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      console.log('componentDidMount');
+      // Check for AIWA after mount
+      setTimeout(function () {
+        console.log(window.aionweb3);
+        injectWeb3();
+        this.updateState();
+        this.setupListeners();
+      }.bind(this), 3000);
+
+      // poll contract info
+      setInterval(this.updateState.bind(this), 7e3);
     }
 
-    _createClass(App, [{
-        key: 'componentDidMount',
-        value: function componentDidMount() {
-            console.log('componentDidMount');
-            // Check for AIWA after mount
-            setTimeout(function () {
-                console.log(window.aionweb3);
-                injectWeb3();
-                this.updateState();
-                this.setupListeners();
-            }.bind(this), 3000);
+    // Update DOM from Contract information
 
-            // poll contract info
-            setInterval(this.updateState.bind(this), 7e3);
+  }, {
+    key: 'updateState',
+    value: function updateState() {
+      console.log('updateState hit');
+
+      // update active account
+      this.setState({
+        accounts: aiwa.eth.accounts.toString()
+      });
+
+      // check if account has already placed a bet
+      myContract.methods.checkPlayerExists(aiwa.eth.accounts.toString()).call({}).then(function (result) {
+        console.log(result);
+        this.setState({
+          doesPlayerExist: result
+        });
+      }.bind(this));
+
+      // update mininum bet value
+      myContract.methods.minimumBet().call({}).then(function (result) {
+        console.log('min bet', result);
+        this.setState({
+          minimumBet: result
+        });
+      }.bind(this));
+
+      // update total amount in bets
+      myContract.methods.totalBet().call({}).then(function (result) {
+        console.log('total bet', result);
+        // Do the Division for 18 decimal points (AION)
+        this.setState({
+          totalBet: result / 1 * Math.pow(10, -18)
+        });
+      }.bind(this));
+
+      // update numberOfBets
+      myContract.methods.numberOfBets().call({}).then(function (result) {
+        console.log('number of bets', result);
+        this.setState({
+          numberOfBets: result
+        });
+      }.bind(this));
+
+      // update maximum amount of bets
+      myContract.methods.maxAmountOfBets().call({}).then(function (result) {
+        console.log('maxAmountOfBets', result);
+        this.setState({
+          maxAmountOfBets: result
+        });
+      }.bind(this));
+
+      // update last winner
+      // myContract.methods.lastLuckyFace().call({})
+      myContract.methods.lastLuckyAnimal().call({}).then(function (result) {
+        console.log('Last Lucky Animal', result);
+        var winner = void 0;
+
+        switch (result) {
+          case 1:
+            winner = "Walrus";
+            break;
+          case 2:
+            winner = "Donkey";
+            break;
+          case 3:
+            winner = "Beaver";
+            break;
+          case 4:
+            winner = "Duck";
+            break;
+          case 5:
+            winner = "Chick";
+            break;
+          case 6:
+            winner = "Cow";
+            break;
+          case 7:
+            winner = "Dog";
+            break;
+          case 8:
+            winner = "Monkey";
+            break;
+          case 9:
+            winner = "Elephant";
+            break;
+          case 10:
+            winner = "Lion";
+            break;
+          default:
+            winner = "N/A";
         }
 
-        // Update DOM from Contract information
+        this.setState({
+          lastLuckyAnimal: winner
+        });
+      }.bind(this));
+    }
 
-    }, {
-        key: 'updateState',
-        value: function updateState() {
-            console.log('updateState hit');
+    // Listen for events and executes the voteNumber method
 
-            // update active account
-            this.setState({
-                // accounts: aiwa.eth.accounts.toString(),
+  }, {
+    key: 'setupListeners',
+    value: function setupListeners() {
+      var _this2 = this;
+
+      console.log('setupListeners hit');
+      var liNodes = this.refs.numbers.querySelectorAll('li');
+      // let imgNodes = this.refs.numbers.querySelectorAll('img')
+      liNodes.forEach(function (number) {
+        number.addEventListener('click', function (event) {
+          // If player exists, do not allow voting
+          if (_this2.state.doesPlayerExist) {
+            alert("This account has already placed a bet. Wait until next round!");
+          } else {
+            event.target.className = 'number-selected';
+            console.log('number selected', event.target.value);
+            _this2.voteNumber(event.target.value, function (done) {
+              // Remove the other number selected
+              for (var i = 0; i < liNodes.length; i++) {
+                liNodes[i].className = '';
+              }
             });
-            // update mininum bet value
-            myContract.methods.minimumBet().call({}).then(function (result) {
-                console.log('min bet', result);
-                this.setState({
-                    minimumBet: result
-                });
-            }.bind(this));
+          }
+        });
+      });
+    }
 
-            // update total amount in bets
-            myContract.methods.totalBet().call({}).then(function (result) {
-                console.log('total bet', result);
-                this.setState({
-                    totalBet: result
-                });
-            }.bind(this));
+    // Send Number to Contract
 
-            // update numberOfBets
-            myContract.methods.numberOfBets().call({}).then(function (result) {
-                console.log('number of bets', result);
-                this.setState({
-                    numberOfBets: result
-                });
-            }.bind(this));
+  }, {
+    key: 'voteNumber',
+    value: function voteNumber(number, cb) {
 
-            // update maximum amount of bets
-            myContract.methods.maxAmountOfBets().call({}).then(function (result) {
-                console.log('maxAmountOfBets', result);
-                this.setState({
-                    maxAmountOfBets: result
-                });
-            }.bind(this));
+      // console.log('address sub', account_sub);
+      // Grab Aion Bet
+      var voteCallObject = void 0;
+      var debugObject = void 0;
+      var signedBet = void 0;
+      var bet = this.refs['aion-bet'].value.toString();
+      console.log('bet = ', bet);
 
-            // update last winner
-            myContract.methods.lastLuckyFace().call({}).then(function (result) {
-                console.log('Last Lucky Face', result);
-                var winner = void 0;
-                if (result === "1") {
-                    winner = "Jeff Har";
-                } else {
-                    winner = "Nick Nadeau";
-                }
-                this.setState({
-                    lastLuckyFace: winner
-                });
-            }.bind(this));
+      if (!bet) {
+        // if no bet detected, set to 0 to fire alert
+        bet = 0;
+        // Alert user if bet is less than minimum
+        if (parseFloat(bet) < this.state.minimumBet) {
+          alert('You must bet more than the minimum');
+          cb();
         }
-
-        // Listen for events and executes the voteNumber method
-
-    }, {
-        key: 'setupListeners',
-        value: function setupListeners() {
-            var _this2 = this;
-
-            console.log('setupListeners hit');
-            var liNodes = this.refs.numbers.querySelectorAll('li');
-            liNodes.forEach(function (number) {
-                number.addEventListener('click', function (event) {
-                    event.target.className = 'number-selected';
-                    console.log('number selected', event.target.value);
-                    console.log('event target', event.target.value);
-                    _this2.voteNumber(event.target.value, function (done) {
-                        // Remove the other number selected
-                        for (var i = 0; i < liNodes.length; i++) {
-                            liNodes[i].className = '';
-                        }
-                    });
-                });
-            });
-        }
-
-        // Send Number to Contract
-
-    }, {
-        key: 'voteNumber',
-        value: function voteNumber(number, cb) {
-
-            // console.log('address sub', account_sub);
-            // Grab Aion Bet
-            var voteCallObject = void 0;
-            var debugObject = void 0;
-            var signedBet = void 0;
-            var bet = this.refs['aion-bet'].value;
-
-            if (!bet) {
-                // if no bet detected, set to 0 to fire alert
-                bet = 0;
-                // Alert user if bet is less than minimum
-                if (parseFloat(bet) < this.state.minimumBet) {
-                    alert('You must bet more than the minimum');
-                    cb();
-                }
-            } else {
-                // Create TX Object
-                voteCallObject = {
-                    from: account_sub,
-                    to: contractAddress,
-                    gas: 2000000,
-                    value: web3.utils.toNAmp(bet),
-                    data: myContract.methods.bet(number).encodeABI()
-                };
-                debugObject = {
-                    from: "a03824d966478a8eb43442edd577e78341cc1c6573835b31d0e3997a2553f8de",
-                    to: contractAddress,
-                    gas: 200000,
-                    value: web3.utils.toNAmp('2'),
-                    data: myContract.methods.bet(8).encodeABI()
-                };
-                web3.eth.accounts.signTransaction(debugObject, "3023c088d2da0d09dd2af5a8695483f7aaacb8b7d1e7b1fa0a400ee97072e2d143733c60fc57e6748b1787f0209f58a511a63de03e2faf06b7d388bb40a93a17").then(function (res) {
-                    signedBet = res;
-                    console.log(signedBet);
-                    web3.eth.sendSignedTransaction(signedBet.rawTransaction).on('transactionHash', function (txHash) {
-                        console.log("txHash", txHash);
-                    }).on('receipt', function (receipt) {
-                        console.log("receipt", receipt);
-                    });
-                });
-            }
-            // Alert user if bet is less than minimum
-            if (parseFloat(bet) < this.state.minimumBet) {
-                alert('You must bet more than the minimum');
-                cb();
-            } else {
-
-                // myContract.methods.bet(8).send({
-                //   from: "a03824d966478a8eb43442edd577e78341cc1c6573835b31d0e3997a2553f8de",
-                //   to: contractAddress,
-                //   gas: 200000,
-                //   value: 200000000000000000,
-                //   // web3.utils.toNAmp(2)
-                // }).on('transactionHash', function(hash){
-                //   console.log(hash);
-                // }).on('receipt', function(receipt){
-                //   // receipt example
-                //   console.log(receipt);
-                // })
-
-                // ------------------------------
-                // myContract.methods.bet(8).sendSigned({
-                //   from: "a03824d966478a8eb43442edd577e78341cc1c6573835b31d0e3997a2553f8de",
-                //   to: contractAddress,
-                //   gas: 200000,
-                //   value: web3.utils.toNAmp(2),
-                // })
-                // .then(function(receipt){
-                //     // receipt can also be a new contract instance, when coming from a "contract.deploy({...}).send()"
-                //     console.log(receipt);
-                // });
-                //--------------------------- AIWA IMPLEMENTATION CURRENTLY UNAVAILABLE
-                // aiwa.eth.sendTransaction(
-                //   voteCallObject
-                // ).then(function(receipt){
-                //   console.log('receipt', receipt);
-                //   if (window.confirm('Click "OK" to see transaction receipt.')) {
-                //     // window.location.href='https://www.google.com/chrome/browser/index.html';
-                //     window.open(
-                //       'https://mastery.aion.network/#/transaction/'+receipt,
-                //       '_blank' // <- This is what makes it open in a new window.
-                //     );
-                //   };
-                //   cb()
-                // });
-            }
-        }
-    }, {
-        key: 'render',
-        value: function render() {
-            return _react2.default.createElement(
-                'div',
-                { className: 'main-container' },
-                _react2.default.createElement(
-                    'h1',
-                    null,
-                    'Welcome to Aion Roulette\uD83D\uDE80'
-                ),
-                _react2.default.createElement(
-                    'div',
-                    { className: 'rules' },
-                    _react2.default.createElement(
-                        'div',
-                        { className: 'block ' },
-                        _react2.default.createElement(
-                            'b',
-                            null,
-                            'Number of bets so far:'
-                        ),
-                        ' \xA0',
-                        _react2.default.createElement(
-                            'span',
-                            null,
-                            this.state.numberOfBets
-                        )
-                    ),
-                    _react2.default.createElement(
-                        'div',
-                        { className: 'block' },
-                        _react2.default.createElement(
-                            'b',
-                            null,
-                            'Last winning face:'
-                        ),
-                        ' \xA0',
-                        _react2.default.createElement(
-                            'span',
-                            null,
-                            this.state.lastLuckyFace
-                        )
-                    ),
-                    _react2.default.createElement(
-                        'div',
-                        { className: 'block' },
-                        _react2.default.createElement(
-                            'b',
-                            null,
-                            'Total AION pool:'
-                        ),
-                        ' \xA0',
-                        _react2.default.createElement(
-                            'span',
-                            null,
-                            this.state.totalBet,
-                            ' AION'
-                        )
-                    ),
-                    _react2.default.createElement(
-                        'div',
-                        { className: 'block' },
-                        _react2.default.createElement(
-                            'b',
-                            null,
-                            'Minimum bet:'
-                        ),
-                        ' \xA0',
-                        _react2.default.createElement(
-                            'span',
-                            null,
-                            this.state.minimumBet,
-                            ' AION'
-                        )
-                    ),
-                    _react2.default.createElement(
-                        'div',
-                        { className: 'block' },
-                        _react2.default.createElement(
-                            'b',
-                            null,
-                            'Max amount of bets:'
-                        ),
-                        ' \xA0',
-                        _react2.default.createElement(
-                            'span',
-                            null,
-                            this.state.maxAmountOfBets
-                        )
-                    )
-                ),
-                _react2.default.createElement('hr', null),
-                _react2.default.createElement(
-                    'h2',
-                    null,
-                    'Vote who is going to be the face of Aion! ',
-                    _react2.default.createElement('br', null),
-                    ' When ',
-                    this.state.maxAmountOfBets,
-                    ' bets have been placed - a new member of Aion will be randomly picked \uD83D\uDC51 and a payout will occur. ',
-                    _react2.default.createElement('br', null),
-                    ' Winners who guessed correctly will split the amount in the AION pool!'
-                ),
-                _react2.default.createElement('hr', null),
-                _react2.default.createElement(
-                    'h3',
-                    null,
-                    'PLAY!'
-                ),
-                _react2.default.createElement(
-                    'label',
-                    null,
-                    _react2.default.createElement(
-                        'b',
-                        null,
-                        '1. How much AION do you want to bet? ',
-                        _react2.default.createElement('input', { className: 'bet-input', ref: 'aion-bet', type: 'number', placeholder: '0' }),
-                        ' AION'
-                    ),
-                    _react2.default.createElement('br', null),
-                    _react2.default.createElement(
-                        'b',
-                        null,
-                        '2. Now pick a face!'
-                    )
-                ),
-                _react2.default.createElement(
-                    'ul',
-                    { ref: 'numbers' },
-                    _react2.default.createElement(
-                        'li',
-                        { value: '1' },
-                        _react2.default.createElement('img', { width: '130px', height: '130px', value: '1', src: 'https://aion.network/media/Jeff-e1526052554495-300x288.jpg' })
-                    ),
-                    _react2.default.createElement(
-                        'li',
-                        { value: '2' },
-                        _react2.default.createElement('img', { width: '130px', height: '130px', value: '2', src: 'https://aion.network/media/Edit-9900-e1538349709269-275x300.jpg' })
-                    ),
-                    _react2.default.createElement(
-                        'li',
-                        { value: '3' },
-                        _react2.default.createElement('img', { width: '130px', height: '130px', value: '3', src: 'https://aion.network/media/Matt-e1525972764837-286x300.jpg' })
-                    ),
-                    _react2.default.createElement(
-                        'li',
-                        { value: '4' },
-                        _react2.default.createElement('img', { width: '130px', height: '130px', value: '4', src: 'https://aion.network/media/Yulong-e1525972245734-300x300.jpg' })
-                    ),
-                    _react2.default.createElement(
-                        'li',
-                        { value: '5' },
-                        _react2.default.createElement('img', { width: '130px', height: '130px', value: '5', src: 'https://aion.network/media/aion-team-rohan.jpg' })
-                    ),
-                    _react2.default.createElement(
-                        'li',
-                        { value: '6' },
-                        _react2.default.createElement('img', { width: '130px', height: '130px', value: '6', src: 'https://aion.network/media/Kelvin-Lam-300x253.jpg' })
-                    ),
-                    _react2.default.createElement(
-                        'li',
-                        { value: '7' },
-                        _react2.default.createElement('img', { width: '130px', height: '130px', value: '7', src: 'https://aion.network/media/Kim-hires-2_edit-e1526002633127-289x300.jpg' })
-                    ),
-                    _react2.default.createElement(
-                        'li',
-                        { value: '8' },
-                        _react2.default.createElement('img', { width: '130px', height: '130px', value: '8', src: 'https://aion.network/media/Nick-e1528488297820-293x300.jpg' })
-                    ),
-                    _react2.default.createElement(
-                        'li',
-                        { value: '9' },
-                        _react2.default.createElement('img', { width: '130px', height: '130px', value: '9', src: 'https://aion.network/media/JenniZhang_Edit-9865-e1538349973408-265x300.jpg' })
-                    ),
-                    _react2.default.createElement(
-                        'li',
-                        { value: '10' },
-                        _react2.default.createElement('img', { width: '130px', height: '130px', value: '10', src: 'https://aion.network/media/Mike-Mason-e1530296023825-292x300.jpg' })
-                    )
-                ),
-                _react2.default.createElement('hr', null),
-                _react2.default.createElement(
-                    'div',
-                    { className: 'footer' },
-                    _react2.default.createElement(
-                        'div',
-                        null,
-                        _react2.default.createElement(
-                            'i',
-                            null,
-                            'Only working with the Mastery Test Network \uD83D\uDCE1'
-                        )
-                    ),
-                    _react2.default.createElement(
-                        'div',
-                        null,
-                        _react2.default.createElement(
-                            'i',
-                            null,
-                            'You can only vote once per account'
-                        )
-                    ),
-                    _react2.default.createElement(
-                        'div',
-                        null,
-                        _react2.default.createElement(
-                            'i',
-                            null,
-                            'Your account is ',
-                            _react2.default.createElement(
-                                'strong',
-                                null,
-                                this.state.accounts
-                            )
-                        )
-                    ),
-                    _react2.default.createElement(
-                        'div',
-                        null,
-                        _react2.default.createElement(
-                            'i',
-                            null,
-                            'Your vote will be reflected when the next block is mined.'
-                        )
-                    ),
-                    _react2.default.createElement(
-                        'div',
-                        { className: 'link' },
-                        _react2.default.createElement(
-                            'i',
-                            null,
-                            'Don\'t have AIWA? ',
-                            _react2.default.createElement(
-                                'a',
-                                { href: 'https://learn.aion.network/v1.0/docs/aiwa', target: '_blank' },
-                                'Start here'
-                            )
-                        )
-                    )
-                ),
-                _react2.default.createElement(
-                    'div',
-                    { className: 'madeWithLove' },
-                    _react2.default.createElement(
-                        'p',
-                        null,
-                        'Made with \uD83D\uDD25 by the Aion Developer Success Team \uD83E\uDD18'
-                    )
-                )
+      } else {
+        console.log("hit the !bet else");
+        // Create TX Object - works w/ AIWA
+        voteCallObject = {
+          from: this.state.accounts,
+          to: contractAddress,
+          gas: 2000000,
+          value: web3.utils.toNAmp(bet),
+          data: myContract.methods.bet(number).encodeABI()
+          // DIRECT HIT
+          // debugObject = {
+          //   // from: this.state.accounts,
+          //   from: "0xa0035a4ed024e8b0d0c0af82efc3a03ef5baadbd11602461d0da39b0291235c3",
+          //   to: contractAddress,
+          //   gas: 2000000,
+          //   value: web3.utils.toNAmp(bet),
+          //   data: myContract.methods.bet(8).encodeABI()
+          // }
+          // web3.eth.accounts.signTransaction(
+          //   debugObject, "f91658b2ca2db558861121df98ea3a74b3179853b1758c37ca0bd831f0391a2beb9669e03ce3c3d3b31e5bf7d09a288f1750c5078ea0eb9893ef1ec7bc52bf7e"
+          // ).then(function(res){
+          //   signedBet = res;
+          //   console.log(signedBet);
+          //   web3.eth.sendSignedTransaction(
+          //     signedBet.rawTransaction
+          //     ).on('transactionHash', txHash => {
+          //       console.log("txHash", txHash) }
+          //     ).on('receipt',
+          //       receipt => { console.log("receipt", receipt) }
+          //     );
+          // });
+        };
+      }
+      // Alert user if bet is less than minimum
+      if (parseFloat(bet) < this.state.minimumBet) {
+        alert('You must bet more than the minimum');
+        cb();
+      } else {
+        console.log("hit aiwa else");
+        aiwa.eth.sendTransaction(voteCallObject).then(function (receipt) {
+          console.log('receipt', receipt);
+          if (window.confirm('Click "OK" to see transaction receipt.')) {
+            // window.location.href='https://www.google.com/chrome/browser/index.html';
+            window.open('https://mastery.aion.network/#/transaction/' + receipt, '_blank' // <- This is what makes it open in a new window.
             );
-        }
-    }]);
+          };
+          cb();
+        });
 
-    return App;
+        // --------------------------
+        // myContract.methods.bet(number).send({
+        //   from: this.state.accounts,
+        //   to: contractAddress,
+        //   gas: 200000,
+        //   value: web3.utils.toNAmp(bet),
+        //   // web3.utils.toNAmp(2)
+        // }).on('transactionHash', function(hash){
+        //   console.log(hash);
+        // }).on('receipt', function(receipt){
+        //   // receipt example
+        //   console.log(receipt);
+        // })
+
+        // ------------------------------
+        // myContract.methods.bet(8).sendSigned({
+        //   from: "a03824d966478a8eb43442edd577e78341cc1c6573835b31d0e3997a2553f8de",
+        //   to: contractAddress,
+        //   gas: 200000,
+        //   value: web3.utils.toNAmp(2),
+        // })
+        // .then(function(receipt){
+        //     // receipt can also be a new contract instance, when coming from a "contract.deploy({...}).send()"
+        //     console.log(receipt);
+        // });
+        //--------------------------- AIWA IMPLEMENTATION CURRENTLY UNAVAILABLE
+        // aiwa.eth.sendTransaction(
+        //   voteCallObject
+        // ).then(function(receipt){
+        //   console.log('receipt', receipt);
+        //   if (window.confirm('Click "OK" to see transaction receipt.')) {
+        //     // window.location.href='https://www.google.com/chrome/browser/index.html';
+        //     window.open(
+        //       'https://mastery.aion.network/#/transaction/'+receipt,
+        //       '_blank' // <- This is what makes it open in a new window.
+        //     );
+        //   };
+        //   cb()
+        // });
+      }
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement(
+        'div',
+        { className: 'main-container' },
+        _react2.default.createElement(
+          'h1',
+          null,
+          'Welcome to Aion Roulette\uD83D\uDE80'
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: 'rules' },
+          _react2.default.createElement(
+            'div',
+            { className: 'block ' },
+            _react2.default.createElement(
+              'b',
+              null,
+              'Number of bets so far:'
+            ),
+            ' \xA0',
+            _react2.default.createElement(
+              'span',
+              null,
+              this.state.numberOfBets
+            )
+          ),
+          _react2.default.createElement(
+            'div',
+            { className: 'block' },
+            _react2.default.createElement(
+              'b',
+              null,
+              'Last winning animal:'
+            ),
+            ' \xA0',
+            _react2.default.createElement(
+              'span',
+              null,
+              this.state.lastLuckyAnimal
+            )
+          ),
+          _react2.default.createElement(
+            'div',
+            { className: 'block' },
+            _react2.default.createElement(
+              'b',
+              null,
+              'Total AION pool:'
+            ),
+            ' \xA0',
+            _react2.default.createElement(
+              'span',
+              null,
+              this.state.totalBet,
+              ' AION'
+            )
+          ),
+          _react2.default.createElement(
+            'div',
+            { className: 'block' },
+            _react2.default.createElement(
+              'b',
+              null,
+              'Minimum bet:'
+            ),
+            ' \xA0',
+            _react2.default.createElement(
+              'span',
+              null,
+              this.state.minimumBet,
+              ' AION'
+            )
+          ),
+          _react2.default.createElement(
+            'div',
+            { className: 'block' },
+            _react2.default.createElement(
+              'b',
+              null,
+              'Max amount of bets:'
+            ),
+            ' \xA0',
+            _react2.default.createElement(
+              'span',
+              null,
+              this.state.maxAmountOfBets
+            )
+          )
+        ),
+        _react2.default.createElement('hr', null),
+        _react2.default.createElement(
+          'h2',
+          null,
+          'Vote who is going to be the face of Aion! ',
+          _react2.default.createElement('br', null),
+          ' When ',
+          this.state.maxAmountOfBets,
+          ' bets have been placed - a new member of Aion will be randomly picked \uD83D\uDC51 and a payout will occur. ',
+          _react2.default.createElement('br', null),
+          ' Winners who guessed correctly will split the amount in the AION pool!'
+        ),
+        _react2.default.createElement('hr', null),
+        _react2.default.createElement(
+          'h3',
+          null,
+          'Vote'
+        ),
+        _react2.default.createElement(
+          'label',
+          null,
+          _react2.default.createElement(
+            'b',
+            null,
+            '1. How much AION do you want to bet? ',
+            _react2.default.createElement('input', { className: 'bet-input', ref: 'aion-bet', type: 'number', placeholder: '0' }),
+            ' AION'
+          ),
+          _react2.default.createElement('br', null),
+          _react2.default.createElement(
+            'b',
+            null,
+            '2. Now pick a face!'
+          )
+        ),
+        _react2.default.createElement(
+          'ul',
+          { ref: 'numbers', className: 'numbers' },
+          _react2.default.createElement('li', { value: '1' }),
+          _react2.default.createElement('li', { value: '2' }),
+          _react2.default.createElement('li', { value: '3' }),
+          _react2.default.createElement('li', { value: '4' }),
+          _react2.default.createElement('li', { value: '5' }),
+          _react2.default.createElement('li', { value: '6' }),
+          _react2.default.createElement('li', { value: '7' }),
+          _react2.default.createElement('li', { value: '8' }),
+          _react2.default.createElement('li', { value: '9' }),
+          _react2.default.createElement('li', { value: '10' })
+        ),
+        _react2.default.createElement('hr', null),
+        _react2.default.createElement(
+          'div',
+          { className: 'footer' },
+          _react2.default.createElement(
+            'div',
+            null,
+            _react2.default.createElement(
+              'i',
+              null,
+              'Only working with the Mastery Test Network \uD83D\uDCE1'
+            )
+          ),
+          _react2.default.createElement(
+            'div',
+            null,
+            _react2.default.createElement(
+              'i',
+              null,
+              'You can only vote once per account'
+            )
+          ),
+          _react2.default.createElement(
+            'div',
+            null,
+            _react2.default.createElement(
+              'i',
+              null,
+              'Your account is ',
+              _react2.default.createElement(
+                'strong',
+                null,
+                this.state.accounts
+              )
+            )
+          ),
+          _react2.default.createElement(
+            'div',
+            null,
+            _react2.default.createElement(
+              'i',
+              null,
+              'Your vote will be reflected when the next block is mined.'
+            )
+          ),
+          _react2.default.createElement(
+            'div',
+            { className: 'link' },
+            _react2.default.createElement(
+              'i',
+              null,
+              'Don\'t have AIWA? ',
+              _react2.default.createElement(
+                'a',
+                { href: 'https://learn.aion.network/v1.0/docs/aiwa', target: '_blank' },
+                'Start here'
+              )
+            )
+          )
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: 'madeWithLove' },
+          _react2.default.createElement(
+            'p',
+            null,
+            'Made with \uD83D\uDD25 by the Aion Developer Success Team \uD83E\uDD18'
+          )
+        )
+      );
+    }
+  }]);
+
+  return App;
 }(_react2.default.Component);
 
 _reactDom2.default.render(_react2.default.createElement(App, null), document.querySelector('#root'));
@@ -76350,588 +76377,7 @@ module.exports = getNetworkType;
 /* 438 */
 /***/ (function(module, exports) {
 
-module.exports = {"code":"0x60506040526103b060036000509090556004600460005090905560086005600050909055600a600660005090905534156100395760006000fd5b6040516010806108db833981016040528080519060100190919050505b336000600050828290918060010183905555505050600081141515610082578060026000508190909055505b5b50610089565b610843806100986000396000f300605060405236156100b7576000356c01000000000000000000000000900463ffffffff1680630a50e361146100bb5780631791cfb3146100d15780632ca8c6d3146100fb5780634081d9161461012557806341c0e1b5146101695780634b1146911461017f5780638da5cb5b146101c6578063953818c0146101f7578063b3c1c5b01461021b578063c38a8afd1461025a578063d16170dd14610284578063e08a96cd1461029c578063fe5e1853146102c6576100b7565b5b5b005b34156100c75760006000fd5b6100cf6102f0565b005b34156100dd5760006000fd5b6100e5610323565b6040518082815260100191505060405180910390f35b34156101075760006000fd5b61010f61032c565b6040518082815260100191505060405180910390f35b34156101315760006000fd5b61014f60048080806010013590359091602001909192905050610335565b604051808215151515815260100191505060405180910390f35b34156101755760006000fd5b61017d6103b0565b005b341561018b5760006000fd5b6101a9600480808060100135903590916020019091929050506103da565b604051808381526010018281526010019250505060405180910390f35b34156101d25760006000fd5b6101da61040e565b604051808383825281601001526020019250505060405180910390f35b34156102035760006000fd5b610219600480803590601001909190505061041d565b005b34156102275760006000fd5b61023d60048080359060100190919050506105e5565b604051808383825281601001526020019250505060405180910390f35b34156102665760006000fd5b61026e610618565b6040518082815260100191505060405180910390f35b61029a6004808035906010019091905050610621565b005b34156102a85760006000fd5b6102b061073a565b6040518082815260100191505060405180910390f35b34156102d25760006000fd5b6102da610743565b6040518082815260100191505060405180910390f35b60006001600a4381151561030057fe5b060190506103138161041d63ffffffff16565b8060056000508190909055505b50565b60056000505481565b60046000505481565b60006000600090505b6007600050805490508110156103a057838360076000508381548110151561036257fe5b9060005260106000209050906002020160005b5080600101549054909114919014161561039257600191506103a9565b5b808060010191505061033e565b600091506103a9565b5092915050565b6000600050806001015490543390911491901416156103d757600060005080600101549054ff5b5b565b6008600050602052818160005260105260306000209050600091509150508060000160005054908060010160005054905082565b60006000508060010154905482565b61042561074c565b60006000600060006000600060009550600094505b6007600050805490508510156105225760076000508581548110151561045c57fe5b9060005260106000209050906002020160005b508060010154905493509350876008600050600086868252816010015260200190815260100160002090506000506001016000505414156104dc57838388886064811015156104ba57fe5b9090602002019190909182828252816010015260200150505085806001019650505b60086000506000858582528160100152602001908152601001600020905060006000820160005060009055600182016000506000905550505b848060010195505061043a565b6000600760005081610534919061077c565b508650606460036000505481151561054857fe5b049150600090505b858110156105da5760006000888360648110151561056a57fe5b909060200201806010015190519091149190141615156105cc57868160648110151561059257fe5b909060200201806010015190516108fc84908115029060405160006040518083038185898989f194505050505015156105cb5760006000fd5b5b5b8080600101915050610550565b5b5050505050505050565b6007600050818154811015156105f757fe5b9060005260106000209050906002020160005b915090508060010154905482565b60026000505481565b6106303361033563ffffffff16565b15151561063d5760006000fd5b6001811015801561064f5750600a8111155b151561065b5760006000fd5b60026000505434101515156106705760006000fd5b34600860005060003382528160100152602001908152601001600020905060005060000160005081909090555080600860005060003382528160100152602001908152601001600020905060005060010160005081909090555060046000818150548092919060010191905090905550600760005080548060010182816106f791906107b0565b91909060005260106000209050906002020160005b3390919290919250919090918060010183905555505034600360008282825054019250508190909055505b50565b60066000505481565b60036000505481565b610c80604051908101604052806064905b60006000825281601001526020019060019003908161075d5790505090565b8154818355818115116107ab5760020281600202836000526010600020905091820191016107aa91906107e4565b5b505050565b8154818355818115116107df5760020281600202836000526010600020905091820191016107de91906107e4565b5b505050565b61081491906107ee565b80821115610810576000818150806000905560010160009055506002016107ee565b5090565b905600a165627a7a72305820da85d4ab0faf29a475e55dea2397fd8eed072ff4b0a11e3d5894e31eca2088f40029","info":{"abiDefinition":[{"outputs":[],"constant":false,"payable":false,"inputs":[],"name":"generateNumberWinner","type":"function"},{"outputs":[{"name":"","type":"uint128"}],"constant":true,"payable":false,"inputs":[],"name":"lastLuckyFace","type":"function"},{"outputs":[{"name":"","type":"uint128"}],"constant":true,"payable":false,"inputs":[],"name":"numberOfBets","type":"function"},{"outputs":[{"name":"","type":"bool"}],"constant":true,"payable":false,"inputs":[{"name":"player","type":"address"}],"name":"checkPlayerExists","type":"function"},{"outputs":[],"constant":false,"payable":false,"inputs":[],"name":"kill","type":"function"},{"outputs":[{"name":"amountBet","type":"uint128"},{"name":"numberSelected","type":"uint128"}],"constant":true,"payable":false,"inputs":[{"name":"","type":"address"}],"name":"playerInfo","type":"function"},{"outputs":[{"name":"","type":"address"}],"constant":true,"payable":false,"inputs":[],"name":"owner","type":"function"},{"outputs":[],"constant":false,"payable":false,"inputs":[{"name":"numberWinner","type":"uint128"}],"name":"distributePrizes","type":"function"},{"outputs":[{"name":"","type":"address"}],"constant":true,"payable":false,"inputs":[{"name":"","type":"uint128"}],"name":"players","type":"function"},{"outputs":[{"name":"","type":"uint128"}],"constant":true,"payable":false,"inputs":[],"name":"minimumBet","type":"function"},{"outputs":[],"constant":false,"payable":true,"inputs":[{"name":"numberSelected","type":"uint128"}],"name":"bet","type":"function"},{"outputs":[{"name":"","type":"uint128"}],"constant":true,"payable":false,"inputs":[],"name":"maxAmountOfBets","type":"function"},{"outputs":[{"name":"","type":"uint128"}],"constant":true,"payable":false,"inputs":[],"name":"totalBet","type":"function"},{"outputs":[],"payable":false,"inputs":[{"name":"_minimumBet","type":"uint128"}],"name":"","type":"constructor"},{"outputs":[],"payable":true,"inputs":[],"name":"","type":"fallback"}],"languageVersion":"0","language":"Solidity","compilerVersion":"0.4.15+commit.ecf81ee5.Linux.g++","source":"pragma solidity 0.4.15;\ncontract Casino {\n   address public owner;\n   uint public minimumBet;\n   uint public totalBet = 944;\n   uint public numberOfBets = 4;\n   uint public lastLuckyFace = 8;\n   uint public maxAmountOfBets = 10;\n   address[] public players;\n   struct Player {\n      uint amountBet;\n      uint numberSelected;\n   }\n   // The address of the player and => the user info\n   mapping(address => Player) public playerInfo;\n   function() public payable {}\n   function Casino(uint _minimumBet) public {\n      owner = msg.sender;\n      if(_minimumBet != 0 ) minimumBet = _minimumBet;\n   }\n   function kill() public {\n      if(msg.sender == owner) selfdestruct(owner);\n   }\n   function checkPlayerExists(address player) public constant returns(bool){\n      for(uint i = 0; i < players.length; i++){\n         if(players[i] == player) return true;\n      }\n      return false;\n   }\n   // To bet for a number between 1 and 10 both inclusive\n   function bet(uint numberSelected) public payable {\n      require(!checkPlayerExists(msg.sender));\n      require(numberSelected >= 1 && numberSelected <= 10);\n      require(msg.value >= minimumBet);\n      playerInfo[msg.sender].amountBet = msg.value;\n      playerInfo[msg.sender].numberSelected = numberSelected;\n      numberOfBets++;\n      players.push(msg.sender);\n      totalBet += msg.value;\n   }\n   // Generates a number between 1 and 10 that will be the winner\n   function generateNumberWinner() public {\n      uint numberGenerated = block.number % 10 + 1; // This isn't secure\n      distributePrizes(numberGenerated);\n      lastLuckyFace = numberGenerated;\n   }\n   // Sends the corresponding ether to each winner depending on the total bets\n   function distributePrizes(uint numberWinner) public {\n      address[100] memory winners; // We have to create a temporary in memory array with fixed size\n      uint count = 0; // This is the count for the array of winners\n      for(uint i = 0; i < players.length; i++){\n         address playerAddress = players[i];\n         if(playerInfo[playerAddress].numberSelected == numberWinner){\n            winners[count] = playerAddress;\n            count++;\n         }\n         delete playerInfo[playerAddress]; // Delete all the players\n      }\n      players.length = 0; // Delete all the players array\n      uint winnerEtherAmount = totalBet / winners.length; // How much each winner gets\n      for(uint j = 0; j < count; j++){\n         if(winners[j] != address(0)) // Check that the address in this fixed array is not empty\n         winners[j].transfer(winnerEtherAmount);\n      }\n   }\n}"}}
-
-/***/ }),
-/* 439 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(440);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// Prepare cssTransformation
-var transform;
-
-var options = {}
-options.transform = transform
-// add the styles to the DOM
-var update = __webpack_require__(442)(content, options);
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!./index.css", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!./index.css");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 440 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(441)(false);
-// imports
-
-
-// module
-exports.push([module.i, "\r\nbody{\r\n    font-family: 'open sans';\r\n    /* font-family: 'Fira Sans', sans-serif; */\r\n    margin: 0;\r\n    background: #5f2c82;\r\n    background: -webkit-linear-gradient(to right, #49a09d, #5f2c82);\r\n    background: linear-gradient(to right, #49a09d, #5f2c82);\r\n    /* background: linear-gradient(to right, #060808, #5f2c82); */\r\n    /* background: linear-gradient(to right, #107777, #5f2c82); */\r\n\r\n}\r\nh1 {\r\n  text-align: center;\r\n  color: #5af0bd;\r\n  /* font-family: 'Lora', serif; */\r\n  font-family: 'ZCOOL XiaoWei', serif;\r\n}\r\nh2 {\r\n  /* color: #f05a90; */\r\n  color: #5af0bd;\r\n  font-size: 16px;\r\n  text-align: center;\r\n  font-weight: normal;\r\n}\r\nh3 {\r\n  text-align: center;\r\n  color: #f69a9a;\r\n  font-size: 30px;\r\n  font-family: 'Lora', serif;\r\n}\r\n.rules {\r\n  display: flex;\r\n  justify-content: space-evenly;\r\n  flex-wrap: wrap;\r\n}\r\nul {\r\n    list-style-type: none;\r\n    display: flex;\r\n    justify-content: space-around;\r\n    flex-wrap: wrap;\r\n    justify-content: center;\r\n}\r\nli {\r\n    border: 2px solid rgb(66,33,204);\r\n    margin-right: 5px;\r\n    border-radius: 10px;\r\n    cursor: pointer;\r\n    width: 130px;\r\n}\r\nli:hover {\r\n    background-color: rgb(66,33,204);\r\n    color: white;\r\n}\r\nli:active {\r\n    opacity: 0.7;\r\n}\r\n.main-container{\r\n   padding: 20px;\r\n}\r\n.block {\r\n   display: flex;\r\n   align-items: center;\r\n  color: white;\r\n}\r\n.block span{\r\n  color: #f69a9a;\r\n}\r\n.number-selected {\r\n   background-color: rgb(66,33,204);\r\n   color: white;\r\n}\r\n.bet-input {\r\n    padding: 7px;\r\n   border-radius: 10px;\r\n   border: 1px solid lightgrey;\r\n   font-size: 15px;\r\n   margin: 0 10px;\r\n}\r\nimg {\r\n  border-radius: 8px;\r\n  margin-bottom: -5px;\r\n}\r\n.footer {\r\n  color: white;\r\n  text-align: center;\r\n}\r\n.footer strong {\r\n  color: #f69a9a;\r\n  font-style: normal;\r\n  letter-spacing: 0.2px;\r\n}\r\nlabel {\r\n  color: white;\r\n  display: flex;\r\n  flex-direction: column;\r\n  text-align: center;\r\n}\r\n.link {\r\n  color: #00ffd4\r\n}\r\n.link a {\r\n  color: yellow\r\n}\r\n.madeWithLove {\r\n  display: flex;\r\n  justify-content: center;\r\n  margin-top: 70px;\r\n}\r\n\r\n.madeWithLove p {\r\n  color: black;\r\n  font-family: 'ZCOOL XiaoWei', serif;\r\n  font-size: 22px;\r\n}\r\n", ""]);
-
-// exports
-
-
-/***/ }),
-/* 441 */
-/***/ (function(module, exports) {
-
-/*
-	MIT License http://www.opensource.org/licenses/mit-license.php
-	Author Tobias Koppers @sokra
-*/
-// css base code, injected by the css-loader
-module.exports = function(useSourceMap) {
-	var list = [];
-
-	// return the list of modules as css string
-	list.toString = function toString() {
-		return this.map(function (item) {
-			var content = cssWithMappingToString(item, useSourceMap);
-			if(item[2]) {
-				return "@media " + item[2] + "{" + content + "}";
-			} else {
-				return content;
-			}
-		}).join("");
-	};
-
-	// import a list of modules into the list
-	list.i = function(modules, mediaQuery) {
-		if(typeof modules === "string")
-			modules = [[null, modules, ""]];
-		var alreadyImportedModules = {};
-		for(var i = 0; i < this.length; i++) {
-			var id = this[i][0];
-			if(typeof id === "number")
-				alreadyImportedModules[id] = true;
-		}
-		for(i = 0; i < modules.length; i++) {
-			var item = modules[i];
-			// skip already imported module
-			// this implementation is not 100% perfect for weird media query combinations
-			//  when a module is imported multiple times with different media queries.
-			//  I hope this will never occur (Hey this way we have smaller bundles)
-			if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
-				if(mediaQuery && !item[2]) {
-					item[2] = mediaQuery;
-				} else if(mediaQuery) {
-					item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
-				}
-				list.push(item);
-			}
-		}
-	};
-	return list;
-};
-
-function cssWithMappingToString(item, useSourceMap) {
-	var content = item[1] || '';
-	var cssMapping = item[3];
-	if (!cssMapping) {
-		return content;
-	}
-
-	if (useSourceMap && typeof btoa === 'function') {
-		var sourceMapping = toComment(cssMapping);
-		var sourceURLs = cssMapping.sources.map(function (source) {
-			return '/*# sourceURL=' + cssMapping.sourceRoot + source + ' */'
-		});
-
-		return [content].concat(sourceURLs).concat([sourceMapping]).join('\n');
-	}
-
-	return [content].join('\n');
-}
-
-// Adapted from convert-source-map (MIT)
-function toComment(sourceMap) {
-	// eslint-disable-next-line no-undef
-	var base64 = btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap))));
-	var data = 'sourceMappingURL=data:application/json;charset=utf-8;base64,' + base64;
-
-	return '/*# ' + data + ' */';
-}
-
-
-/***/ }),
-/* 442 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/*
-	MIT License http://www.opensource.org/licenses/mit-license.php
-	Author Tobias Koppers @sokra
-*/
-
-var stylesInDom = {};
-
-var	memoize = function (fn) {
-	var memo;
-
-	return function () {
-		if (typeof memo === "undefined") memo = fn.apply(this, arguments);
-		return memo;
-	};
-};
-
-var isOldIE = memoize(function () {
-	// Test for IE <= 9 as proposed by Browserhacks
-	// @see http://browserhacks.com/#hack-e71d8692f65334173fee715c222cb805
-	// Tests for existence of standard globals is to allow style-loader
-	// to operate correctly into non-standard environments
-	// @see https://github.com/webpack-contrib/style-loader/issues/177
-	return window && document && document.all && !window.atob;
-});
-
-var getElement = (function (fn) {
-	var memo = {};
-
-	return function(selector) {
-		if (typeof memo[selector] === "undefined") {
-			memo[selector] = fn.call(this, selector);
-		}
-
-		return memo[selector]
-	};
-})(function (target) {
-	return document.querySelector(target)
-});
-
-var singleton = null;
-var	singletonCounter = 0;
-var	stylesInsertedAtTop = [];
-
-var	fixUrls = __webpack_require__(443);
-
-module.exports = function(list, options) {
-	if (typeof DEBUG !== "undefined" && DEBUG) {
-		if (typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
-	}
-
-	options = options || {};
-
-	options.attrs = typeof options.attrs === "object" ? options.attrs : {};
-
-	// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
-	// tags it will allow on a page
-	if (!options.singleton) options.singleton = isOldIE();
-
-	// By default, add <style> tags to the <head> element
-	if (!options.insertInto) options.insertInto = "head";
-
-	// By default, add <style> tags to the bottom of the target
-	if (!options.insertAt) options.insertAt = "bottom";
-
-	var styles = listToStyles(list, options);
-
-	addStylesToDom(styles, options);
-
-	return function update (newList) {
-		var mayRemove = [];
-
-		for (var i = 0; i < styles.length; i++) {
-			var item = styles[i];
-			var domStyle = stylesInDom[item.id];
-
-			domStyle.refs--;
-			mayRemove.push(domStyle);
-		}
-
-		if(newList) {
-			var newStyles = listToStyles(newList, options);
-			addStylesToDom(newStyles, options);
-		}
-
-		for (var i = 0; i < mayRemove.length; i++) {
-			var domStyle = mayRemove[i];
-
-			if(domStyle.refs === 0) {
-				for (var j = 0; j < domStyle.parts.length; j++) domStyle.parts[j]();
-
-				delete stylesInDom[domStyle.id];
-			}
-		}
-	};
-};
-
-function addStylesToDom (styles, options) {
-	for (var i = 0; i < styles.length; i++) {
-		var item = styles[i];
-		var domStyle = stylesInDom[item.id];
-
-		if(domStyle) {
-			domStyle.refs++;
-
-			for(var j = 0; j < domStyle.parts.length; j++) {
-				domStyle.parts[j](item.parts[j]);
-			}
-
-			for(; j < item.parts.length; j++) {
-				domStyle.parts.push(addStyle(item.parts[j], options));
-			}
-		} else {
-			var parts = [];
-
-			for(var j = 0; j < item.parts.length; j++) {
-				parts.push(addStyle(item.parts[j], options));
-			}
-
-			stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
-		}
-	}
-}
-
-function listToStyles (list, options) {
-	var styles = [];
-	var newStyles = {};
-
-	for (var i = 0; i < list.length; i++) {
-		var item = list[i];
-		var id = options.base ? item[0] + options.base : item[0];
-		var css = item[1];
-		var media = item[2];
-		var sourceMap = item[3];
-		var part = {css: css, media: media, sourceMap: sourceMap};
-
-		if(!newStyles[id]) styles.push(newStyles[id] = {id: id, parts: [part]});
-		else newStyles[id].parts.push(part);
-	}
-
-	return styles;
-}
-
-function insertStyleElement (options, style) {
-	var target = getElement(options.insertInto)
-
-	if (!target) {
-		throw new Error("Couldn't find a style target. This probably means that the value for the 'insertInto' parameter is invalid.");
-	}
-
-	var lastStyleElementInsertedAtTop = stylesInsertedAtTop[stylesInsertedAtTop.length - 1];
-
-	if (options.insertAt === "top") {
-		if (!lastStyleElementInsertedAtTop) {
-			target.insertBefore(style, target.firstChild);
-		} else if (lastStyleElementInsertedAtTop.nextSibling) {
-			target.insertBefore(style, lastStyleElementInsertedAtTop.nextSibling);
-		} else {
-			target.appendChild(style);
-		}
-		stylesInsertedAtTop.push(style);
-	} else if (options.insertAt === "bottom") {
-		target.appendChild(style);
-	} else {
-		throw new Error("Invalid value for parameter 'insertAt'. Must be 'top' or 'bottom'.");
-	}
-}
-
-function removeStyleElement (style) {
-	if (style.parentNode === null) return false;
-	style.parentNode.removeChild(style);
-
-	var idx = stylesInsertedAtTop.indexOf(style);
-	if(idx >= 0) {
-		stylesInsertedAtTop.splice(idx, 1);
-	}
-}
-
-function createStyleElement (options) {
-	var style = document.createElement("style");
-
-	options.attrs.type = "text/css";
-
-	addAttrs(style, options.attrs);
-	insertStyleElement(options, style);
-
-	return style;
-}
-
-function createLinkElement (options) {
-	var link = document.createElement("link");
-
-	options.attrs.type = "text/css";
-	options.attrs.rel = "stylesheet";
-
-	addAttrs(link, options.attrs);
-	insertStyleElement(options, link);
-
-	return link;
-}
-
-function addAttrs (el, attrs) {
-	Object.keys(attrs).forEach(function (key) {
-		el.setAttribute(key, attrs[key]);
-	});
-}
-
-function addStyle (obj, options) {
-	var style, update, remove, result;
-
-	// If a transform function was defined, run it on the css
-	if (options.transform && obj.css) {
-	    result = options.transform(obj.css);
-
-	    if (result) {
-	    	// If transform returns a value, use that instead of the original css.
-	    	// This allows running runtime transformations on the css.
-	    	obj.css = result;
-	    } else {
-	    	// If the transform function returns a falsy value, don't add this css.
-	    	// This allows conditional loading of css
-	    	return function() {
-	    		// noop
-	    	};
-	    }
-	}
-
-	if (options.singleton) {
-		var styleIndex = singletonCounter++;
-
-		style = singleton || (singleton = createStyleElement(options));
-
-		update = applyToSingletonTag.bind(null, style, styleIndex, false);
-		remove = applyToSingletonTag.bind(null, style, styleIndex, true);
-
-	} else if (
-		obj.sourceMap &&
-		typeof URL === "function" &&
-		typeof URL.createObjectURL === "function" &&
-		typeof URL.revokeObjectURL === "function" &&
-		typeof Blob === "function" &&
-		typeof btoa === "function"
-	) {
-		style = createLinkElement(options);
-		update = updateLink.bind(null, style, options);
-		remove = function () {
-			removeStyleElement(style);
-
-			if(style.href) URL.revokeObjectURL(style.href);
-		};
-	} else {
-		style = createStyleElement(options);
-		update = applyToTag.bind(null, style);
-		remove = function () {
-			removeStyleElement(style);
-		};
-	}
-
-	update(obj);
-
-	return function updateStyle (newObj) {
-		if (newObj) {
-			if (
-				newObj.css === obj.css &&
-				newObj.media === obj.media &&
-				newObj.sourceMap === obj.sourceMap
-			) {
-				return;
-			}
-
-			update(obj = newObj);
-		} else {
-			remove();
-		}
-	};
-}
-
-var replaceText = (function () {
-	var textStore = [];
-
-	return function (index, replacement) {
-		textStore[index] = replacement;
-
-		return textStore.filter(Boolean).join('\n');
-	};
-})();
-
-function applyToSingletonTag (style, index, remove, obj) {
-	var css = remove ? "" : obj.css;
-
-	if (style.styleSheet) {
-		style.styleSheet.cssText = replaceText(index, css);
-	} else {
-		var cssNode = document.createTextNode(css);
-		var childNodes = style.childNodes;
-
-		if (childNodes[index]) style.removeChild(childNodes[index]);
-
-		if (childNodes.length) {
-			style.insertBefore(cssNode, childNodes[index]);
-		} else {
-			style.appendChild(cssNode);
-		}
-	}
-}
-
-function applyToTag (style, obj) {
-	var css = obj.css;
-	var media = obj.media;
-
-	if(media) {
-		style.setAttribute("media", media)
-	}
-
-	if(style.styleSheet) {
-		style.styleSheet.cssText = css;
-	} else {
-		while(style.firstChild) {
-			style.removeChild(style.firstChild);
-		}
-
-		style.appendChild(document.createTextNode(css));
-	}
-}
-
-function updateLink (link, options, obj) {
-	var css = obj.css;
-	var sourceMap = obj.sourceMap;
-
-	/*
-		If convertToAbsoluteUrls isn't defined, but sourcemaps are enabled
-		and there is no publicPath defined then lets turn convertToAbsoluteUrls
-		on by default.  Otherwise default to the convertToAbsoluteUrls option
-		directly
-	*/
-	var autoFixUrls = options.convertToAbsoluteUrls === undefined && sourceMap;
-
-	if (options.convertToAbsoluteUrls || autoFixUrls) {
-		css = fixUrls(css);
-	}
-
-	if (sourceMap) {
-		// http://stackoverflow.com/a/26603875
-		css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
-	}
-
-	var blob = new Blob([css], { type: "text/css" });
-
-	var oldSrc = link.href;
-
-	link.href = URL.createObjectURL(blob);
-
-	if(oldSrc) URL.revokeObjectURL(oldSrc);
-}
-
-
-/***/ }),
-/* 443 */
-/***/ (function(module, exports) {
-
-
-/**
- * When source maps are enabled, `style-loader` uses a link element with a data-uri to
- * embed the css on the page. This breaks all relative urls because now they are relative to a
- * bundle instead of the current page.
- *
- * One solution is to only use full urls, but that may be impossible.
- *
- * Instead, this function "fixes" the relative urls to be absolute according to the current page location.
- *
- * A rudimentary test suite is located at `test/fixUrls.js` and can be run via the `npm test` command.
- *
- */
-
-module.exports = function (css) {
-  // get current location
-  var location = typeof window !== "undefined" && window.location;
-
-  if (!location) {
-    throw new Error("fixUrls requires window.location");
-  }
-
-	// blank or null?
-	if (!css || typeof css !== "string") {
-	  return css;
-  }
-
-  var baseUrl = location.protocol + "//" + location.host;
-  var currentDir = baseUrl + location.pathname.replace(/\/[^\/]*$/, "/");
-
-	// convert each url(...)
-	/*
-	This regular expression is just a way to recursively match brackets within
-	a string.
-
-	 /url\s*\(  = Match on the word "url" with any whitespace after it and then a parens
-	   (  = Start a capturing group
-	     (?:  = Start a non-capturing group
-	         [^)(]  = Match anything that isn't a parentheses
-	         |  = OR
-	         \(  = Match a start parentheses
-	             (?:  = Start another non-capturing groups
-	                 [^)(]+  = Match anything that isn't a parentheses
-	                 |  = OR
-	                 \(  = Match a start parentheses
-	                     [^)(]*  = Match anything that isn't a parentheses
-	                 \)  = Match a end parentheses
-	             )  = End Group
-              *\) = Match anything and then a close parens
-          )  = Close non-capturing group
-          *  = Match anything
-       )  = Close capturing group
-	 \)  = Match a close parens
-
-	 /gi  = Get all matches, not the first.  Be case insensitive.
-	 */
-	var fixedCss = css.replace(/url\s*\(((?:[^)(]|\((?:[^)(]+|\([^)(]*\))*\))*)\)/gi, function(fullMatch, origUrl) {
-		// strip quotes (if they exist)
-		var unquotedOrigUrl = origUrl
-			.trim()
-			.replace(/^"(.*)"$/, function(o, $1){ return $1; })
-			.replace(/^'(.*)'$/, function(o, $1){ return $1; });
-
-		// already a full url? no change
-		if (/^(#|data:|http:\/\/|https:\/\/|file:\/\/\/)/i.test(unquotedOrigUrl)) {
-		  return fullMatch;
-		}
-
-		// convert the url to a full url
-		var newUrl;
-
-		if (unquotedOrigUrl.indexOf("//") === 0) {
-		  	//TODO: should we add protocol?
-			newUrl = unquotedOrigUrl;
-		} else if (unquotedOrigUrl.indexOf("/") === 0) {
-			// path should be relative to the base url
-			newUrl = baseUrl + unquotedOrigUrl; // already starts with '/'
-		} else {
-			// path should be relative to current directory
-			newUrl = currentDir + unquotedOrigUrl.replace(/^\.\//, ""); // Strip leading './'
-		}
-
-		// send back the fixed url(...)
-		return "url(" + JSON.stringify(newUrl) + ")";
-	});
-
-	// send back the fixed css
-	return fixedCss;
-};
-
+module.exports = {"code":"0x605060405260016002600050909055600a600660005090905534156100245760006000fd5b5b3360006000508282909180600101839055555050505b610040565b6107c28061004f6000396000f300605060405236156100ac576000356c01000000000000000000000000900463ffffffff1680630a50e361146100b25780631900874b146100c85780632ca8c6d3146100f25780634081d9161461011c5780637ce52eb6146101605780638b5b9ccc14610176578063b3c1c5b0146101e2578063c38a8afd14610221578063d16170dd1461024b578063e08a96cd14610263578063f611e1c91461028d578063fe5e1853146102b7576100ac565b60006000fd5b34156100be5760006000fd5b6100c66102e1565b005b34156100d45760006000fd5b6100dc610328565b6040518082815260100191505060405180910390f35b34156100fe5760006000fd5b61010661032d565b6040518082815260100191505060405180910390f35b34156101285760006000fd5b61014660048080806010013590359091602001909192905050610336565b604051808215151515815260100191505060405180910390f35b341561016c5760006000fd5b61017461037f565b005b34156101825760006000fd5b61018a6104db565b6040518080601001828103825283818151815260100191508051906010019060200280838360005b838110156101ce5780820151818401525b6010810190506101b2565b505050509050019250505060405180910390f35b34156101ee5760006000fd5b6102046004808035906010019091905050610551565b604051808383825281601001526020019250505060405180910390f35b341561022d5760006000fd5b610235610584565b6040518082815260100191505060405180910390f35b610261600480803590601001909190505061058d565b005b341561026f5760006000fd5b6102776106c9565b6040518082815260100191505060405180910390f35b34156102995760006000fd5b6102a16106d2565b6040518082815260100191505060405180910390f35b34156102c35760006000fd5b6102cb6106db565b6040518082815260100191505060405180910390f35b6000600660005054600460005054101515610324576001600a4381151561030457fe5b0601905080600560005081909090555061032261037f63ffffffff16565b5b5b5b50565b606481565b60046000505481565b6000600060096000506000858582528160100152602001908152601001600020905060005054111561036f576001905061037956610378565b60009050610379565b5b92915050565b6000600060006006600050546004600050541015156104d5576008600050600060056000505481526010019081526010016000209050600050805490506003600050548115156103cb57fe5b049250600091505b6008600050600060056000505481526010019081526010016000209050600050805490508210156104805760086000506000600560005054815260100190815260100160002090506000508281548110151561042b57fe5b9060005260106000209050906002020160005b50806001015490546108fc85908115029060405160006040518083038185898989f194505050505015156104725760006000fd5b5b81806001019250506103d3565b600190505b600a811115156104c6576000600860005060008381526010019081526010016000209050600050816104b791906106e4565b505b8080600101915050610485565b600060046000508190909055505b5b5b505050565b6104e3610718565b6007600050805480602002601001604051908101604052809291908181526010018280548015610542576020028201919060005260106000209050905b8160005080600101549054825281601001526020019060020190808311610520575b5050505050905061054e565b90565b60076000508181548110151561056357fe5b9060005260106000209050906002020160005b915090508060010154905482565b60026000505481565b6006600050546004600050541015156105a65760006000fd5b600015156105b93361033663ffffffff16565b15151415156105c85760006000fd5b600181101580156105da5750600a8111155b15156105e65760006000fd5b60026000505434101515156105fb5760006000fd5b806009600050600033825281601001526020019081526010016000209050600050819090905550600860005060008281526010019081526010016000209050600050805480600101828161064f919061072f565b91909060005260106000209050906002020160005b3390919290919250919090918060010183905555505060016004600082828250540192505081909090555034600360008282825054019250508190909055506006600050546004600050541015156106c5576106c46102e163ffffffff16565b5b5b50565b60066000505481565b60056000505481565b60036000505481565b8154818355818115116107135760020281600202836000526010600020905091820191016107129190610763565b5b505050565b601060405190810160405280600081526010015090565b81548183558181151161075e57600202816002028360005260106000209050918201910161075d9190610763565b5b505050565b610793919061076d565b8082111561078f5760008181508060009055600101600090555060020161076d565b5090565b905600a165627a7a72305820f22b9c03f1a3b3e9826f6791b010feade6ba2f3192b6620c9efb994e468b90de0029","info":{"abiDefinition":[{"outputs":[],"constant":false,"payable":false,"inputs":[],"name":"generateNumberWinner","type":"function"},{"outputs":[{"name":"","type":"uint128"}],"constant":true,"payable":false,"inputs":[],"name":"LIMIT_AMOUNT_BETS","type":"function"},{"outputs":[{"name":"","type":"uint128"}],"constant":true,"payable":false,"inputs":[],"name":"numberOfBets","type":"function"},{"outputs":[{"name":"","type":"bool"}],"constant":false,"payable":false,"inputs":[{"name":"player","type":"address"}],"name":"checkPlayerExists","type":"function"},{"outputs":[],"constant":false,"payable":false,"inputs":[],"name":"distributePrizes","type":"function"},{"outputs":[{"name":"","type":"address[]"}],"constant":false,"payable":false,"inputs":[],"name":"getPlayers","type":"function"},{"outputs":[{"name":"","type":"address"}],"constant":true,"payable":false,"inputs":[{"name":"","type":"uint128"}],"name":"players","type":"function"},{"outputs":[{"name":"","type":"uint128"}],"constant":true,"payable":false,"inputs":[],"name":"minimumBet","type":"function"},{"outputs":[],"constant":false,"payable":true,"inputs":[{"name":"numberToBet","type":"uint128"}],"name":"bet","type":"function"},{"outputs":[{"name":"","type":"uint128"}],"constant":true,"payable":false,"inputs":[],"name":"maxAmountOfBets","type":"function"},{"outputs":[{"name":"","type":"uint128"}],"constant":true,"payable":false,"inputs":[],"name":"lastLuckyAnimal","type":"function"},{"outputs":[{"name":"","type":"uint128"}],"constant":true,"payable":false,"inputs":[],"name":"totalBet","type":"function"},{"outputs":[],"payable":false,"inputs":[],"name":"","type":"constructor"}],"languageVersion":"0","language":"Solidity","compilerVersion":"0.4.15+commit.ecf81ee5.Linux.g++","source":"pragma solidity ^0.4.11;\n\n/// ToDo : write random generator\n\n/// @title Contract to bet AION for a number and win randomly when the number of bets is met.\n/// @author Merunas Grincalaitis\n/// edited Kim Codeashian\ncontract Casino {\n  address owner;\n\n  // The minimum bet a user has to make to participate in the game\n  uint public minimumBet = 1; // Equal to 1.00 AION\n\n  // The total amount of AION bet for this current game\n  uint public totalBet;\n\n  // The total number of bets the users have made\n  uint public numberOfBets;\n\n  // The number / animal that won the last game\n  uint public lastLuckyAnimal;\n\n  // The maximum amount of bets can be made for each game\n  uint public maxAmountOfBets = 10;\n\n  // The max amount of bets that cannot be exceeded to avoid excessive gas consumption\n  // when distributing the prizes and restarting the game\n  uint public constant LIMIT_AMOUNT_BETS = 100;\n\n  // Array of players\n  address[] public players;\n\n  // Each number has an array of players. Associate each number with a bunch of players\n  mapping(uint => address[]) numberBetPlayers;\n\n  // The number that each player has bet for\n  mapping(address => uint) playerBetsNumber;\n\n  // Modifier to only allow the execution of functions when the bets are completed\n  modifier onEndGame(){\n    if(numberOfBets >= maxAmountOfBets) _;\n  }\n\n  function Casino(){\n    owner = msg.sender;\n  }\n\n  function getPlayers() public returns (address[]){\n    return players;\n  }\n  /// @notice Check if a player exists in the current game\n  /// @param player The address of the player to check\n  /// @return bool Returns true is it exists or false if it doesn't\n  function checkPlayerExists(address player) returns(bool){\n    if(playerBetsNumber[player] > 0)\n      return true;\n    else\n      return false;\n  }\n\n  /// @notice To bet for a number by sending AION\n  /// @param numberToBet The number that the player wants to bet for. Must be between 1 and 10 both inclusive\n  function bet(uint numberToBet) payable{\n    // Check that the max amount of bets hasn't been met yet\n    require(numberOfBets < maxAmountOfBets);\n\n    // Check that the player doesn't exists\n    require(checkPlayerExists(msg.sender) == false);\n\n    // Check that the number to bet is within the range\n    require(numberToBet >= 1 && numberToBet <= 10);\n\n    // Check that the amount paid is bigger or equal the minimum bet\n    require(msg.value >= minimumBet);\n\n    // Set the number bet for that player\n    playerBetsNumber[msg.sender] = numberToBet;\n\n    // The player msg.sender has bet for that number\n    numberBetPlayers[numberToBet].push(msg.sender);\n\n    numberOfBets += 1;\n    totalBet += msg.value;\n\n    if(numberOfBets >= maxAmountOfBets) generateNumberWinner();\n  }\n\n  /// @notice Generates a random number between 1 and 10 both inclusive.\n  /// Can only be executed when the game ends.\n  function generateNumberWinner() onEndGame {\n    uint numberGenerated = block.number % 10 + 1; // This isn't secure\n    lastLuckyAnimal = numberGenerated;\n    distributePrizes();\n  }\n\n\n  /// @notice Sends the corresponding AION to each winner then deletes all the\n  /// players for the next game and resets the `totalBet` and `numberOfBets`\n  function distributePrizes() onEndGame {\n    uint winnerAIONAmount = totalBet / numberBetPlayers[lastLuckyAnimal].length; // How much each winner gets\n    // Loop through all the winners to send the corresponding prize for each one\n    for(uint i = 0; i < numberBetPlayers[lastLuckyAnimal].length; i++){\n      numberBetPlayers[lastLuckyAnimal][i].transfer(winnerAIONAmount);\n    }\n\n    // Delete all the players for each number\n    for(uint j = 1; j <= 10; j++){\n      numberBetPlayers[j].length = 0;\n    }\n\n    /* Rollover amount if no winners */\n    /* totalBet = 0; */\n    numberOfBets = 0;\n  }\n}\n"}}
 
 /***/ })
 /******/ ]);

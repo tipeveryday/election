@@ -1,14 +1,13 @@
 
 body{
-    font-family: 'open sans';
-    /* font-family: 'Fira Sans', sans-serif; */
-    margin: 0;
-    background: #5f2c82;
-    background: -webkit-linear-gradient(to right, #49a09d, #5f2c82);
-    background: linear-gradient(to right, #49a09d, #5f2c82);
-    /* background: linear-gradient(to right, #060808, #5f2c82); */
-    /* background: linear-gradient(to right, #107777, #5f2c82); */
-
+  font-family: 'open sans';
+  /* font-family: 'Fira Sans', sans-serif; */
+  margin: 0;
+  background: #5f2c82;
+  background: -webkit-linear-gradient(to right, #49a09d, #5f2c82);
+  background: linear-gradient(to right, #49a09d, #5f2c82);
+  /* background: linear-gradient(to right, #060808, #5f2c82); */
+  /* background: linear-gradient(to right, #107777, #5f2c82); */
 }
 h1 {
   text-align: center;
@@ -35,40 +34,46 @@ h3 {
   flex-wrap: wrap;
 }
 ul {
-    list-style-type: none;
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
-    justify-content: center;
+  list-style-type: none;
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 li {
-    border: 2px solid rgb(66,33,204);
-    margin-right: 5px;
-    border-radius: 10px;
-    cursor: pointer;
-    width: 130px;
+  background: rgba(90, 240, 189, 0.43);
+  border: 2px solid rgb(66,33,204);
+  margin-right: 5px;
+  border-radius: 10px;
+  cursor: pointer;
+  width: 150px;
+  height: 150px;
+  margin-bottom: 10px;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 li:hover {
-    background-color: rgb(66,33,204);
-    color: white;
+  background-color: rgb(66,33,204);
+  color: white;
 }
 li:active {
-    opacity: 0.7;
+  opacity: 0.7;
 }
 .main-container{
    padding: 20px;
 }
 .block {
-   display: flex;
-   align-items: center;
+  display: flex;
+  align-items: center;
   color: white;
 }
 .block span{
   color: #f69a9a;
 }
 .number-selected {
-   background-color: rgb(66,33,204);
-   color: white;
+  /* background-color: rgb(66,33,204); */
+  color: white;
 }
 .bet-input {
     padding: 7px;
@@ -79,7 +84,7 @@ li:active {
 }
 img {
   border-radius: 8px;
-  margin-bottom: -5px;
+  margin:auto;
 }
 .footer {
   color: white;
@@ -112,4 +117,35 @@ label {
   color: black;
   font-family: 'ZCOOL XiaoWei', serif;
   font-size: 22px;
+}
+
+.numbers li:nth-child(1) {
+  background-image: url("../../img/1.svg")
+}
+.numbers li:nth-child(2) {
+  background-image: url("../../img/2.svg")
+}
+.numbers li:nth-child(3) {
+  background-image: url("../../img/3.svg")
+}
+.numbers li:nth-child(4) {
+  background-image: url("../../img/4.svg")
+}
+.numbers li:nth-child(5) {
+  background-image: url("../../img/5.svg")
+}
+.numbers li:nth-child(6) {
+  background-image: url("../../img/6.svg")
+}
+.numbers li:nth-child(7) {
+  background-image: url("../../img/7.svg")
+}
+.numbers li:nth-child(8) {
+  background-image: url("../../img/8.svg")
+}
+.numbers li:nth-child(9) {
+  background-image: url("../../img/9.svg")
+}
+.numbers li:nth-child(10) {
+  background-image: url("../../img/10.svg")
 }
