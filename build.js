@@ -32289,9 +32289,11 @@ var App = function (_React$Component) {
       // update total amount in bets
       myContract.methods.totalBet().call({}).then(function (result) {
         console.log('total bet:', result);
-        // Do the Division for 18 decimal points (AION)
+        // Do the Division for 18 decimal points (AION), float 2 points
+        var totalPool = (result / 1 * Math.pow(10, -18)).toFixed(2);
+
         this.setState({
-          totalBet: result / 1 * Math.pow(10, -18)
+          totalBet: totalPool
         });
       }.bind(this));
 
