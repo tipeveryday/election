@@ -1,11 +1,11 @@
-pragma solidity ^0.4.11;
+pragma solidity ^0.4.15;
 
 contract Casino {
   address owner;
   uint public minimumBet = 1;
   uint public maximumBet = 50;
   uint public numberOfBets;
-  uint public maxAmountOfBets = 10;
+  uint public maxAmountOfBets = 7;
   uint public totalBet;
   uint public lastLuckyAnimal;
   address[] public players;
@@ -31,6 +31,7 @@ contract Casino {
   function Casino(){
     owner = msg.sender;
   }
+
   function() public payable {}
 
   function refund() public onlyOwner {

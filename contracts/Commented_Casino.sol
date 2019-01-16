@@ -1,4 +1,4 @@
-pragma solidity ^0.4.11;
+pragma solidity ^0.4.15;
 
 /// @title Contract to bet AION for a number and win randomly when the number of bets is met.
 /// @author Merunas Grincalaitis
@@ -13,7 +13,7 @@ contract Casino {
   // The total number of bets the users have made
   uint public numberOfBets;
   // The maximum amount of bets can be made for each game
-  uint public maxAmountOfBets = 10;
+  uint public maxAmountOfBets = 7;
   // The total amount of AION bet for this current game
   uint public totalBet;
   // The number / animal that won the last game

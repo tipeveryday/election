@@ -8,25 +8,15 @@ let web3;
 let aiwa;
 let aiwaInjected = false;
 let myContract;
-let contractAddress = "0xA01677e1CEbbf1B3f511E2153be4c21F080095e3AaE43EeC4F889cA8146F720b";
+let contractAddress = "0xA030627457f3027d34298feBC8838a3B5d8996D5DDF98B28E615187D9945a07a";
 let account = "Not Detected - Please download AIWA to play this game";
 
+// On load, inject AIWA
 window.onload = () => {
   console.log("✓ AIWA injected successfully");
   aiwaInjected = true;
   aiwa = window.aionweb3;
 }
-
-// Detect AIWA injection and inject into application
-// const injectAIWA = setInterval(function() {
-//   if (window.aionweb3){
-//     console.log("✓ AIWA injected successfully");
-//     web3 = new Web3(window.aionweb3.currentProvider);
-//     aiwa = window.aionweb3;
-//     aiwaInjected = true;
-//     clearInterval(injectAIWA);
-//   }
-// }, 500)
 
 // Main React App
 class App extends React.Component {
@@ -42,13 +32,12 @@ class App extends React.Component {
       accounts: account,
       doesPlayerExist: false,
     }
-    window.a = this.state
     this.updateState = this.updateState.bind(this)
   }
 
   componentDidMount() {
     console.log('componentDidMount');
-    this.initializeContract()
+    this.initializeContract();
   }
 
   initializeContract() {
@@ -56,21 +45,25 @@ class App extends React.Component {
       // Fallback Nodesmith Connection
       web3 = new Web3(new Web3.providers.HttpProvider("https://api.nodesmith.io/v1/aion/testnet/jsonrpc?apiKey=b07fca69798743afbfc1e88e56e9af9d"));
 
-      // Initiate Contract at existing address
+      // Contract Instance
       myContract = new web3.eth.Contract(casinoJSON.info.abiDefinition, contractAddress);
       console.log('Contract Instantiated:', myContract);
+    } else {
+      // Contract Instance w/ AIWA
+      myContract = new aiwa.Contract(casinoJSON.info.abiDefinition, contractAddress);
+      console.log('Contract Instantiated:', myContract);
     }
-
     this.updateState(); // Populate DOM w/ contract info
     this.setupListeners();
-    setInterval(this.updateState.bind(this), 7e3) // poll contract info
+    setInterval(function(){ // Poll contract info
+      this.updateState()
+    }.bind(this), 5000)
   }
 
   // Update DOM from Contract information
   updateState() {
     console.log('updateState hit');
-    if (aiwaInjected){
-      // update active account
+    if (aiwaInjected){ // update active account
       this.setState({
         accounts: aiwa.eth.accounts.toString(),
       })
@@ -180,10 +173,8 @@ class App extends React.Component {
   // Listen for events and executes the voteNumber method
   setupListeners() {
     console.log('setupListeners hit');
-
-
     let liNodes = this.refs.numbers.querySelectorAll('li')
-    // let imgNodes = this.refs.numbers.querySelectorAll('img')
+
     liNodes.forEach(number => {
       number.addEventListener('click', event => {
         event.preventDefault();
@@ -272,7 +263,13 @@ class App extends React.Component {
       </div>
 
       <hr />
-      <h2>When {this.state.maxAmountOfBets} bets have been placed - an animal will be randomly selected and a payout will occur. <br/> Winners who guessed correctly will split the amount in the AION pool!</h2>
+      <h2>
+        When {this.state.maxAmountOfBets} bets have been placed - an animal will be randomly selected and a payout will occur.
+        <br/>
+        Winners who guessed correctly will split the amount in the AION pool!
+        <br/>
+        If no winner, total AION pool will rollover.
+      </h2>
 
       <hr />
       <div className="play">
