@@ -9,17 +9,16 @@ contract Casino {
   // The minimum bet a user has to make to participate in the game
   uint public minimumBet = 1; // Equal to 1.00 AION
   // The maximum bet a user has to make to participate in the game
-  uint public maximumBet = 100; // Equal to 100 AION
+  uint public maximumBet = 50; // Equal to 100 AION
   // The total number of bets the users have made
   uint public numberOfBets;
   // The maximum amount of bets can be made for each game
   uint public maxAmountOfBets = 10;
   // The total amount of AION bet for this current game
   uint public totalBet;
-  
   // The number / animal that won the last game
   uint public lastLuckyAnimal;
-
+  // Array of players in each round
   address[] public players;
 
   struct Player {
@@ -29,6 +28,8 @@ contract Casino {
   // The address of the player and => the user info
   mapping(address => Player) public playerInfo;
 
+  event AnimalChosen(uint value);
+  event WinnerTransfer(address to, uint value);
 
   // Modifier to only allow the execution of functions when the bets are completed
   modifier onEndGame(){
@@ -90,15 +91,17 @@ contract Casino {
 
   /// @notice Generates a random number between 1 and 10 both inclusive.
   /// Can only be executed when the game ends.
-  function generateNumberWinner() onEndGame {
+  function generateNumberWinner() private onEndGame {
     uint numberGenerated = block.number % 10 + 1; // This isn't secure
     lastLuckyAnimal = numberGenerated;
     distributePrizes();
+
+    AnimalChosen(lastLuckyAnimal);
   }
 
   /// @notice Sends the corresponding AION to each winner then deletes all the
   /// players for the next game and resets the `totalBet` and `numberOfBets`
-  function distributePrizes() onEndGame {
+  function distributePrizes() private onEndGame {
     address[100] memory winners; // We have to create a temporary in memory array with fixed size
     uint count = 0; // This is the count for the array of winners
     for(uint i = 0; i < players.length; i++){
@@ -114,11 +117,12 @@ contract Casino {
       uint winnerAIONAmount = totalBet / count; // How much each winner gets
       for(uint j = 0; j < count; j++){
         if(winners[j] != address(0)) // Check that the address in this fixed array is not empty
+        WinnerTransfer(winners[j], winnerAIONAmount);
         winners[j].transfer(winnerAIONAmount);
+        totalBet = totalBet - winnerAIONAmount;
       }
     }
     /* Rollover amount if no winners */
-    totalBet = totalBet - winnerAIONAmount;
     numberOfBets = 0;
   }
 }

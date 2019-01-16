@@ -1,12 +1,13 @@
 # AION Animal Roulette
 
 ## Bet on a winning animal with AION!
+Built on top of the [Aion Network](https://aion.network/) Blockchain.
 
 ### Pre-Requisities
-- [Nodesmith API](https://nodesmith.io/)
-- Webpack 'npm i -g webpack'
-- Webpack Cli 'npm i -g webpack-cli'
-- http-server 'npm i -g http-server'
+- Webpack `'`npm i -g webpack`'`
+- Webpack Cli `'`npm i -g webpack-cli`'`
+- http-server `'`npm i -g http-server`'`
+- [Nodesmith API Endpoint](https://nodesmith.io/)
 - [AIWA](https://getaiwa.com/)
 
 ### Install

@@ -3,19 +3,21 @@ pragma solidity ^0.4.11;
 contract Casino {
   address owner;
   uint public minimumBet = 1;
-  uint public maximumBet = 100;
+  uint public maximumBet = 50;
   uint public numberOfBets;
   uint public maxAmountOfBets = 10;
   uint public totalBet;
   uint public lastLuckyAnimal;
-
   address[] public players;
+
   struct Player {
     uint amountBet;
     uint numberSelected;
   }
   mapping(address => Player) public playerInfo;
 
+  event AnimalChosen(uint value);
+  event WinnerTransfer(address to, uint value);
 
   modifier onEndGame(){
     if(numberOfBets >= maxAmountOfBets) _;
@@ -63,13 +65,15 @@ contract Casino {
     if(numberOfBets >= maxAmountOfBets) generateNumberWinner();
   }
 
-  function generateNumberWinner() onEndGame {
+  function generateNumberWinner() private onEndGame {
     uint numberGenerated = block.number % 10 + 1;
     lastLuckyAnimal = numberGenerated;
     distributePrizes();
+
+    AnimalChosen(lastLuckyAnimal);
   }
 
-  function distributePrizes() onEndGame {
+  function distributePrizes() private onEndGame {
     address[100] memory winners;
     uint count = 0;
 
@@ -82,15 +86,17 @@ contract Casino {
        delete playerInfo[playerAddress];
     }
     players.length = 0;
+
     if (count > 0){
       uint winnerAIONAmount = totalBet / count;
       for(uint j = 0; j < count; j++){
         if(winners[j] != address(0))
+        WinnerTransfer(winners[j], winnerAIONAmount);
         winners[j].transfer(winnerAIONAmount);
+        totalBet = totalBet - winnerAIONAmount;
       }
     }
 
-    totalBet = totalBet - winnerAIONAmount;
     numberOfBets = 0;
   }
 }

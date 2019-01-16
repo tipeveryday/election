@@ -6,30 +6,27 @@ import casinoJSON from './../../contracts/Casino.json' // import our contract JS
 // Initializing Variables
 let web3;
 let aiwa;
+let aiwaInjected = false;
 let myContract;
-let contractAddress = "0xa0f7f890ce990DBBC832B91522B9750282B63767312Fbf7852e09f96a5764538";
+let contractAddress = "0xA01677e1CEbbf1B3f511E2153be4c21F080095e3AaE43EeC4F889cA8146F720b";
 let account = "Not Detected - Please download AIWA to play this game";
 
-// Detect AIWA injection and inject into application
-function injectWeb3() {
-  // Is there an injected web3 instance?
-  if (window.aionweb3) { // AIWA Chrome extension will inject automatically
-    console.log("✓ AIWA injected successfully");
-    web3 = new Web3(window.aionweb3.currentProvider);
-    aiwa = window.aionweb3;
-
-    // Initiate Contract at existing address
-    myContract = new web3.eth.Contract(casinoJSON.info.abiDefinition, contractAddress);
-    console.log('Contract Instantiated:', myContract);
-  } else {
-    // NODESMITH fallback
-    web3 = new Web3(new Web3.providers.HttpProvider("https://api.nodesmith.io/v1/aion/testnet/jsonrpc?apiKey=b07fca69798743afbfc1e88e56e9af9d"));
-
-    // Initiate Contract at existing address
-    myContract = new web3.eth.Contract(casinoJSON.info.abiDefinition, contractAddress);
-    console.log('Contract Instantiated:', myContract);
-  }
+window.onload = () => {
+  console.log("✓ AIWA injected successfully");
+  aiwaInjected = true;
+  aiwa = window.aionweb3;
 }
+
+// Detect AIWA injection and inject into application
+// const injectAIWA = setInterval(function() {
+//   if (window.aionweb3){
+//     console.log("✓ AIWA injected successfully");
+//     web3 = new Web3(window.aionweb3.currentProvider);
+//     aiwa = window.aionweb3;
+//     aiwaInjected = true;
+//     clearInterval(injectAIWA);
+//   }
+// }, 500)
 
 // Main React App
 class App extends React.Component {
@@ -47,45 +44,50 @@ class App extends React.Component {
     }
     window.a = this.state
     this.updateState = this.updateState.bind(this)
-    // this.distributePrizes = this.distributePrizes.bind(this)
   }
 
   componentDidMount() {
     console.log('componentDidMount');
-    // Check for AIWA after mount
-    setTimeout(function () {
-        console.log(window.aionweb3);
-        injectWeb3();
-        this.updateState()
-        this.setupListeners()
-    }.bind(this), 3000);
-
-    // poll contract info
-    setInterval(this.updateState.bind(this), 7e3)
-    // this.distributePrizes();
+    this.initializeContract()
   }
+
+  initializeContract() {
+    if (!aiwaInjected) {
+      // Fallback Nodesmith Connection
+      web3 = new Web3(new Web3.providers.HttpProvider("https://api.nodesmith.io/v1/aion/testnet/jsonrpc?apiKey=b07fca69798743afbfc1e88e56e9af9d"));
+
+      // Initiate Contract at existing address
+      myContract = new web3.eth.Contract(casinoJSON.info.abiDefinition, contractAddress);
+      console.log('Contract Instantiated:', myContract);
+    }
+
+    this.updateState(); // Populate DOM w/ contract info
+    this.setupListeners();
+    setInterval(this.updateState.bind(this), 7e3) // poll contract info
+  }
+
   // Update DOM from Contract information
   updateState() {
     console.log('updateState hit');
-
-    // update active account
-    this.setState({
-      accounts: aiwa.eth.accounts.toString(),
-    })
-
-    // check if account has already placed a bet
-    myContract.methods.checkPlayerExists(aiwa.eth.accounts.toString()).call({})
-    .then(function(result){
-      console.log(result);
+    if (aiwaInjected){
+      // update active account
       this.setState({
-        doesPlayerExist: result
+        accounts: aiwa.eth.accounts.toString(),
       })
-    }.bind(this));
+      // check if account has already placed a bet
+      myContract.methods.checkPlayerExists(aiwa.eth.accounts.toString()).call({})
+      .then(function(result){
+        console.log('doesPlayerExist:', result);
+        this.setState({
+          doesPlayerExist: result
+        })
+      }.bind(this));
+    }
 
     // update mininum bet value
     myContract.methods.minimumBet().call({})
     .then(function(result){
-      console.log('min bet', result);
+      console.log('min bet:', result);
       this.setState({
         minimumBet: result
       })
@@ -94,7 +96,7 @@ class App extends React.Component {
     // update mininum bet value
     myContract.methods.maximumBet().call({})
     .then(function(result){
-      console.log('min bet', result);
+      console.log('min bet:', result);
       this.setState({
         maximumBet: result
       })
@@ -103,7 +105,7 @@ class App extends React.Component {
     // update total amount in bets
     myContract.methods.totalBet().call({})
     .then(function(result){
-      console.log('total bet', result);
+      console.log('total bet:', result);
       // Do the Division for 18 decimal points (AION)
       this.setState({
         totalBet: (result / 1*Math.pow(10,-18))
@@ -113,7 +115,7 @@ class App extends React.Component {
     // update numberOfBets
     myContract.methods.numberOfBets().call({})
     .then(function(result){
-        console.log('number of bets', result);
+        console.log('number of bets:', result);
         this.setState({
           numberOfBets: result
         })
@@ -122,7 +124,7 @@ class App extends React.Component {
     // update maximum amount of bets
     myContract.methods.maxAmountOfBets().call({})
     .then(function(result){
-        console.log('maxAmountOfBets', result);
+        console.log('maxAmountOfBets:', result);
         this.setState({
           maxAmountOfBets: result
         })
@@ -131,8 +133,7 @@ class App extends React.Component {
     // update last winner
     myContract.methods.lastLuckyAnimal().call({})
     .then(function(result){
-      console.log('Last Lucky Animal', result);
-      console.log(result);
+      console.log('Last Lucky Animal:', result);
       let winner;
 
       switch(result) {
@@ -140,7 +141,7 @@ class App extends React.Component {
           winner = "Walrus";
           break;
         case '2':
-          winner = "Donkey";
+          winner = "Penguin";
           break;
         case '3':
           winner = "Beaver";
@@ -179,24 +180,26 @@ class App extends React.Component {
   // Listen for events and executes the voteNumber method
   setupListeners() {
     console.log('setupListeners hit');
+
+
     let liNodes = this.refs.numbers.querySelectorAll('li')
     // let imgNodes = this.refs.numbers.querySelectorAll('img')
     liNodes.forEach(number => {
-        number.addEventListener('click', event => {
-            // If player exists, do not allow voting
-            if (this.state.doesPlayerExist) {
-              alert("This account has already placed a bet. Wait until next round!")
-            } else {
-              event.target.className = 'number-selected'
-              console.log('number selected', event.target.value);
-              this.voteNumber(event.target.value, done => {
-                // Remove the other number selected
-                for (let i = 0; i < liNodes.length; i++) {
-                  liNodes[i].className = ''
-                }
-              })
+      number.addEventListener('click', event => {
+        event.preventDefault();
+        if (this.state.doesPlayerExist) { // If player exists, do not allow voting
+          alert("This account has already placed a bet. Wait until next round!")
+        } else {
+          event.target.className = 'number-selected'
+          console.log('number selected', event.target.value);
+          this.voteNumber(event.target.value, done => {
+            // Remove the other number selected
+            for (let i = 0; i < liNodes.length; i++) {
+              liNodes[i].className = ''
             }
-        })
+          })
+        }
+      })
     })
   }
 
@@ -204,22 +207,17 @@ class App extends React.Component {
   voteNumber(number, cb) {
     // Grab Aion Bet
     let voteCallObject;
-    let debugObject;
-    let signedBet;
     let bet = (this.refs['aion-bet'].value).toString();
-    console.log('bet = ', bet);
+    console.log('bet =', bet);
+    if (!aiwaInjected) { // Check AIWA is enabled
+      alert("You will need to have AIWA enabled to place a vote");
 
-    if (!bet) {
-      // If no bet detected, set to 0 to fire alert
-      bet = 0
-      // Alert user if bet is less than minimum
-      if (parseFloat(bet) < this.state.minimumBet) {
-          alert('You must bet more than the minimum')
-          cb()
-      }
+    } else if (!bet || parseFloat(bet) < this.state.minimumBet) {
+      alert('You must bet more than the minimum')
+      cb()
+
     } else {
-      console.log("hit the !bet else");
-      // Create TX Object - works w/ AIWA
+      // Create TX Object
       voteCallObject = {
         from: this.state.accounts,
         to: contractAddress,
@@ -227,20 +225,13 @@ class App extends React.Component {
         value: web3.utils.toNAmp(bet),
         data: myContract.methods.bet(number).encodeABI()
       }
-    }
 
-    // Alert user if bet is less than minimum
-    if (parseFloat(bet) < this.state.minimumBet) {
-        alert('You must bet more than the minimum')
-        cb()
-    } else {
-      console.log("hit aiwa else");
+      // Pop up AIWA
       aiwa.eth.sendTransaction(
         voteCallObject
       ).then(function(txHash){
-        console.log('txHash', txHash);
+        console.log('txHash:', txHash);
         if (window.confirm('Click "OK" to see transaction hash.')) {
-          // window.location.href='https://www.google.com/chrome/browser/index.html';
           window.open(
             'https://mastery.aion.network/#/transaction/'+ txHash,
             '_blank' // <- This is what makes it open in a new window.
@@ -257,18 +248,18 @@ class App extends React.Component {
       <h1>Welcome to Aion Roulette🚀</h1>
       <div className="rules">
         <div className="block ">
-            <b>Number of Bets:</b> &nbsp;
-            <span>{this.state.numberOfBets}</span>
-            /
-            <span>{this.state.maxAmountOfBets}</span>
+          <b>Number of Bets:</b> &nbsp;
+          <span>{this.state.numberOfBets}</span>
+          /
+          <span>{this.state.maxAmountOfBets}</span>
         </div>
         <div className="block">
-            <b>Last Winning Animal:</b> &nbsp;
-            <span>{this.state.lastLuckyAnimal}</span>
+          <b>Last Winning Animal:</b> &nbsp;
+          <span>{this.state.lastLuckyAnimal}</span>
         </div>
         <div className="block">
-            <b>Total AION pool:</b> &nbsp;
-            <span>{this.state.totalBet} AION</span>
+          <b>Total AION pool:</b> &nbsp;
+          <span>{this.state.totalBet} AION</span>
         </div>
         <div className="block">
           <b>Min Bet:</b> &nbsp;
@@ -281,17 +272,16 @@ class App extends React.Component {
       </div>
 
       <hr />
-
       <h2>When {this.state.maxAmountOfBets} bets have been placed - an animal will be randomly selected and a payout will occur. <br/> Winners who guessed correctly will split the amount in the AION pool!</h2>
-      <hr />
 
-      <h3>Let's play!</h3>
-      <label>
-          <b>1. How much AION do you want to bet? <input className="bet-input" ref="aion-bet" type="number" placeholder="0"/> AION</b>
-          <br />
-          <b>2. Now pick an animal!</b>
-      </label>
-      <ul ref="numbers" className="numbers">
+      <hr />
+      <div className="play">
+        <h3>Let's Play!</h3>
+        <p>
+          <span>1. How much AION do you want to bet? <input className="bet-input" ref="aion-bet" type="number" placeholder="0"/> AION</span>
+          <span>2. Now pick an animal!</span>
+        </p>
+        <ul ref="numbers" className="numbers">
           <li value="1"></li>
           <li value="2"></li>
           <li value="3"></li>
@@ -302,15 +292,19 @@ class App extends React.Component {
           <li value="8"></li>
           <li value="9"></li>
           <li value="10"></li>
-      </ul>
+        </ul>
+      </div>
 
       <hr />
       <div className="footer">
-        <div><i>Only working with the Mastery Test Network 📡</i></div>
-        <div><i>You can only vote once per account</i></div>
-        <div><i>Your account is <strong>{this.state.accounts}</strong></i></div>
-        <div><i>Your vote will be reflected when the next block is mined.</i></div>
-        <div className="link"><i>Don't have AIWA? <a href="https://learn.aion.network/v1.0/docs/aiwa" target="_blank">Start here</a></i></div>
+        <div className="footer-content">
+        <p><i>Only working with the Mastery Test Network 📡</i></p>
+        <p><i>You can only vote once per account.</i></p>
+        <p><i>Your account is: <strong>{this.state.accounts}</strong></i></p>
+        <p><i>Your vote will be reflected when the next block is mined.</i></p>
+        <p className="link"><i>Don't have AIWA? <a href="https://learn.aion.network/v1.0/docs/aiwa" target="_blank">Start here</a></i></p>
+        <p className="link"><i>Need Testnet AION? <a href="https://faucets.blockxlabs.com/aion?utm_source=aionDocs" target="_blank">Faucet</a></i></p>
+        </div>
       </div>
 
       <div className="madeWithLove">

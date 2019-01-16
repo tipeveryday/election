@@ -1,5 +1,5 @@
 {
-  "name": "casino-ethereum",
+  "name": "aion-roulette",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -8,7 +8,7 @@
     "build": "webpack"
   },
   "keywords": [],
-  "author": "",
+  "author": "kimcodeashian",
   "license": "ISC",
   "devDependencies": {
     "babel-core": "^6.25.0",

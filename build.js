@@ -32185,31 +32185,27 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 // Initializing Variables
 var web3 = void 0;
 var aiwa = void 0;
+var aiwaInjected = false;
 var myContract = void 0;
-var contractAddress = "0xa0f7f890ce990DBBC832B91522B9750282B63767312Fbf7852e09f96a5764538";
+var contractAddress = "0xA01677e1CEbbf1B3f511E2153be4c21F080095e3AaE43EeC4F889cA8146F720b";
 var account = "Not Detected - Please download AIWA to play this game";
 
+window.onload = function () {
+  console.log("✓ AIWA injected successfully");
+  aiwaInjected = true;
+  aiwa = window.aionweb3;
+};
+
 // Detect AIWA injection and inject into application
-function injectWeb3() {
-  // Is there an injected web3 instance?
-  if (window.aionweb3) {
-    // AIWA Chrome extension will inject automatically
-    console.log("✓ AIWA injected successfully");
-    web3 = new _aionWeb2.default(window.aionweb3.currentProvider);
-    aiwa = window.aionweb3;
-
-    // Initiate Contract at existing address
-    myContract = new web3.eth.Contract(_Casino2.default.info.abiDefinition, contractAddress);
-    console.log('Contract Instantiated:', myContract);
-  } else {
-    // NODESMITH fallback
-    web3 = new _aionWeb2.default(new _aionWeb2.default.providers.HttpProvider("https://api.nodesmith.io/v1/aion/testnet/jsonrpc?apiKey=b07fca69798743afbfc1e88e56e9af9d"));
-
-    // Initiate Contract at existing address
-    myContract = new web3.eth.Contract(_Casino2.default.info.abiDefinition, contractAddress);
-    console.log('Contract Instantiated:', myContract);
-  }
-}
+// const injectAIWA = setInterval(function() {
+//   if (window.aionweb3){
+//     console.log("✓ AIWA injected successfully");
+//     web3 = new Web3(window.aionweb3.currentProvider);
+//     aiwa = window.aionweb3;
+//     aiwaInjected = true;
+//     clearInterval(injectAIWA);
+//   }
+// }, 500)
 
 // Main React App
 
@@ -32233,7 +32229,6 @@ var App = function (_React$Component) {
     };
     window.a = _this.state;
     _this.updateState = _this.updateState.bind(_this);
-    // this.distributePrizes = this.distributePrizes.bind(this)
     return _this;
   }
 
@@ -32241,41 +32236,48 @@ var App = function (_React$Component) {
     key: 'componentDidMount',
     value: function componentDidMount() {
       console.log('componentDidMount');
-      // Check for AIWA after mount
-      setTimeout(function () {
-        console.log(window.aionweb3);
-        injectWeb3();
-        this.updateState();
-        this.setupListeners();
-      }.bind(this), 3000);
-
-      // poll contract info
-      setInterval(this.updateState.bind(this), 7e3);
-      // this.distributePrizes();
+      this.initializeContract();
     }
+  }, {
+    key: 'initializeContract',
+    value: function initializeContract() {
+      if (!aiwaInjected) {
+        // Fallback Nodesmith Connection
+        web3 = new _aionWeb2.default(new _aionWeb2.default.providers.HttpProvider("https://api.nodesmith.io/v1/aion/testnet/jsonrpc?apiKey=b07fca69798743afbfc1e88e56e9af9d"));
+
+        // Initiate Contract at existing address
+        myContract = new web3.eth.Contract(_Casino2.default.info.abiDefinition, contractAddress);
+        console.log('Contract Instantiated:', myContract);
+      }
+
+      this.updateState(); // Populate DOM w/ contract info
+      this.setupListeners();
+      setInterval(this.updateState.bind(this), 7e3); // poll contract info
+    }
+
     // Update DOM from Contract information
 
   }, {
     key: 'updateState',
     value: function updateState() {
       console.log('updateState hit');
-
-      // update active account
-      this.setState({
-        accounts: aiwa.eth.accounts.toString()
-      });
-
-      // check if account has already placed a bet
-      myContract.methods.checkPlayerExists(aiwa.eth.accounts.toString()).call({}).then(function (result) {
-        console.log(result);
+      if (aiwaInjected) {
+        // update active account
         this.setState({
-          doesPlayerExist: result
+          accounts: aiwa.eth.accounts.toString()
         });
-      }.bind(this));
+        // check if account has already placed a bet
+        myContract.methods.checkPlayerExists(aiwa.eth.accounts.toString()).call({}).then(function (result) {
+          console.log('doesPlayerExist:', result);
+          this.setState({
+            doesPlayerExist: result
+          });
+        }.bind(this));
+      }
 
       // update mininum bet value
       myContract.methods.minimumBet().call({}).then(function (result) {
-        console.log('min bet', result);
+        console.log('min bet:', result);
         this.setState({
           minimumBet: result
         });
@@ -32283,7 +32285,7 @@ var App = function (_React$Component) {
 
       // update mininum bet value
       myContract.methods.maximumBet().call({}).then(function (result) {
-        console.log('min bet', result);
+        console.log('min bet:', result);
         this.setState({
           maximumBet: result
         });
@@ -32291,7 +32293,7 @@ var App = function (_React$Component) {
 
       // update total amount in bets
       myContract.methods.totalBet().call({}).then(function (result) {
-        console.log('total bet', result);
+        console.log('total bet:', result);
         // Do the Division for 18 decimal points (AION)
         this.setState({
           totalBet: result / 1 * Math.pow(10, -18)
@@ -32300,7 +32302,7 @@ var App = function (_React$Component) {
 
       // update numberOfBets
       myContract.methods.numberOfBets().call({}).then(function (result) {
-        console.log('number of bets', result);
+        console.log('number of bets:', result);
         this.setState({
           numberOfBets: result
         });
@@ -32308,7 +32310,7 @@ var App = function (_React$Component) {
 
       // update maximum amount of bets
       myContract.methods.maxAmountOfBets().call({}).then(function (result) {
-        console.log('maxAmountOfBets', result);
+        console.log('maxAmountOfBets:', result);
         this.setState({
           maxAmountOfBets: result
         });
@@ -32316,8 +32318,7 @@ var App = function (_React$Component) {
 
       // update last winner
       myContract.methods.lastLuckyAnimal().call({}).then(function (result) {
-        console.log('Last Lucky Animal', result);
-        console.log(result);
+        console.log('Last Lucky Animal:', result);
         var winner = void 0;
 
         switch (result) {
@@ -32325,7 +32326,7 @@ var App = function (_React$Component) {
             winner = "Walrus";
             break;
           case '2':
-            winner = "Donkey";
+            winner = "Penguin";
             break;
           case '3':
             winner = "Beaver";
@@ -32369,12 +32370,14 @@ var App = function (_React$Component) {
       var _this2 = this;
 
       console.log('setupListeners hit');
+
       var liNodes = this.refs.numbers.querySelectorAll('li');
       // let imgNodes = this.refs.numbers.querySelectorAll('img')
       liNodes.forEach(function (number) {
         number.addEventListener('click', function (event) {
-          // If player exists, do not allow voting
+          event.preventDefault();
           if (_this2.state.doesPlayerExist) {
+            // If player exists, do not allow voting
             alert("This account has already placed a bet. Wait until next round!");
           } else {
             event.target.className = 'number-selected';
@@ -32397,41 +32400,27 @@ var App = function (_React$Component) {
     value: function voteNumber(number, cb) {
       // Grab Aion Bet
       var voteCallObject = void 0;
-      var debugObject = void 0;
-      var signedBet = void 0;
       var bet = this.refs['aion-bet'].value.toString();
-      console.log('bet = ', bet);
-
-      if (!bet) {
-        // If no bet detected, set to 0 to fire alert
-        bet = 0;
-        // Alert user if bet is less than minimum
-        if (parseFloat(bet) < this.state.minimumBet) {
-          alert('You must bet more than the minimum');
-          cb();
-        }
+      console.log('bet =', bet);
+      if (!aiwaInjected) {
+        // Check AIWA is enabled
+        alert("You will need to have AIWA enabled to place a vote");
+      } else if (!bet || parseFloat(bet) < this.state.minimumBet) {
+        alert('You must bet more than the minimum');
+        cb();
       } else {
-        console.log("hit the !bet else");
-        // Create TX Object - works w/ AIWA
+        // Create TX Object
         voteCallObject = {
           from: this.state.accounts,
           to: contractAddress,
           gas: 2000000,
           value: web3.utils.toNAmp(bet),
           data: myContract.methods.bet(number).encodeABI()
-        };
-      }
 
-      // Alert user if bet is less than minimum
-      if (parseFloat(bet) < this.state.minimumBet) {
-        alert('You must bet more than the minimum');
-        cb();
-      } else {
-        console.log("hit aiwa else");
-        aiwa.eth.sendTransaction(voteCallObject).then(function (txHash) {
-          console.log('txHash', txHash);
+          // Pop up AIWA
+        };aiwa.eth.sendTransaction(voteCallObject).then(function (txHash) {
+          console.log('txHash:', txHash);
           if (window.confirm('Click "OK" to see transaction hash.')) {
-            // window.location.href='https://www.google.com/chrome/browser/index.html';
             window.open('https://mastery.aion.network/#/transaction/' + txHash, '_blank' // <- This is what makes it open in a new window.
             );
           };
@@ -32550,40 +32539,43 @@ var App = function (_React$Component) {
         ),
         _react2.default.createElement('hr', null),
         _react2.default.createElement(
-          'h3',
-          null,
-          'Let\'s play!'
-        ),
-        _react2.default.createElement(
-          'label',
-          null,
+          'div',
+          { className: 'play' },
           _react2.default.createElement(
-            'b',
+            'h3',
             null,
-            '1. How much AION do you want to bet? ',
-            _react2.default.createElement('input', { className: 'bet-input', ref: 'aion-bet', type: 'number', placeholder: '0' }),
-            ' AION'
+            'Let\'s Play!'
           ),
-          _react2.default.createElement('br', null),
           _react2.default.createElement(
-            'b',
+            'p',
             null,
-            '2. Now pick an animal!'
+            _react2.default.createElement(
+              'span',
+              null,
+              '1. How much AION do you want to bet? ',
+              _react2.default.createElement('input', { className: 'bet-input', ref: 'aion-bet', type: 'number', placeholder: '0' }),
+              ' AION'
+            ),
+            _react2.default.createElement(
+              'span',
+              null,
+              '2. Now pick an animal!'
+            )
+          ),
+          _react2.default.createElement(
+            'ul',
+            { ref: 'numbers', className: 'numbers' },
+            _react2.default.createElement('li', { value: '1' }),
+            _react2.default.createElement('li', { value: '2' }),
+            _react2.default.createElement('li', { value: '3' }),
+            _react2.default.createElement('li', { value: '4' }),
+            _react2.default.createElement('li', { value: '5' }),
+            _react2.default.createElement('li', { value: '6' }),
+            _react2.default.createElement('li', { value: '7' }),
+            _react2.default.createElement('li', { value: '8' }),
+            _react2.default.createElement('li', { value: '9' }),
+            _react2.default.createElement('li', { value: '10' })
           )
-        ),
-        _react2.default.createElement(
-          'ul',
-          { ref: 'numbers', className: 'numbers' },
-          _react2.default.createElement('li', { value: '1' }),
-          _react2.default.createElement('li', { value: '2' }),
-          _react2.default.createElement('li', { value: '3' }),
-          _react2.default.createElement('li', { value: '4' }),
-          _react2.default.createElement('li', { value: '5' }),
-          _react2.default.createElement('li', { value: '6' }),
-          _react2.default.createElement('li', { value: '7' }),
-          _react2.default.createElement('li', { value: '8' }),
-          _react2.default.createElement('li', { value: '9' }),
-          _react2.default.createElement('li', { value: '10' })
         ),
         _react2.default.createElement('hr', null),
         _react2.default.createElement(
@@ -32591,56 +32583,74 @@ var App = function (_React$Component) {
           { className: 'footer' },
           _react2.default.createElement(
             'div',
-            null,
+            { className: 'footer-content' },
             _react2.default.createElement(
-              'i',
+              'p',
               null,
-              'Only working with the Mastery Test Network \uD83D\uDCE1'
-            )
-          ),
-          _react2.default.createElement(
-            'div',
-            null,
-            _react2.default.createElement(
-              'i',
-              null,
-              'You can only vote once per account'
-            )
-          ),
-          _react2.default.createElement(
-            'div',
-            null,
-            _react2.default.createElement(
-              'i',
-              null,
-              'Your account is ',
               _react2.default.createElement(
-                'strong',
+                'i',
                 null,
-                this.state.accounts
+                'Only working with the Mastery Test Network \uD83D\uDCE1'
               )
-            )
-          ),
-          _react2.default.createElement(
-            'div',
-            null,
+            ),
             _react2.default.createElement(
-              'i',
+              'p',
               null,
-              'Your vote will be reflected when the next block is mined.'
-            )
-          ),
-          _react2.default.createElement(
-            'div',
-            { className: 'link' },
-            _react2.default.createElement(
-              'i',
-              null,
-              'Don\'t have AIWA? ',
               _react2.default.createElement(
-                'a',
-                { href: 'https://learn.aion.network/v1.0/docs/aiwa', target: '_blank' },
-                'Start here'
+                'i',
+                null,
+                'You can only vote once per account.'
+              )
+            ),
+            _react2.default.createElement(
+              'p',
+              null,
+              _react2.default.createElement(
+                'i',
+                null,
+                'Your account is: ',
+                _react2.default.createElement(
+                  'strong',
+                  null,
+                  this.state.accounts
+                )
+              )
+            ),
+            _react2.default.createElement(
+              'p',
+              null,
+              _react2.default.createElement(
+                'i',
+                null,
+                'Your vote will be reflected when the next block is mined.'
+              )
+            ),
+            _react2.default.createElement(
+              'p',
+              { className: 'link' },
+              _react2.default.createElement(
+                'i',
+                null,
+                'Don\'t have AIWA? ',
+                _react2.default.createElement(
+                  'a',
+                  { href: 'https://learn.aion.network/v1.0/docs/aiwa', target: '_blank' },
+                  'Start here'
+                )
+              )
+            ),
+            _react2.default.createElement(
+              'p',
+              { className: 'link' },
+              _react2.default.createElement(
+                'i',
+                null,
+                'Need Testnet AION? ',
+                _react2.default.createElement(
+                  'a',
+                  { href: 'https://faucets.blockxlabs.com/aion?utm_source=aionDocs', target: '_blank' },
+                  'Faucet'
+                )
               )
             )
           )
@@ -76329,7 +76339,7 @@ module.exports = getNetworkType;
 /* 438 */
 /***/ (function(module, exports) {
 
-module.exports = {"code":"0x60506040526001600260005090905560646003600050909055600a6005600050909055341561002e5760006000fd5b5b3360006000508282909180600101839055555050505b61004a565b610942806100596000396000f300605060405236156100c2576000356c01000000000000000000000000900463ffffffff1680630a50e361146100c6578063227cade5146100dc5780632ca8c6d3146101065780634081d9161461013057806341c0e1b5146101745780634b1146911461018a578063590e1ae3146101d15780637ce52eb6146101e7578063b3c1c5b0146101fd578063c38a8afd1461023c578063d16170dd14610266578063e08a96cd1461027e578063f611e1c9146102a8578063fe5e1853146102d2576100c2565b5b5b005b34156100d25760006000fd5b6100da6102fc565b005b34156100e85760006000fd5b6100f0610343565b6040518082815260100191505060405180910390f35b34156101125760006000fd5b61011a61034c565b6040518082815260100191505060405180910390f35b341561013c5760006000fd5b61015a60048080806010013590359091602001909192905050610355565b604051808215151515815260100191505060405180910390f35b34156101805760006000fd5b6101886103d0565b005b34156101965760006000fd5b6101b4600480808060100135903590916020019091929050506103fa565b604051808381526010018281526010019250505060405180910390f35b34156101dd5760006000fd5b6101e561042e565b005b34156101f35760006000fd5b6101fb610491565b005b34156102095760006000fd5b61021f6004808035906010019091905050610699565b604051808383825281601001526020019250505060405180910390f35b34156102485760006000fd5b6102506106cc565b6040518082815260100191505060405180910390f35b61027c60048080359060100190919050506106d5565b005b341561028a5760006000fd5b610292610830565b6040518082815260100191505060405180910390f35b34156102b45760006000fd5b6102bc610839565b6040518082815260100191505060405180910390f35b34156102de5760006000fd5b6102e6610842565b6040518082815260100191505060405180910390f35b600060056000505460046000505410151561033f576001600a4381151561031f57fe5b0601905080600760005081909090555061033d61049163ffffffff16565b5b5b5b50565b60036000505481565b60046000505481565b60006000600090505b6008600050805490508110156103c057838360086000508381548110151561038257fe5b9060005260106000209050906002020160005b508060010154905490911491901416156103b257600191506103c9565b5b808060010191505061035e565b600091506103c9565b5092915050565b6000600050806001015490543390911491901416156103f757600060005080600101549054ff5b5b565b6009600050602052818160005260105260306000209050600091509150508060000160005054908060010160005054905082565b6000600060005080600101549054339091149190141615156104505760006000fd5b303190506000600050806001015490546108fc83908115029060405160006040518083038185898989f1945050505050151561048c5760006000fd5b5b5b50565b61049961084b565b60006000600060006000600060056000505460046000505410151561068f5760009550600094505b6008600050805490508510156105ae576008600050858154811015156104e357fe5b9060005260106000209050906002020160005b508060010154905493509350600760005054600960005060008686825281601001526020019081526010016000209050600050600101600050541415610568578383888860648110151561054657fe5b9090602002019190909182828252816010015260200150505085806001019650505b60096000506000858582528160100152602001908152601001600020905060006000820160005060009055600182016000506000905550505b84806001019550506104c1565b60006008600050816105c0919061087b565b50600086111561066d57856006600050548115156105da57fe5b049150600090505b8581101561066c576000600088836064811015156105fc57fe5b9090602002018060100151905190911491901416151561065e57868160648110151561062457fe5b909060200201806010015190516108fc84908115029060405160006040518083038185898989f1945050505050151561065d5760006000fd5b5b5b80806001019150506105e2565b5b81600660005054036006600050819090905550600060046000508190909055505b5b5b50505050505050565b6008600050818154811015156106ab57fe5b9060005260106000209050906002020160005b915090508060010154905482565b60026000505481565b600560005054600460005054111515156106ef5760006000fd5b600181101580156107015750600a8111155b151561070d5760006000fd5b600015156107203361035563ffffffff16565b151514151561072f5760006000fd5b60026000505434101515156107445760006000fd5b34600960005060003382528160100152602001908152601001600020905060005060000160005081909090555080600960005060003382528160100152602001908152601001600020905060005060010160005081909090555060046000818150548092919060010191905090905550600860005080548060010182816107cb91906108af565b91909060005260106000209050906002020160005b33909192909192509190909180600101839055555050346006600082828250540192505081909090555060056000505460046000505410151561082c5761082b6102fc63ffffffff16565b5b5b50565b60056000505481565b60076000505481565b60066000505481565b610c80604051908101604052806064905b60006000825281601001526020019060019003908161085c5790505090565b8154818355818115116108aa5760020281600202836000526010600020905091820191016108a991906108e3565b5b505050565b8154818355818115116108de5760020281600202836000526010600020905091820191016108dd91906108e3565b5b505050565b61091391906108ed565b8082111561090f576000818150806000905560010160009055506002016108ed565b5090565b905600a165627a7a723058207c3c42e133dac604932a4e9dc07bb7152dc365647b59b94e1103882a26119bfc0029","info":{"abiDefinition":[{"outputs":[],"constant":false,"payable":false,"inputs":[],"name":"generateNumberWinner","type":"function"},{"outputs":[{"name":"","type":"uint128"}],"constant":true,"payable":false,"inputs":[],"name":"maximumBet","type":"function"},{"outputs":[{"name":"","type":"uint128"}],"constant":true,"payable":false,"inputs":[],"name":"numberOfBets","type":"function"},{"outputs":[{"name":"","type":"bool"}],"constant":true,"payable":false,"inputs":[{"name":"player","type":"address"}],"name":"checkPlayerExists","type":"function"},{"outputs":[],"constant":false,"payable":false,"inputs":[],"name":"kill","type":"function"},{"outputs":[{"name":"amountBet","type":"uint128"},{"name":"numberSelected","type":"uint128"}],"constant":true,"payable":false,"inputs":[{"name":"","type":"address"}],"name":"playerInfo","type":"function"},{"outputs":[],"constant":false,"payable":false,"inputs":[],"name":"refund","type":"function"},{"outputs":[],"constant":false,"payable":false,"inputs":[],"name":"distributePrizes","type":"function"},{"outputs":[{"name":"","type":"address"}],"constant":true,"payable":false,"inputs":[{"name":"","type":"uint128"}],"name":"players","type":"function"},{"outputs":[{"name":"","type":"uint128"}],"constant":true,"payable":false,"inputs":[],"name":"minimumBet","type":"function"},{"outputs":[],"constant":false,"payable":true,"inputs":[{"name":"numberSelected","type":"uint128"}],"name":"bet","type":"function"},{"outputs":[{"name":"","type":"uint128"}],"constant":true,"payable":false,"inputs":[],"name":"maxAmountOfBets","type":"function"},{"outputs":[{"name":"","type":"uint128"}],"constant":true,"payable":false,"inputs":[],"name":"lastLuckyAnimal","type":"function"},{"outputs":[{"name":"","type":"uint128"}],"constant":true,"payable":false,"inputs":[],"name":"totalBet","type":"function"},{"outputs":[],"payable":false,"inputs":[],"name":"","type":"constructor"},{"outputs":[],"payable":true,"inputs":[],"name":"","type":"fallback"}],"languageVersion":"0","language":"Solidity","compilerVersion":"0.4.15+commit.ecf81ee5.Linux.g++","source":"pragma solidity ^0.4.11;\n\ncontract Casino {\n  address owner;\n  uint public minimumBet = 1;\n  uint public maximumBet = 100;\n  uint public numberOfBets;\n  uint public maxAmountOfBets = 10;\n  uint public totalBet;\n  uint public lastLuckyAnimal;\n\n  address[] public players;\n  struct Player {\n    uint amountBet;\n    uint numberSelected;\n  }\n  mapping(address => Player) public playerInfo;\n\n\n  modifier onEndGame(){\n    if(numberOfBets >= maxAmountOfBets) _;\n  }\n\n  modifier onlyOwner() {\n    require(msg.sender == owner);\n    _;\n  }\n\n  function Casino(){\n    owner = msg.sender;\n  }\n  function() public payable {}\n\n  function refund() public onlyOwner {\n    uint totalBalance = this.balance;\n    owner.transfer(totalBalance);\n  }\n\n  function kill() public {\n    if(msg.sender == owner) selfdestruct(owner);\n   }\n\n  function checkPlayerExists(address player) public constant returns(bool){\n    for(uint i = 0; i < players.length; i++){\n       if(players[i] == player) return true;\n    }\n    return false;\n  }\n\n  function bet(uint numberSelected) payable {\n    require(numberOfBets <= maxAmountOfBets);\n    require(numberSelected >= 1 && numberSelected <= 10);\n    require(checkPlayerExists(msg.sender) == false);\n    require(msg.value >= minimumBet);\n\n    playerInfo[msg.sender].amountBet = msg.value;\n    playerInfo[msg.sender].numberSelected = numberSelected;\n    numberOfBets++;\n\n    players.push(msg.sender);\n    totalBet += msg.value;\n\n    if(numberOfBets >= maxAmountOfBets) generateNumberWinner();\n  }\n\n  function generateNumberWinner() onEndGame {\n    uint numberGenerated = block.number % 10 + 1;\n    lastLuckyAnimal = numberGenerated;\n    distributePrizes();\n  }\n\n  function distributePrizes() onEndGame {\n    address[100] memory winners;\n    uint count = 0;\n\n    for(uint i = 0; i < players.length; i++){\n       address playerAddress = players[i];\n       if(playerInfo[playerAddress].numberSelected == lastLuckyAnimal){\n          winners[count] = playerAddress;\n          count++;\n       }\n       delete playerInfo[playerAddress];\n    }\n    players.length = 0;\n    if (count > 0){\n      uint winnerAIONAmount = totalBet / count;\n      for(uint j = 0; j < count; j++){\n        if(winners[j] != address(0))\n        winners[j].transfer(winnerAIONAmount);\n      }\n    }\n\n    totalBet = totalBet - winnerAIONAmount;\n    numberOfBets = 0;\n  }\n}\n"}}
+module.exports = {"code":"0x60506040526001600260005090905560326003600050909055600a6005600050909055341561002e5760006000fd5b5b3360006000508282909180600101839055555050505b61004a565b61099c806100596000396000f300605060405236156100ac576000356c01000000000000000000000000900463ffffffff168063227cade5146100b05780632ca8c6d3146100da5780634081d9161461010457806341c0e1b5146101485780634b1146911461015e578063590e1ae3146101a5578063b3c1c5b0146101bb578063c38a8afd146101fa578063d16170dd14610224578063e08a96cd1461023c578063f611e1c914610266578063fe5e185314610290576100ac565b5b5b005b34156100bc5760006000fd5b6100c46102ba565b6040518082815260100191505060405180910390f35b34156100e65760006000fd5b6100ee6102c3565b6040518082815260100191505060405180910390f35b34156101105760006000fd5b61012e600480808060100135903590916020019091929050506102cc565b604051808215151515815260100191505060405180910390f35b34156101545760006000fd5b61015c610347565b005b341561016a5760006000fd5b61018860048080806010013590359091602001909192905050610371565b604051808381526010018281526010019250505060405180910390f35b34156101b15760006000fd5b6101b96103a5565b005b34156101c75760006000fd5b6101dd6004808035906010019091905050610408565b604051808383825281601001526020019250505060405180910390f35b34156102065760006000fd5b61020e61043b565b6040518082815260100191505060405180910390f35b61023a6004808035906010019091905050610444565b005b34156102485760006000fd5b61025061059f565b6040518082815260100191505060405180910390f35b34156102725760006000fd5b61027a6105a8565b6040518082815260100191505060405180910390f35b341561029c5760006000fd5b6102a46105b1565b6040518082815260100191505060405180910390f35b60036000505481565b60046000505481565b60006000600090505b6008600050805490508110156103375783836008600050838154811015156102f957fe5b9060005260106000209050906002020160005b508060010154905490911491901416156103295760019150610340565b5b80806001019150506102d5565b60009150610340565b5092915050565b60006000508060010154905433909114919014161561036e57600060005080600101549054ff5b5b565b6009600050602052818160005260105260306000209050600091509150508060000160005054908060010160005054905082565b6000600060005080600101549054339091149190141615156103c75760006000fd5b303190506000600050806001015490546108fc83908115029060405160006040518083038185898989f194505050505015156104035760006000fd5b5b5b50565b60086000508181548110151561041a57fe5b9060005260106000209050906002020160005b915090508060010154905482565b60026000505481565b6005600050546004600050541115151561045e5760006000fd5b600181101580156104705750600a8111155b151561047c5760006000fd5b6000151561048f336102cc63ffffffff16565b151514151561049e5760006000fd5b60026000505434101515156104b35760006000fd5b346009600050600033825281601001526020019081526010016000209050600050600001600050819090905550806009600050600033825281601001526020019081526010016000209050600050600101600050819090905550600460008181505480929190600101919050909055506008600050805480600101828161053a91906108a5565b91909060005260106000209050906002020160005b33909192909192509190909180600101839055555050346006600082828250540192505081909090555060056000505460046000505410151561059b5761059a6105ba63ffffffff16565b5b5b50565b60056000505481565b60076000505481565b60066000505481565b6000600560005054600460005054101515610639576001600a438115156105dd57fe5b060190508060076000508190909055506105fb61063d63ffffffff16565b7f085498bc48ecf0627eddf2a22aae51b0d327d2d389c8b95043331974a01abecc6007600050546040518082815260100191505060405180910390a15b5b5b50565b6106456108d9565b60006000600060006000600060056000505460046000505410151561089b5760009550600094505b60086000508054905085101561075a5760086000508581548110151561068f57fe5b9060005260106000209050906002020160005b50806001015490549350935060076000505460096000506000868682528160100152602001908152601001600020905060005060010160005054141561071457838388886064811015156106f257fe5b9090602002019190909182828252816010015260200150505085806001019650505b60096000506000858582528160100152602001908152601001600020905060006000820160005060009055600182016000506000905550505b848060010195505061066d565b600060086000508161076c9190610909565b50600086111561088c578560066000505481151561078657fe5b049150600090505b8581101561088b576000600088836064811015156107a857fe5b90906020020180601001519051909114919014161515610823577f0e73d440f472f97d0bc6b4eaf9caddef7f14e33205f2fcfdaaf8739f9cf864ac88836064811015156107f157fe5b909060200201806010015190518560405180848482528160100152602001828152601001935050505060405180910390a15b868160648110151561083157fe5b909060200201806010015190516108fc84908115029060405160006040518083038185898989f1945050505050151561086a5760006000fd5b816006600050540360066000508190909055505b808060010191505061078e565b5b600060046000508190909055505b5b5b50505050505050565b8154818355818115116108d45760020281600202836000526010600020905091820191016108d3919061093d565b5b505050565b610c80604051908101604052806064905b6000600082528160100152602001906001900390816108ea5790505090565b815481835581811511610938576002028160020283600052601060002090509182019101610937919061093d565b5b505050565b61096d9190610947565b8082111561096957600081815080600090556001016000905550600201610947565b5090565b905600a165627a7a723058204c8030bc8227368708df4be8f5e6a1a9cb06e776320a788e98db9a721754d90b0029","info":{"abiDefinition":[{"outputs":[{"name":"","type":"uint128"}],"constant":true,"payable":false,"inputs":[],"name":"maximumBet","type":"function"},{"outputs":[{"name":"","type":"uint128"}],"constant":true,"payable":false,"inputs":[],"name":"numberOfBets","type":"function"},{"outputs":[{"name":"","type":"bool"}],"constant":true,"payable":false,"inputs":[{"name":"player","type":"address"}],"name":"checkPlayerExists","type":"function"},{"outputs":[],"constant":false,"payable":false,"inputs":[],"name":"kill","type":"function"},{"outputs":[{"name":"amountBet","type":"uint128"},{"name":"numberSelected","type":"uint128"}],"constant":true,"payable":false,"inputs":[{"name":"","type":"address"}],"name":"playerInfo","type":"function"},{"outputs":[],"constant":false,"payable":false,"inputs":[],"name":"refund","type":"function"},{"outputs":[{"name":"","type":"address"}],"constant":true,"payable":false,"inputs":[{"name":"","type":"uint128"}],"name":"players","type":"function"},{"outputs":[{"name":"","type":"uint128"}],"constant":true,"payable":false,"inputs":[],"name":"minimumBet","type":"function"},{"outputs":[],"constant":false,"payable":true,"inputs":[{"name":"numberSelected","type":"uint128"}],"name":"bet","type":"function"},{"outputs":[{"name":"","type":"uint128"}],"constant":true,"payable":false,"inputs":[],"name":"maxAmountOfBets","type":"function"},{"outputs":[{"name":"","type":"uint128"}],"constant":true,"payable":false,"inputs":[],"name":"lastLuckyAnimal","type":"function"},{"outputs":[{"name":"","type":"uint128"}],"constant":true,"payable":false,"inputs":[],"name":"totalBet","type":"function"},{"outputs":[],"payable":false,"inputs":[],"name":"","type":"constructor"},{"outputs":[],"payable":true,"inputs":[],"name":"","type":"fallback"},{"outputs":[],"inputs":[{"indexed":false,"name":"value","type":"uint128"}],"name":"AnimalChosen","anonymous":false,"type":"event"},{"outputs":[],"inputs":[{"indexed":false,"name":"to","type":"address"},{"indexed":false,"name":"value","type":"uint128"}],"name":"WinnerTransfer","anonymous":false,"type":"event"}],"languageVersion":"0","language":"Solidity","compilerVersion":"0.4.15+commit.ecf81ee5.Linux.g++","source":"pragma solidity ^0.4.11;\n\ncontract Casino {\n  address owner;\n  uint public minimumBet = 1;\n  uint public maximumBet = 50;\n  uint public numberOfBets;\n  uint public maxAmountOfBets = 10;\n  uint public totalBet;\n  uint public lastLuckyAnimal;\n  address[] public players;\n\n  struct Player {\n    uint amountBet;\n    uint numberSelected;\n  }\n  mapping(address => Player) public playerInfo;\n\n  event AnimalChosen(uint value);\n  event WinnerTransfer(address to, uint value);\n\n  modifier onEndGame(){\n    if(numberOfBets >= maxAmountOfBets) _;\n  }\n\n  modifier onlyOwner() {\n    require(msg.sender == owner);\n    _;\n  }\n\n  function Casino(){\n    owner = msg.sender;\n  }\n  function() public payable {}\n\n  function refund() public onlyOwner {\n    uint totalBalance = this.balance;\n    owner.transfer(totalBalance);\n  }\n\n  function kill() public {\n    if(msg.sender == owner) selfdestruct(owner);\n   }\n\n  function checkPlayerExists(address player) public constant returns(bool){\n    for(uint i = 0; i < players.length; i++){\n       if(players[i] == player) return true;\n    }\n    return false;\n  }\n\n  function bet(uint numberSelected) payable {\n    require(numberOfBets <= maxAmountOfBets);\n    require(numberSelected >= 1 && numberSelected <= 10);\n    require(checkPlayerExists(msg.sender) == false);\n    require(msg.value >= minimumBet);\n\n    playerInfo[msg.sender].amountBet = msg.value;\n    playerInfo[msg.sender].numberSelected = numberSelected;\n    numberOfBets++;\n\n    players.push(msg.sender);\n    totalBet += msg.value;\n\n    if(numberOfBets >= maxAmountOfBets) generateNumberWinner();\n  }\n\n  function generateNumberWinner() private onEndGame {\n    uint numberGenerated = block.number % 10 + 1;\n    lastLuckyAnimal = numberGenerated;\n    distributePrizes();\n\n    AnimalChosen(lastLuckyAnimal);\n  }\n\n  function distributePrizes() private onEndGame {\n    address[100] memory winners;\n    uint count = 0;\n\n    for(uint i = 0; i < players.length; i++){\n       address playerAddress = players[i];\n       if(playerInfo[playerAddress].numberSelected == lastLuckyAnimal){\n          winners[count] = playerAddress;\n          count++;\n       }\n       delete playerInfo[playerAddress];\n    }\n    players.length = 0;\n\n    if (count > 0){\n      uint winnerAIONAmount = totalBet / count;\n      for(uint j = 0; j < count; j++){\n        if(winners[j] != address(0))\n        WinnerTransfer(winners[j], winnerAIONAmount);\n        winners[j].transfer(winnerAIONAmount);\n        totalBet = totalBet - winnerAIONAmount;\n      }\n    }\n\n    numberOfBets = 0;\n  }\n}\n"}}
 
 /***/ })
 /******/ ]);
