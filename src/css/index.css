@@ -1,4 +1,6 @@
-
+#root {
+  position: relative;
+}
 body{
   font-family: 'open sans';
   /* font-family: 'Fira Sans', sans-serif; */
@@ -94,6 +96,20 @@ img {
   color: #f69a9a;
   font-style: normal;
   letter-spacing: 0.2px;
+}
+
+.overlay {
+  position: absolute;
+  width: 96%;
+  height: 96%;
+  background: black;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.overlay p{
+  color: white;
+  text-align: center;
 }
 label {
   color: white;
