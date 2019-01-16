@@ -10,19 +10,18 @@ contract Casino {
   uint public minimumBet = 1; // Equal to 1.00 AION
   // The maximum bet a user has to make to participate in the game
   uint public maximumBet = 100; // Equal to 100 AION
-  // The total amount of AION bet for this current game
-  uint public totalBet;
-
   // The total number of bets the users have made
   uint public numberOfBets;
-
+  // The maximum amount of bets can be made for each game
+  uint public maxAmountOfBets = 10;
+  // The total amount of AION bet for this current game
+  uint public totalBet;
+  
   // The number / animal that won the last game
   uint public lastLuckyAnimal;
 
-  // The maximum amount of bets can be made for each game
-  uint public maxAmountOfBets = 1;
-
   address[] public players;
+
   struct Player {
     uint amountBet;
     uint numberSelected;
@@ -93,9 +92,7 @@ contract Casino {
   /// Can only be executed when the game ends.
   function generateNumberWinner() onEndGame {
     uint numberGenerated = block.number % 10 + 1; // This isn't secure
-    /* lastLuckyAnimal = numberGenerated; */
-    // REMOVE HARDCODE BELOW
-    lastLuckyAnimal = 4;
+    lastLuckyAnimal = numberGenerated;
     distributePrizes();
   }
 

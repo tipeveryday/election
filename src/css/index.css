@@ -134,6 +134,9 @@ label {
   font-family: 'ZCOOL XiaoWei', serif;
   font-size: 22px;
 }
+.madeWithLove a,  .madeWithLove a:visited{
+  color: #f69a9a;
+}
 
 .numbers li:nth-child(1) {
   background-image: url("../../img/1.svg")
