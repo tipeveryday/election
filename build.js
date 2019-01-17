@@ -32192,9 +32192,11 @@ var account = "Not Detected - Please download AIWA to play this game";
 
 // On load, inject AIWA
 window.onload = function () {
-  console.log("✓ AIWA injected successfully");
-  aiwaInjected = true;
-  aiwa = window.aionweb3;
+  if (window.aionweb3) {
+    aiwa = window.aionweb3;
+    aiwaInjected = true;
+    console.log("✓ AIWA injected successfully");
+  }
 };
 
 // Main React App
