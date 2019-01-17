@@ -4,9 +4,9 @@
 Built on top of the [Aion Network](https://aion.network/) Blockchain.
 
 ### Pre-Requisities
-- Webpack `'`npm i -g webpack`'`
-- Webpack Cli `'`npm i -g webpack-cli`'`
-- http-server `'`npm i -g http-server`'`
+- Webpack `npm i -g webpack`
+- Webpack Cli `npm i -g webpack-cli`
+- http-server `npm i -g http-server`
 - [Nodesmith API Endpoint](https://nodesmith.io/)
 - [AIWA](https://getaiwa.com/)
 
